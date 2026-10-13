@@ -61,3 +61,19 @@ jobs:
       - run: cargo doc --workspace --no-deps
         env:
           RUSTDOCFLAGS: -D warnings
+
+  # Guards the ratio in AGENTS.md section 7, not an absolute MB/s figure.
+  # Absolute throughput varies 3-4x between machines; end-to-end as a fraction
+  # of the same machine's bare byte scan does not.
+  perf:
+    name: throughput regression guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: stage benchmark
+        run: cargo run --release --example stage_bench
+      - name: show measured stages
+        if: always()
+        run: cargo run --release --example normalize_bench

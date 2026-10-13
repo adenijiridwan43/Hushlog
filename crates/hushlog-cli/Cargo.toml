@@ -24,6 +24,7 @@ crossbeam-channel.workspace = true
 portable-pty.workspace = true
 
 [dev-dependencies]
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
 assert_cmd = "2"
 predicates = "3"
 insta = "1"

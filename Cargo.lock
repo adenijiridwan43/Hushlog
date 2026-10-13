@@ -350,6 +350,7 @@ dependencies = [
  "portable-pty",
  "predicates",
  "thiserror 2.0.21",
+ "xxhash-rust",
 ]
 
 [[package]]
