@@ -226,10 +226,18 @@ fn exit_code(status: ExitStatus) -> i32 {
     }
     #[cfg(not(unix))]
     {
-        // Windows has no signal number to recover, so a child that died
-        // without one is reported as a plain failure rather than dressed up
-        // as one. See the module docs.
-        status.code().unwrap_or(1)
+        // Windows has no signal number to recover, so `code()` is `None` when
+        // the child was terminated rather than exiting on its own. Reporting
+        // that as 1 is defensible (it is a failure) but it is not the truth:
+        // the child may have been killed by a console close or a job object,
+        // and a wrapper that turns "terminated" into "exited 1" is lying in a
+        // way that is hard to debug from the outside.
+        //
+        // Windows gives no portable exit code for that case. 128 is the shell
+        // convention for "died to a signal we cannot name", and it keeps the
+        // value distinguishable from a genuine 1 -- which matters, because
+        // `hushlog -- cmd` is often chained with `&&` and `||`.
+        status.code().unwrap_or(128)
     }
 }
 

@@ -63,6 +63,15 @@ const PTY_POLL: Duration = Duration::from_millis(20);
 /// long enough for that in practice and short enough that nobody notices.
 const PTY_DRAIN: Duration = Duration::from_millis(200);
 
+/// Total time to keep draining once the child is gone, independent of chunking.
+///
+/// The quiet window can be reset by unrelated terminal chatter, so on a busy
+/// runner the per-chunk window can expire between two small reads and cut the
+/// run short -- which on Windows shows up as the child being terminated rather
+/// than exiting, and hushlog reporting a code it never received. This bound is
+/// the backstop: drain until quiet, but never past here.
+const PTY_DRAIN_MAX: Duration = Duration::from_secs(2);
+
 /// Run `command` on a PTY, filter its output, propagate its exit code.
 ///
 /// # Errors
@@ -149,6 +158,7 @@ pub(crate) fn run(config: &Config, program: &str, args: &[String]) -> Result<i32
     let mut bytes = 0u64;
     let mut lines = 0u64;
     let mut quiet = Duration::ZERO;
+    let mut draining = Duration::ZERO;
 
     loop {
         match rx.recv_timeout(PTY_POLL) {
@@ -172,7 +182,8 @@ pub(crate) fn run(config: &Config, program: &str, args: &[String]) -> Result<i32
                     // gone -- and then stop, or `hushlog --pty` never returns on
                     // Windows.
                     quiet += PTY_POLL;
-                    if quiet >= PTY_DRAIN {
+                    draining += PTY_POLL;
+                    if quiet >= PTY_DRAIN || draining >= PTY_DRAIN_MAX {
                         break;
                     }
                 }
