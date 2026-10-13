@@ -1,0 +1,22 @@
+# Rust / Cargo
+/target
+**/*.rs.bk
+*.pdb
+
+# Hushlog output artifacts
+*.hushlog.log
+hushlog-report.json
+
+# Local test artifacts
+/tests/fixtures/**/actual/
+/tests/fixtures/**/*.new.snap
+
+# Editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+.DS_Store
+
+# OS
+Thumbs.db

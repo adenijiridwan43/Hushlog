@@ -1,0 +1,18 @@
+[package]
+name = "hushlog-core"
+description = "Pure pipeline core for hushlog: normalize, classify, collapse. No I/O."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+xxhash-rust.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+proptest = "1"
+insta = "1"

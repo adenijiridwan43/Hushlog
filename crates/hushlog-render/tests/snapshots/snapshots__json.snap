@@ -1,0 +1,24 @@
+---
+source: crates/hushlog-render/tests/snapshots.rs
+expression: "render(hushlog_render::Format::Json, &events)"
+---
+{"type":"emit","no":1,"stream":"stdout","level":"warning","rule_id":2,"highlight":false,"raw":"npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142","plain":"npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142"}
+{"type":"folded","fp":10321156530966794305,"count":3,"level":"warning","rule_id":2,"sample":{"no":1,"stream":"stdout","raw":"npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142","plain":"npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142"}}
+{"type":"emit","no":4,"stream":"stdout","level":"warning","rule_id":2,"highlight":false,"raw":"npm WARN deprecated tough-cookie@2.5.0: tough-cookie has been deprecated, use cookie@1.0.2","plain":"npm WARN deprecated tough-cookie@2.5.0: tough-cookie has been deprecated, use cookie@1.0.2"}
+{"type":"folded","fp":3067246310608148467,"count":2,"level":"warning","rule_id":2,"sample":{"no":4,"stream":"stdout","raw":"npm WARN deprecated tough-cookie@2.5.0: tough-cookie has been deprecated, use cookie@1.0.2","plain":"npm WARN deprecated tough-cookie@2.5.0: tough-cookie has been deprecated, use cookie@1.0.2"}}
+{"type":"block_start","block":49821070877786119}
+{"type":"emit","no":13,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"npm notice ┌────────────────────────────────────────────────────────────┐","plain":"npm notice ┌────────────────────────────────────────────────────────────┐"}
+{"type":"emit","no":14,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"npm notice │                                                            │","plain":"npm notice │                                                            │"}
+{"type":"emit","no":15,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"npm notice │   Deprecation warning:                                    │","plain":"npm notice │   Deprecation warning:                                    │"}
+{"type":"emit","no":16,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"npm notice │   https://github.com/request/request/issues/3142          │","plain":"npm notice │   https://github.com/request/request/issues/3142          │"}
+{"type":"emit","no":17,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"npm notice │                                                            │","plain":"npm notice │                                                            │"}
+{"type":"emit","no":18,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"npm notice └────────────────────────────────────────────────────────────┘","plain":"npm notice └────────────────────────────────────────────────────────────┘"}
+{"type":"block_end","block":49821070877786119}
+{"type":"emit","no":20,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"> api@2.1.0 build","plain":"> api@2.1.0 build"}
+{"type":"emit","no":21,"stream":"stdout","level":"info","rule_id":3,"highlight":false,"raw":"> tsc --build && node scripts/bundle.js","plain":"> tsc --build && node scripts/bundle.js"}
+{"type":"emit","no":23,"stream":"stdout","level":"error","rule_id":1,"highlight":true,"raw":"src/handlers/user.ts(42,9): error TS6133: 'ctx' is declared but its value is never read.","plain":"src/handlers/user.ts(42,9): error TS6133: 'ctx' is declared but its value is never read."}
+{"type":"emit","no":24,"stream":"stdout","level":"error","rule_id":1,"highlight":false,"raw":"src/handlers/user.ts(58,3): error TS2345: Argument of type 'string' is not assignable to parameter of type 'UserId'.","plain":"src/handlers/user.ts(58,3): error TS2345: Argument of type 'string' is not assignable to parameter of type 'UserId'."}
+{"type":"emit","no":26,"stream":"stdout","level":"error","rule_id":1,"highlight":false,"raw":"src/services/legacy.ts(11,1): error TS2304: Cannot find name 'globalThisLegacy'.","plain":"src/services/legacy.ts(11,1): error TS2304: Cannot find name 'globalThisLegacy'."}
+{"type":"emit","no":30,"stream":"stdout","level":"error","rule_id":1,"highlight":false,"raw":"npm ERR! code ELIFECYCLE","plain":"npm ERR! code ELIFECYCLE"}
+{"type":"emit","no":32,"stream":"stdout","level":"error","rule_id":1,"highlight":false,"raw":"npm ERR! api@2.1.0 build: `tsc --build && node scripts/bundle.js`","plain":"npm ERR! api@2.1.0 build: `tsc --build && node scripts/bundle.js`"}
+{"type":"summary","lines_in":12345,"lines_out":18,"errors":5,"groups":2,"lines_folded":3,"tee_path":"hushlog-full.log"}

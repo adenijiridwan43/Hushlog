@@ -1,0 +1,48 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT OR Apache-2.0"
+description = "Smart noise filter for terminal and CI logs"
+
+# Lint policy from actionbook/rust-skills defaults. CI runs clippy with
+# -D warnings, so these are effectively errors. Do not silence a lint you
+# have not understood — see AGENTS.md section 5.
+[workspace.lints.rust]
+unsafe_code = "warn"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"
+
+[workspace.dependencies]
+hushlog-core = { path = "crates/hushlog-core", version = "0.1.0" }
+hushlog-rules = { path = "crates/hushlog-rules", version = "0.1.0" }
+hushlog-render = { path = "crates/hushlog-render", version = "0.1.0" }
+
+anyhow = "1"
+thiserror = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+regex = "1"
+aho-corasick = "1"
+toml = "0.9"
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
+clap = { version = "4", features = ["derive"] }
+anstream = "0.6"
+owo-colors = "4"
+is-terminal = "0.4"
+crossbeam-channel = "0.5"
+portable-pty = "0.8"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+# Deliberately NOT panic = "abort". A panic mid-stream must not tear down the
+# process before the tee file has been flushed -- see the lossless principle
+# in AGENTS.md section 1.

@@ -1,0 +1,115 @@
+# Cargo rule pack
+#
+# Covers `cargo build`, `cargo check`, `cargo test`, `cargo clippy` and the
+# `error: could not compile` summary. Patterns follow the shape rustc actually
+# emits; see https://doc.rust-lang.org/cargo/ and the rustc diagnostics format.
+#
+# Rule ids are namespaced `cargo.*` so `--explain` output is unambiguous when
+# several packs are loaded at once.
+
+name = "cargo"
+description = "rustc and cargo diagnostics: errors, warnings, test results, build progress."
+
+# --- Errors -----------------------------------------------------------------
+#
+# The `error[EXXXX]:` form carries a lint code. rustc also emits a bare
+# `error:` for non-lint failures. Both are real failures and both must survive
+# filtering untouched.
+
+[[rule]]
+id = "cargo.error"
+match = { kind = "regex", pattern = "^error(?:\\[[A-Za-z0-9]+\\])?: " }
+level = "error"
+highlight = true
+# No `collapse`. AGENTS.md section 1.1: errors are never folded without an
+# explicit user opt-in, so this stays false and the loader refuses to set it.
+context_lines = 6
+
+[[rule]]
+id = "cargo.error.build-failed"
+match = { kind = "regex", pattern = "^error: could not compile " }
+level = "error"
+highlight = true
+
+# Cargo prints this at the end of a failed run; it is the line a user greps for.
+[[rule]]
+id = "cargo.error.aborting"
+match = { kind = "literal", pattern = "error: aborting due to" }
+level = "error"
+highlight = true
+
+# --- Warnings ---------------------------------------------------------------
+
+[[rule]]
+id = "cargo.warning"
+match = { kind = "regex", pattern = "^warning(?:\\[[A-Za-z0-9]+\\])?: " }
+level = "warning"
+collapse = true
+context_lines = 6
+
+# A warning with a help note attached. Kept separate from the general warning so
+# `--explain` shows that this one came with a suggestion.
+[[rule]]
+id = "cargo.warning.deprecated"
+match = { kind = "regex", pattern = "^warning: use of deprecated " }
+level = "warning"
+highlight = true
+collapse = true
+
+# --- Test results -----------------------------------------------------------
+
+# `test result: ok. 12 passed; 0 failed;` / `test result: FAILED. 3 passed; 1 failed;`
+[[rule]]
+id = "cargo.test-result"
+match = { kind = "regex", pattern = "^test result: " }
+level = "info"
+highlight = true
+# Never fold these: a failing test count is the single most important number in
+# a CI log, and the counts differ per suite.
+
+[[rule]]
+id = "cargo.test-failed"
+match = { kind = "regex", pattern = "test result: FAILED\\." }
+level = "error"
+highlight = true
+
+# --- Build progress ---------------------------------------------------------
+#
+# Cargo writes these to stderr. They are the bulk of a clean build's output and
+# the main thing a user wants gone.
+
+[[rule]]
+id = "cargo.progress"
+match = { kind = "regex", pattern = "^\\s+(Compiling|Checking|Building|Blocking|Updating|Downloading|Downloaded|Fresh|Running|Installing) " }
+level = "progress"
+
+[[rule]]
+id = "cargo.progress.finished"
+match = { kind = "regex", pattern = "^\\s+Finished `[^`]*` profile" }
+level = "info"
+
+# --- Diagnostics continuation ----------------------------------------------
+#
+# rustc's secondary lines hang off the diagnostic above them. They are folded
+# with their parent by the block detector; see AGENTS.md section 2, stage 4.
+
+[[rule]]
+id = "cargo.diagnostic.source"
+match = { kind = "regex", pattern = "^\\s+--> " }
+level = "info"
+
+[[rule]]
+id = "cargo.diagnostic.note"
+match = { kind = "regex", pattern = "^\\s*= note: " }
+level = "info"
+
+[[rule]]
+id = "cargo.diagnostic.help"
+match = { kind = "regex", pattern = "^\\s*help: " }
+level = "info"
+
+# Deprecation notices span many lines and are the reason this pack exists.
+[[rule]]
+id = "cargo.diagnostic.deprecated-note"
+match = { kind = "regex", pattern = "^\\s*= note: .*deprecated" }
+level = "warning"

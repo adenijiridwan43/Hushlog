@@ -1,0 +1,165 @@
+# kubectl / Kubernetes rule pack
+#
+# Covers `kubectl get/describe/logs/apply/delete` output, `kubectl describe`'s
+# Events table, and the klog format that container logs arrive in:
+#
+#   2026-10-12T09:14:03Z WARN  scheduler: Retry 3/10 for pod checkout-api
+#
+# The klog rules come last on purpose. `kubectl get pods` prints a pod name in
+# its first column, and a loose `WARN` match anywhere in the line would turn
+# every pod listing into warnings. Anchoring to the klog timestamp prefix is
+# what keeps them apart.
+
+name = "kubectl"
+description = "kubectl command output, Events tables and klog-formatted container logs."
+
+# --- API server errors ------------------------------------------------------
+
+# `Error from server (NotFound): pods "nope" not found`
+[[rule]]
+id = "kubectl.error.server"
+match = { kind = "regex", pattern = "^Error from server " }
+level = "error"
+highlight = true
+
+[[rule]]
+id = "kubectl.error"
+match = { kind = "regex", pattern = "^error: " }
+level = "error"
+highlight = true
+
+# `The connection to the server localhost:8080 was refused` -- usually followed
+# by "did you specify the right host or port?"
+[[rule]]
+id = "kubectl.error.connection"
+match = { kind = "literal", pattern = "was refused - did you specify the right host or port?" }
+level = "error"
+highlight = true
+
+# `error: timed out waiting for the condition`
+[[rule]]
+id = "kubectl.error.timeout"
+match = { kind = "literal", pattern = "timed out waiting for the condition" }
+level = "error"
+highlight = true
+
+# --- Events -----------------------------------------------------------------
+#
+# `kubectl describe` prints an Events table whose columns line up under a header.
+# The Warning rows are the reason anyone reads describe output at all.
+
+[[rule]]
+id = "kubectl.event.warning"
+match = { kind = "regex", pattern = "^\\s*Warning\\s+\\S+" }
+level = "warning"
+highlight = true
+collapse = true
+context_lines = 2
+
+# The table itself is a block: header, dashes, rows. Indentation heuristics get
+# this wrong when a pod name happens to start at column zero, so it is declared.
+[[rule]]
+id = "kubectl.event.block"
+match = { kind = "regex", pattern = "^\\s*Type\\s+Reason\\s+Age\\s+From\\s+Message" }
+level = "info"
+
+[rule.block]
+start = { kind = "regex", pattern = "^\\s*Type\\s+Reason\\s+Age\\s+From\\s+Message" }
+end = { kind = "regex", pattern = "^\\s*----" }
+
+# --- Pod lifecycle in klog output ------------------------------------------
+
+# These match the klog prefix, not the bare words. See the note at the top of
+# this file for why that distinction matters.
+[[rule]]
+id = "kubectl.klog.error"
+match = { kind = "regex", pattern = "^\\d{4}-\\d{2}-\\d{2}T\\S*Z\\s+ERROR\\s" }
+level = "error"
+highlight = true
+
+[[rule]]
+id = "kubectl.klog.warn"
+match = { kind = "regex", pattern = "^\\d{4}-\\d{2}-\\d{2}T\\S*Z\\s+WARN(?:ING)?\\s" }
+level = "warning"
+collapse = true
+
+[[rule]]
+id = "kubectl.klog.info"
+match = { kind = "regex", pattern = "^\\d{4}-\\d{2}-\\d{2}T\\S*Z\\s+INFO\\s" }
+level = "info"
+
+# `I1012 09:14:03.123456       1 controller.go:123] Starting workers`
+[[rule]]
+id = "kubectl.klog.glog"
+match = { kind = "regex", pattern = "^[IWEF]\\d{4} \\d{2}:\\d{2}:\\d{2}\\.\\d+ " }
+level = "info"
+
+# Back-off is the same story on a hundred lines; the count carries the meaning.
+[[rule]]
+id = "kubectl.retry"
+match = { kind = "regex", pattern = "\\bRetry \\d+/\\d+ for pod " }
+level = "warning"
+collapse = true
+
+# --- Crash and restart loops ------------------------------------------------
+
+[[rule]]
+id = "kubectl.backoff-restarting"
+match = { kind = "literal", pattern = "Back-off restarting failed container" }
+level = "warning"
+highlight = true
+collapse = true
+
+[[rule]]
+id = "kubectl.crashloopbackoff"
+match = { kind = "literal", pattern = "CrashLoopBackOff" }
+level = "warning"
+highlight = true
+
+[[rule]]
+id = "kubectl.imagepullbackoff"
+match = { kind = "literal", pattern = "ImagePullBackOff" }
+level = "warning"
+highlight = true
+
+[[rule]]
+id = "kubectl.oomkilled"
+match = { kind = "literal", pattern = "OOMKilled" }
+level = "error"
+highlight = true
+
+# --- Ordinary command output ------------------------------------------------
+
+[[rule]]
+id = "kubectl.resource.created"
+match = { kind = "regex", pattern = "^[a-z][a-z0-9.]*/[a-z0-9.-]+ created$" }
+level = "info"
+
+[[rule]]
+id = "kubectl.resource.configured"
+match = { kind = "regex", pattern = "^[a-z][a-z0-9.]*/[a-z0-9.-]+ configured$" }
+level = "info"
+
+[[rule]]
+id = "kubectl.resource.deleted"
+match = { kind = "regex", pattern = "^[a-z][a-z0-9.]*/[a-z0-9.-]+ deleted$" }
+level = "info"
+
+[[rule]]
+id = "kubectl.no-resources"
+match = { kind = "literal", pattern = "No resources found" }
+level = "info"
+
+# `service/checkout-api unchanged` and friends: pure noise on repeat runs.
+[[rule]]
+id = "kubectl.resource.unchanged"
+match = { kind = "regex", pattern = "^[a-z][a-z0-9.]*/[a-z0-9.-]+ unchanged$" }
+level = "trace"
+collapse = true
+
+# `container "api" in pod "checkout-api-7f9c4d8b6-x2k9m" is waiting to start`
+[[rule]]
+id = "kubectl.container.waiting"
+match = { kind = "regex", pattern = "^container .* is waiting to start" }
+level = "progress"
+collapse = true

@@ -1,0 +1,32 @@
+npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm WARN deprecated tough-cookie@2.5.0: tough-cookie has been deprecated, use cookie@1.0.2
+npm WARN deprecated tough-cookie@2.5.0: tough-cookie has been deprecated, use cookie@1.0.2
+npm WARN deprecated circular-json@0.3.3: circular-json has been deprecated, see https://github.com/WebFactory/circular-json/issues/36
+npm WARN deprecated mkdirp@0.5.5: mkdirp is deprecated, use `mkdir -p` instead
+npm WARN deprecated mkdirp@0.5.5: mkdirp is deprecated, use `mkdir -p` instead
+npm WARN deprecated core-js@2.6.12: core-js@<3 is deprecated and will be removed in 4.0
+npm notice
+npm notice added 847 packages in 31s
+npm notice
+npm notice ┌────────────────────────────────────────────────────────────┐
+npm notice │                                                            │
+npm notice │   Deprecation warning:                                    │
+npm notice │   https://github.com/request/request/issues/3142          │
+npm notice │                                                            │
+npm notice └────────────────────────────────────────────────────────────┘
+
+> api@2.1.0 build
+> tsc --build && node scripts/bundle.js
+
+src/handlers/user.ts(42,9): error TS6133: 'ctx' is declared but its value is never read.
+src/handlers/user.ts(58,3): error TS2345: Argument of type 'string' is not assignable to parameter of type 'UserId'.
+src/handlers/order.ts(87,9): error TS6133: 'cfg' is declared but its value is never read.
+src/services/legacy.ts(11,1): error TS2304: Cannot find name 'globalThisLegacy'.
+
+Build failed with 4 errors.
+
+npm ERR! code ELIFECYCLE
+npm ERR! errno 2
+npm ERR! api@2.1.0 build: `tsc --build && node scripts/bundle.js`

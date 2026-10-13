@@ -1,0 +1,23 @@
+---
+source: crates/hushlog-render/tests/snapshots.rs
+expression: "render_tty(Color::Always, &events)"
+---
+[33mnpm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142[0m
+[2m  ... 3 similar lines folded[0m
+[33mnpm WARN deprecated tough-cookie@2.5.0: tough-cookie has been deprecated, use cookie@1.0.2[0m
+[2m  ... 2 similar lines folded[0m
+[36mnpm notice ┌────────────────────────────────────────────────────────────┐[0m
+[36mnpm notice │                                                            │[0m
+[36mnpm notice │   Deprecation warning:                                    │[0m
+[36mnpm notice │   https://github.com/request/request/issues/3142          │[0m
+[36mnpm notice │                                                            │[0m
+[36mnpm notice └────────────────────────────────────────────────────────────┘[0m
+[36m> api@2.1.0 build[0m
+[36m> tsc --build && node scripts/bundle.js[0m
+[31;1msrc/handlers/user.ts(42,9): error TS6133: 'ctx' is declared but its value is never read.[0m
+[31msrc/handlers/user.ts(58,3): error TS2345: Argument of type 'string' is not assignable to parameter of type 'UserId'.[0m
+[31msrc/services/legacy.ts(11,1): error TS2304: Cannot find name 'globalThisLegacy'.[0m
+[31mnpm ERR! code ELIFECYCLE[0m
+[31mnpm ERR! api@2.1.0 build: `tsc --build && node scripts/bundle.js`[0m
+
+[33;1mhushlog: 12,345 lines -> 18 shown | 5 errors | 2 groups (3 lines folded) | full log: hushlog-full.log[0m

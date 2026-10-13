@@ -1,0 +1,22 @@
+[package]
+name = "hushlog-render"
+description = "Renderers for hushlog: tty, plain, github, gitlab, json."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+hushlog-core.workspace = true
+anstream.workspace = true
+owo-colors.workspace = true
+is-terminal.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+insta = "1"

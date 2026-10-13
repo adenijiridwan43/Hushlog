@@ -1,0 +1,121 @@
+# npm / Node.js rule pack
+#
+# Covers `npm install`, `npm ci`, `npm run <script>` and the `npm ERR!` block
+# npm prints on failure. npm has used two log prefixes over the years:
+#   npm 6 and earlier:  `npm WARN ...` / `npm ERR! ...`
+#   npm 7 and later:    `npm warn ...` / `npm error ...`
+# Both are matched; the pack does not try to detect which npm is running.
+
+name = "npm"
+description = "npm lifecycle output: deprecation warnings, ERR! blocks, install summaries."
+
+# --- Failures ---------------------------------------------------------------
+
+# `npm ERR! code ELIFECYCLE`, `npm error code ENOENT`, `npm ERR! errno 2`
+[[rule]]
+id = "npm.error"
+match = { kind = "regex", pattern = "^npm (?:ERR!|error)\\b" }
+level = "error"
+highlight = true
+context_lines = 4
+
+# The npm 6 `npm ERR!` block runs until a blank line; the block detector uses
+# these markers when indentation heuristics are not enough.
+[[rule]]
+id = "npm.error.block"
+match = { kind = "literal", pattern = "npm ERR!" }
+level = "error"
+highlight = true
+
+[rule.block]
+start = { kind = "regex", pattern = "^npm (?:ERR!|error) " }
+end = { kind = "regex", pattern = "^npm (?:ERR!|error) " }
+
+# --- Deprecations -----------------------------------------------------------
+#
+# The most repeated line in a modern `npm install`. Folding is safe: every copy
+# says the same thing and the count is reported in the summary, and the full
+# verbatim log is always written by `--tee`.
+
+[[rule]]
+id = "npm.warn.deprecated"
+match = { kind = "regex", pattern = "^npm (?:WARN|warn) deprecated\\b" }
+level = "warning"
+highlight = true
+collapse = true
+
+# `npm WARN config production Use `--omit=dev` instead.` and similar
+[[rule]]
+id = "npm.warn"
+match = { kind = "regex", pattern = "^npm (?:WARN|warn)\\b" }
+level = "warning"
+collapse = true
+
+# --- Install summary --------------------------------------------------------
+
+# `added 847 packages in 31s`
+[[rule]]
+id = "npm.install-summary"
+match = { kind = "regex", pattern = "^(?:added|removed|changed|up to date) \\d+ packages? in " }
+level = "info"
+
+# `found 0 vulnerabilities` / `found 3 moderate severity vulnerabilities`
+[[rule]]
+id = "npm.audit"
+match = { kind = "regex", pattern = "^\\d+ (?:moderate|high|critical|low) severity vulnerabilit" }
+level = "warning"
+highlight = true
+
+# `X packages are looking for funding` -- pure noise from npm's money printer.
+[[rule]]
+id = "npm.funding"
+match = { kind = "regex", pattern = "packages? (?:is|are) looking for funding" }
+level = "trace"
+collapse = true
+
+# --- Lifecycle banners ------------------------------------------------------
+#
+# `> api@2.1.0 build` and `> tsc --build && node scripts/bundle.js` bracket the
+# script npm is running.
+
+[[rule]]
+id = "npm.lifecycle.banner"
+match = { kind = "regex", pattern = "^> " }
+level = "progress"
+
+# `npm notice` carries the boxed deprecation summary npm 6 prints at the end of
+# an install. Box drawing characters land here too.
+[[rule]]
+id = "npm.notice"
+match = { kind = "regex", pattern = "^npm notice\\b" }
+level = "info"
+collapse = true
+
+# --- TypeScript -------------------------------------------------------------
+#
+# tsc is not npm, but it is what `npm run build` runs in almost every Node
+# project, and its output is the reason people reach for hushlog at all.
+
+[[rule]]
+id = "npm.tsc.error"
+match = { kind = "regex", pattern = "^.+\\(\\d+,\\d+\\): error TS\\d+: " }
+level = "error"
+highlight = true
+
+[[rule]]
+id = "npm.tsc.error-summary"
+match = { kind = "literal", pattern = "Build failed with" }
+level = "error"
+highlight = true
+
+[[rule]]
+id = "npm.tsc.warning"
+match = { kind = "regex", pattern = "^.+\\(\\d+,\\d+\\): warning TS\\d+: " }
+level = "warning"
+collapse = true
+
+[[rule]]
+id = "npm.tsc.found-errors"
+match = { kind = "regex", pattern = "^Found \\d+ errors? in " }
+level = "error"
+highlight = true

@@ -1,0 +1,8 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc c20a646f5972580b17232fd6ba50450b2a52065eb30c3503ba5b2d25aa1ae3da # shrinks to input = [Classified { line: Line { raw: "    at src/main.rs:1:1", plain: "    at src/main.rs:1:1", stream: Stdout, no: 1 }, level: Error, rule_id: None, highlight: true }, Classified { line: Line { raw: "    at src/main.rs:1:1", plain: "    at src/main.rs:1:1", stream: Stdout, no: 2 }, level: Error, rule_id: None, highlight: true }]
+cc 68d90567a61070de474fc3c7f9694f9fd6a59e73322c17cd6296a07607add65c # shrinks to input = [Classified { line: Line { raw: "warning: deprecated", plain: "warning: deprecated", stream: Stdout, no: 1 }, level: Error, rule_id: None, highlight: true }, Classified { line: Line { raw: "warning: deprecated", plain: "warning: deprecated", stream: Stdout, no: 2 }, level: Error, rule_id: None, highlight: true }]

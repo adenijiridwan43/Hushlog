@@ -1,0 +1,138 @@
+# Docker rule pack
+#
+# Covers both build front-ends, because a project usually has both in its CI
+# history and users paste whichever one failed:
+#   - the classic builder: `Step 3/12 : RUN apt-get update`, `---> Running in ...`
+#   - BuildKit:           `#8 [builder 2/3] RUN ...`, `DONE 0.1s`
+# plus `docker push`, `docker pull` and container runtime output.
+
+name = "docker"
+description = "docker build/push/pull output for the classic builder and BuildKit."
+
+# --- Failures ---------------------------------------------------------------
+
+[[rule]]
+id = "docker.error"
+match = { kind = "regex", pattern = "^ERROR: " }
+level = "error"
+highlight = true
+context_lines = 4
+
+# `failed to solve: process "/bin/sh -c apt-get ..." did not complete successfully`
+[[rule]]
+id = "docker.build.failed"
+match = { kind = "regex", pattern = "^failed to (?:solve|build|compute cache key): " }
+level = "error"
+highlight = true
+
+# `The command '/bin/sh -c ...' returned a non-zero code: 1`
+[[rule]]
+id = "docker.build.nonzero"
+match = { kind = "literal", pattern = "returned a non-zero code:" }
+level = "error"
+highlight = true
+
+# `manifest for myimage:latest not found: manifest unknown`
+[[rule]]
+id = "docker.push.failed"
+match = { kind = "regex", pattern = "manifest for .* not found" }
+level = "error"
+highlight = true
+
+# --- Warnings and deprecations ---------------------------------------------
+
+# The single most repeated line in a `docker build` that pulls an old base image.
+[[rule]]
+id = "docker.deprecation"
+match = { kind = "regex", pattern = "DEPRECATION NOTICE" }
+level = "warning"
+collapse = true
+context_lines = 3
+
+# BuildKit's own warning channel.
+[[rule]]
+id = "docker.buildkit.warning"
+match = { kind = "regex", pattern = "^#[0-9]+ \\[.*\\] WARN: " }
+level = "warning"
+collapse = true
+
+# `WARNING: The requested image's platform (linux/amd64) does not match ...`
+[[rule]]
+id = "docker.platform-mismatch"
+match = { kind = "literal", pattern = "does not match the detected host platform" }
+level = "warning"
+
+# --- Build progress ---------------------------------------------------------
+
+# Classic builder steps.
+[[rule]]
+id = "docker.build.step"
+match = { kind = "regex", pattern = "^Step \\d+/\\d+ : " }
+level = "progress"
+
+[[rule]]
+id = "docker.build.intermediate"
+match = { kind = "regex", pattern = "^---> (?:Running in|Using cache)" }
+level = "progress"
+collapse = true
+
+# BuildKit stages: `#5 [builder 3/4] COPY . /app`
+[[rule]]
+id = "docker.buildkit.step"
+match = { kind = "regex", pattern = "^#[0-9]+ \\[.*\\] " }
+level = "progress"
+
+[[rule]]
+id = "docker.buildkit.done"
+match = { kind = "regex", pattern = "^DONE [0-9.]+s" }
+level = "progress"
+collapse = true
+
+# --- Success summaries ------------------------------------------------------
+
+[[rule]]
+id = "docker.build.success"
+match = { kind = "literal", pattern = "Successfully built " }
+level = "info"
+highlight = true
+
+[[rule]]
+id = "docker.build.tagged"
+match = { kind = "literal", pattern = "Successfully tagged " }
+level = "info"
+
+[[rule]]
+id = "docker.push.summary"
+match = { kind = "literal", pattern = "latest: digest: " }
+level = "info"
+
+# The digest is the thing that goes in a bug report. It is kept verbatim.
+[[rule]]
+id = "docker.digest"
+match = { kind = "literal", pattern = "Digest: sha256:" }
+level = "info"
+highlight = true
+
+# --- Pull / runtime ---------------------------------------------------------
+
+[[rule]]
+id = "docker.pull.progress"
+match = { kind = "regex", pattern = "^[0-9a-f]{12}: (?:Pull|Downloading|Extracting|Waiting|Verifying|Download complete|Pull complete|Already exists)" }
+level = "progress"
+
+[[rule]]
+id = "docker.pull.status"
+match = { kind = "regex", pattern = "^Status: (?:Downloaded|Image is up to date)" }
+level = "info"
+
+[[rule]]
+id = "docker.runtime.disk"
+match = { kind = "literal", pattern = "no space left on device" }
+level = "error"
+highlight = true
+
+[[rule]]
+id = "docker.runtime.denied"
+match = { kind = "literal", pattern = "pull access denied" }
+level = "error"
+highlight = true

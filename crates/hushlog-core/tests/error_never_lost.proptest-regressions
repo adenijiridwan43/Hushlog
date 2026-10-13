@@ -1,0 +1,24 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+#
+# --- About the seed below ---
+#
+# These seeds were found by deliberately breaking the code: the author set
+# CollapsePolicy::collapse_errors to true and confirmed this test then failed.
+# The default has since been restored to false and the test passes.
+#
+# DO NOT DELETE THIS FILE because the tests currently pass. It pins the
+# canonical regression for the error-never-lost invariant: two *identical*
+# error lines, where naive deduplication would swallow the second one.
+#
+# Identical is the hard case. When two error lines differ, a buggy
+# implementation often still emits both by accident. When they are byte-for-byte
+# equal, only an explicit "never fold errors" check keeps them.
+#
+# If you ever change the folding logic, this seed runs first and will tell you
+# immediately whether errors are still protected.
+cc d2dd91504466d4fbf104f31e31b899bd42d97466218582eac02254712f3a1af1 # shrinks to input = [Classified { line: Line { raw: "b", plain: "b", stream: Stdout, no: 1 }, level: Error, rule_id: None, highlight: true }, Classified { line: Line { raw: "b", plain: "b", stream: Stdout, no: 2 }, level: Error, rule_id: None, highlight: true }]

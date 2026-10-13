@@ -1,0 +1,13 @@
+# Normalize line endings. Hushlog builds on Linux, macOS and Windows, and a
+# CRLF-only diff between contributors is pure noise.
+* text=auto eol=lf
+
+# Fixtures are captured verbatim from tools, many of which emit CRLF on
+# Windows. Store them exactly as captured so the ingest stage gets tested
+# against what it will really see.
+tests/fixtures/** -text
+
+# Windows-native scripts
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf

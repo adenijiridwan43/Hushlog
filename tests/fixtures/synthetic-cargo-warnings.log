@@ -1,0 +1,44 @@
+warning: unused variable: `ctx`
+ --> src/handlers/user.rs:42:9
+  |
+42 |     let ctx = build_context(&req);
+  |            ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+  |
+  = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `ctx`
+ --> src/handlers/user.rs:42:9
+  |
+42 |     let ctx = build_context(&req);
+  |            ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+  |
+  = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `ctx`
+ --> src/handlers/order.rs:87:9
+  |
+87 |     let ctx = build_context(&req);
+  |            ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+  |
+  = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `cfg`
+ --> src/handlers/order.rs:88:9
+  |
+88 |     let cfg = load_config();
+  |            ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_cfg`
+  |
+  = note: `#[warn(unused_variables)]` on by default
+
+warning: unused import: `std::time::Duration`
+ --> src/lib.rs:10:5
+  |
+10 | use std::time::Duration;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+    Checking hushlog-core v0.1.0 (C:\Users\usr\projects\hushlog\crates\hushlog-core)
+    Checking hushlog-rules v0.1.0 (C:\Users\usr\projects\hushlog\crates\hushlog-rules)
+    Checking hushlog-render v0.1.0 (C:\Users\usr\projects\hushlog\crates\hushlog-render)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.21s
