@@ -106,6 +106,32 @@ impl BlockMarkers {
     }
 }
 
+/// Pattern markers, for rules that need more than a fixed substring.
+///
+/// There are only ever a handful of these -- one per rule pack that declares
+/// them -- so a small `Vec` scanned linearly is the right structure. The
+/// substring sets above stay the fast path, and this is only consulted when
+/// they miss.
+#[derive(Debug, Default)]
+struct RegexMarkers {
+    starts: Vec<regex::Regex>,
+    ends: Vec<regex::Regex>,
+}
+
+impl RegexMarkers {
+    fn matches_start(&self, text: &str) -> bool {
+        self.starts.iter().any(|r| r.is_match(text))
+    }
+
+    fn matches_end(&self, text: &str) -> bool {
+        self.ends.iter().any(|r| r.is_match(text))
+    }
+
+    fn is_empty(&self) -> bool {
+        self.starts.is_empty() && self.ends.is_empty()
+    }
+}
+
 /// Streaming multi-line block detector. See module docs.
 ///
 /// A block is open when the detector believes the current line belongs to a
@@ -131,6 +157,8 @@ impl BlockMarkers {
 /// ```
 pub struct BlockDetector {
     markers: BlockMarkers,
+    /// Pattern markers from rule packs. Empty unless a rule declared one.
+    regex: RegexMarkers,
     max_lines: usize,
     open: bool,
     /// Set by an end marker: the block closes once this line has been absorbed.
@@ -209,6 +237,7 @@ impl BlockDetector {
     fn blank(markers: BlockMarkers, max_lines: usize) -> Self {
         Self {
             markers,
+            regex: RegexMarkers::default(),
             max_lines: max_lines.max(1),
             open: false,
             closing_after: false,
@@ -254,6 +283,38 @@ impl BlockDetector {
         self
     }
 
+    /// Add a **pattern** marker to the start set.
+    ///
+    /// For rules whose block boundaries vary in a way no fixed substring can
+    /// capture -- `^\s*Type\s+Reason\s+Age` matches a table header whatever the
+    /// column padding is.
+    ///
+    /// # Errors
+    ///
+    /// Returns the compile error if the pattern is not a valid regex. A caller
+    /// gets a loud failure rather than a marker that silently never fires.
+    pub fn try_add_regex_start_marker(&mut self, pattern: &str) -> Result<&mut Self, regex::Error> {
+        self.regex.starts.push(regex::Regex::new(pattern)?);
+        Ok(self)
+    }
+
+    /// Add a **pattern** marker to the end set. See
+    /// [`try_add_regex_start_marker`](Self::try_add_regex_start_marker).
+    ///
+    /// # Errors
+    ///
+    /// Returns the compile error if the pattern is not a valid regex.
+    pub fn try_add_regex_end_marker(&mut self, pattern: &str) -> Result<&mut Self, regex::Error> {
+        self.regex.ends.push(regex::Regex::new(pattern)?);
+        Ok(self)
+    }
+
+    /// Whether any pattern marker has been added.
+    #[must_use]
+    pub fn has_regex_markers(&self) -> bool {
+        !self.regex.is_empty()
+    }
+
     /// Cap how many lines one block may hold. Values below 1 are clamped to 1.
     #[must_use]
     pub fn with_max_lines(mut self, max_lines: usize) -> Self {
@@ -283,9 +344,9 @@ impl BlockDetector {
         let text = line.plain.as_str();
         let blank = text.trim().is_empty();
         let indented = leading_whitespace(text) > 0;
-        let starts = !blank && self.markers.matches_start(text);
+        let starts = !blank && (self.markers.matches_start(text) || self.regex.matches_start(text));
         let continues = !blank && self.markers.matches_continue(text);
-        let ends = !blank && self.markers.matches_end(text);
+        let ends = !blank && (self.markers.matches_end(text) || self.regex.matches_end(text));
         let links = !blank && has_url(text);
 
         if self.open {

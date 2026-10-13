@@ -349,6 +349,7 @@ dependencies = [
  "insta",
  "portable-pty",
  "predicates",
+ "tempfile",
  "thiserror 2.0.21",
  "xxhash-rust",
 ]
@@ -359,6 +360,7 @@ version = "0.1.0"
 dependencies = [
  "insta",
  "proptest",
+ "regex",
  "thiserror 2.0.21",
  "xxhash-rust",
 ]

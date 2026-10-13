@@ -29,7 +29,10 @@ fn corpus() -> Vec<String> {
     for n in 1..=400_000u64 {
         v.push(match n % 4 {
             // no volatile tokens at all -- the common case in real logs
-            0 => format!("    Checking hushlog-{} v0.1.0 (C:\\Users\\usr\\projects\\hushlog)", n % 7),
+            0 => format!(
+                "    Checking hushlog-{} v0.1.0 (C:\\Users\\usr\\projects\\hushlog)",
+                n % 7
+            ),
             // a timestamp and an id -- the case masking exists for
             1 => format!(
                 "2026-10-12T09:14:{:02}Z WARN  scheduler: Retry {}/10 for pod checkout-api-{:09x}",
@@ -39,10 +42,22 @@ fn corpus() -> Vec<String> {
             ),
             // short, no mask
             2 => format!("test result: ok. {} passed; 0 failed", n % 200),
-            _ => format!("{}", n), // pure number: masks to <num>
+            // pure number: masks to <num>
+            _ => n.to_string(),
         });
     }
     v
+}
+
+/// A byte count as a ratio base.
+///
+/// Through `u32` on purpose: a log big enough to overflow it is not something a
+/// benchmark on a laptop will ever read, and a checked conversion is better
+/// than a silent truncation.
+fn ratio(n: usize, of: usize) -> f64 {
+    let n = u32::try_from(n).unwrap_or(u32::MAX);
+    let of = u32::try_from(of).unwrap_or(u32::MAX);
+    f64::from(n) / f64::from(of)
 }
 
 fn bench(label: &str, bytes: usize, iters: usize, mut f: impl FnMut()) {
@@ -56,7 +71,7 @@ fn bench(label: &str, bytes: usize, iters: usize, mut f: impl FnMut()) {
     let total = bytes * iters;
     println!(
         "  {label:<44} {:>8.1} MB/s   ({:>7.1} ms)",
-        total as f64 / d.as_secs_f64() / 1e6,
+        ratio(total, 1) / d.as_secs_f64() / 1e6,
         d.as_secs_f64() * 1000.0
     );
 }
@@ -67,7 +82,11 @@ fn main() {
     let iters = 5;
     let norm = Normalizer::new();
 
-    println!("normalize profiling — {} lines, {} bytes, {iters} iters\n", lines.len(), bytes);
+    println!(
+        "normalize profiling — {} lines, {} bytes, {iters} iters\n",
+        lines.len(),
+        bytes
+    );
 
     // Control: just touch every byte.
     bench("touch every byte (no work)", bytes, iters, || {
@@ -106,12 +125,15 @@ fn main() {
 
     // How much does the line actually change? If most lines are unchanged,
     // an allocation-free fast path is worth having.
-    let changed = lines.iter().filter(|l| matches!(norm.mask(l), Cow::Owned(_))).count();
+    let changed = lines
+        .iter()
+        .filter(|l| matches!(norm.mask(l), Cow::Owned(_)))
+        .count();
     println!(
         "\n  {}/{} lines ({:.0}%) actually change when masked",
         changed,
         lines.len(),
-        changed as f64 / lines.len() as f64 * 100.0
+        ratio(changed, lines.len()) * 100.0
     );
     if changed * 4 < lines.len() {
         println!("  -> most lines are unchanged; a no-alloc fast path is available.");

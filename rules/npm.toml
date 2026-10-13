@@ -28,8 +28,8 @@ level = "error"
 highlight = true
 
 [rule.block]
-start = { kind = "regex", pattern = "^npm (?:ERR!|error) " }
-end = { kind = "regex", pattern = "^npm (?:ERR!|error) " }
+start = { kind = "regex", pattern = '^npm (?:ERR!|error)\b' }
+end = { kind = "regex", pattern = '^npm (?:ERR!|error)\b' }
 
 # --- Deprecations -----------------------------------------------------------
 #

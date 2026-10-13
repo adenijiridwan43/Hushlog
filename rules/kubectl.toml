@@ -60,12 +60,12 @@ context_lines = 2
 # this wrong when a pod name happens to start at column zero, so it is declared.
 [[rule]]
 id = "kubectl.event.block"
-match = { kind = "regex", pattern = "^\\s*Type\\s+Reason\\s+Age\\s+From\\s+Message" }
+match = { kind = "regex", pattern = "(?i)^\\s*type\\s+reason\\s+age\\s+from\\s+message" }
 level = "info"
 
 [rule.block]
-start = { kind = "regex", pattern = "^\\s*Type\\s+Reason\\s+Age\\s+From\\s+Message" }
-end = { kind = "regex", pattern = "^\\s*----" }
+start = { kind = "regex", pattern = "(?i)^\\s*type\\s+reason\\s+age\\s+from\\s+message" }
+end = { kind = "regex", pattern = '^\s*----' }
 
 # --- Pod lifecycle in klog output ------------------------------------------
 

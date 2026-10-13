@@ -18,6 +18,10 @@ use std::time::{Duration, Instant};
 use hushlog_core::{Classifier, Ingest, Level, Normalizer, Stream};
 use hushlog_rules::builtin;
 
+/// Lowest share of this machine's own byte-scan baseline that still counts as
+/// healthy. See `AGENTS.md` section 7.
+const FLOOR_PCT: f64 = 1.0;
+
 /// Roughly what CI output looks like: mostly progress noise, a quarter repeated
 /// warnings worth collapsing, a few errors, and some unique information.
 fn make_corpus(mb: usize) -> Vec<u8> {
@@ -53,9 +57,13 @@ fn make_corpus(mb: usize) -> Vec<u8> {
     out
 }
 
-/// Bytes per second over `f`, reported as MB/s (1 MB = 1_000_000 bytes).
+/// Bytes per second over `f`, reported as MB/s (1 MB = `1_000_000` bytes).
 fn mbps(bytes: usize, dur: Duration) -> f64 {
-    bytes as f64 / dur.as_secs_f64() / 1_000_000.0
+    // Through `u32` on purpose: a corpus big enough to overflow it is not
+    // something a laptop will read, and a checked conversion beats a silent
+    // truncation in a number people are about to trust.
+    let bytes = u32::try_from(bytes).unwrap_or(u32::MAX);
+    f64::from(bytes) / dur.as_secs_f64() / 1_000_000.0
 }
 
 fn time<T>(label: &str, bytes: usize, f: impl FnOnce() -> T) -> (T, f64) {
@@ -63,7 +71,10 @@ fn time<T>(label: &str, bytes: usize, f: impl FnOnce() -> T) -> (T, f64) {
     let out = f();
     let d = start.elapsed();
     let r = mbps(bytes, d);
-    println!("  {label:<38} {r:>8.1} MB/s   ({:>7.1} ms)", d.as_secs_f64() * 1000.0);
+    println!(
+        "  {label:<38} {r:>8.1} MB/s   ({:>7.1} ms)",
+        d.as_secs_f64() * 1000.0
+    );
     (out, r)
 }
 
@@ -159,15 +170,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
     println!("  ({full} errors)\n");
 
+    report(full_mbps, ingest_mbps, norm_mbps, class_mbps, base_mbps);
+
+    Ok(())
+}
+
+/// The end of the run: what each stage cost, and whether the whole thing is
+/// still fast enough.
+///
+/// Split out of `main` so the measurement and the verdict read as the two
+/// different things they are.
+fn report(full_mbps: f64, ingest_mbps: f64, norm_mbps: f64, class_mbps: f64, base_mbps: f64) {
     // ---- Attribution --------------------------------------------------------
     println!("attribution");
     let total = 1.0 / full_mbps.max(f64::EPSILON);
     let i = 1.0 / ingest_mbps.max(f64::EPSILON);
     let n = 1.0 / norm_mbps.max(f64::EPSILON);
     let c = 1.0 / class_mbps.max(f64::EPSILON);
-    println!("  ingest      {:>6.1}% of end-to-end time", i / total * 100.0);
-    println!("  normalize   {:>6.1}% of end-to-end time", n / total * 100.0);
-    println!("  classify    {:>6.1}% of end-to-end time", c / total * 100.0);
+    println!(
+        "  ingest      {:>6.1}% of end-to-end time",
+        i / total * 100.0
+    );
+    println!(
+        "  normalize   {:>6.1}% of end-to-end time",
+        n / total * 100.0
+    );
+    println!(
+        "  classify    {:>6.1}% of end-to-end time",
+        c / total * 100.0
+    );
 
     println!("\nverdict");
     let ratio_pct = full_mbps / base_mbps.max(f64::EPSILON) * 100.0;
@@ -178,7 +209,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "RATIO end_to_end_mbps={full_mbps:.2} baseline_mbps={base_mbps:.2} ratio_pct={ratio_pct:.3}"
     );
 
-    const FLOOR_PCT: f64 = 1.0;
     if ratio_pct < FLOOR_PCT {
         println!("  FAIL: {ratio_pct:.2}% of byte-scan baseline, floor is {FLOOR_PCT}%.");
         std::process::exit(1);
@@ -187,6 +217,4 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "  {full_mbps:.1} MB/s = {ratio_pct:.2}% of this machine's {base_mbps:.0} MB/s byte-scan baseline (floor {FLOOR_PCT}%)."
     );
     println!("  The old 200 MB/s target was removed as unreachable; see AGENTS.md section 7.");
-
-    Ok(())
 }

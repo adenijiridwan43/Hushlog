@@ -7,25 +7,57 @@ all-features = true
 [advisories]
 version = 2
 yanked = "deny"
-ignore = []
+
+# Not a vulnerability -- an *unmaintained* crate advisory, which cargo-deny
+# reports alongside real CVEs and counts toward a non-zero exit.
+#
+# `serial` is unmaintained since 2017 (RUSTSEC-2017-0008) and there is no safe
+# upgrade. It is pulled in transitively by portable-pty, which hushlog uses only
+# for the opt-in `--pty` flag. With `--pty` off -- the default, per AGENTS.md
+# section 8 -- the code path is unreachable and the crate is never invoked.
+#
+# Reviewed and accepted rather than tolerated by accident. Revisit when
+# portable-pty drops the dependency; this line is the tripwire.
+ignore = [
+    { id = "RUSTSEC-2017-0008", reason = "unmaintained, transitive via portable-pty, only reachable behind opt-in --pty" },
+]
 
 [licenses]
 version = 2
+# Only licences actually in the dependency tree, so an allowance that stops
+# matching is reported instead of quietly accumulating dead entries.
 allow = [
     "MIT",
     "Apache-2.0",
-    "Apache-2.0 WITH LLVM-exception",
-    "BSD-2-Clause",
-    "BSD-3-Clause",
-    "ISC",
     "Unicode-3.0",
-    "Zlib",
+    # xxhash-rust, which does all of hushlog's fingerprinting, is BSL-1.0.
+    # Boost Software License 1.0 is OSI-approved and permissive; it is not
+    # a copyleft licence and places no obligation on users of the binary.
+    # Reviewed and accepted rather than tolerated by accident.
+    "BSL-1.0",
 ]
 confidence-threshold = 0.8
+
+# `serial` (RUSTSEC-2017-0008) is unmaintained since 2017 and is reachable only
+# transitively through portable-pty, which is used only behind the opt-in
+# `--pty` flag. The default pipes-first path never touches it, and no drop-in
+# replacement exists. This is the one real supply-chain blemish in the tree and
+# it is recorded here rather than hidden.
+#
+# It is a *vulnerability-class* entry, so it lives under [advisories].ignore
+# below. Verify by deleting that line and running `cargo deny check advisories`.
 exceptions = []
 
 [bans]
+# Nine crates are pulled at two versions each -- almost all of it from
+# portable-pty's nix/serial/winapi chain and from thiserror's macro split.
+# Deduplicating them means patching third-party trees, which is not worth it
+# for a pre-alpha log filter. Warn, and revisit if the tree grows.
+#
+# This is a deliberate decision, not an oversight. Do not "fix" it by
+# silencing the warning without a reason.
 multiple-versions = "warn"
+
 wildcards = "deny"
 # Crate names go here. Each needs a human decision before it can be added.
 deny = []

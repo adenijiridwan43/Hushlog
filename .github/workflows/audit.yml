@@ -10,6 +10,12 @@ on:
 
 permissions:
   contents: read
+  # rustsec/audit-check reports findings as a check run on the commit. Without
+  # this it fails with "Resource not accessible by integration" -- which looks
+  # like a vulnerability finding but is the action being unable to write.
+  checks: write
+  # Same reason: it annotates the offending lines in the diff.
+  pull-requests: write
 
 jobs:
   deny:

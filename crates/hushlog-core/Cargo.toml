@@ -12,6 +12,9 @@ workspace = true
 [dependencies]
 xxhash-rust.workspace = true
 thiserror.workspace = true
+# Pattern block markers declared by rule packs. Substring markers stay the
+# fast path; this is only consulted when they miss.
+regex.workspace = true
 
 [dev-dependencies]
 proptest = "1"

@@ -71,6 +71,32 @@ Read [`AGENTS.md`](AGENTS.md) first — it is the contract, and it is short on
 purpose. The fixtures in `tests/fixtures/` are the real specification; see the
 [README there](tests/fixtures/README.md) for what still needs collecting.
 
+## Acknowledgements
+
+Most of this code was written with AI assistance, and it would be dishonest to
+imply otherwise. Concretely:
+
+- The pipeline crates (`hushlog-core`, `hushlog-rules`, `hushlog-render`) and the
+  `hushlog` binary were written in parallel by separate Claude agents working
+  against the trait contracts in [`AGENTS.md`](AGENTS.md).
+- **Every change was reviewed before it landed.** Each agent's output was read,
+  the workspace gate was run against the merged result, and the integration
+  bugs those reviews caught are recorded in the git history — a rule bridge that
+  silently ignored pattern markers, a `--tee` path that would have corrupted
+  every log containing invalid UTF-8, a kubectl rule whose pattern never matched
+  real kubectl output.
+- Design, architecture, the lossless-by-default principle, the contracts, and
+  the decision to delete the original 200 MB/s performance target in favour of
+  a measured one were human decisions. See
+  [`AGENTS.md` section 7](AGENTS.md#7-performance-targets) for the measurements
+  that replaced it.
+- The `error-never-lost` property tests were mutation-tested — flipping the
+  policy default is what proves they actually catch a violation.
+
+What the agents did *not* do: decide what the project should be, choose the
+name, own the trade-offs, or sign off on the folding rules. That is the
+maintainer's job and it stays that way.
+
 ## Licence
 
 MIT OR Apache-2.0

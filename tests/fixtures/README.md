@@ -9,6 +9,18 @@ a Kubernetes scheduler actually emit.
 
 **They get replaced.** See `AGENTS.md` section 5: fixtures are real logs.
 
+## One of them is binary on purpose
+
+`synthetic-truncated-utf8.log` is not valid UTF-8 and cannot be. It is the
+fixture for the `--tee` guarantee in `AGENTS.md` section 1.0: a log containing
+a truncated multi-byte character, a lone `0xff`, a `NUL`, an ANSI colour, a `\r`
+progress frame, and a final line cut in half by a killed job. `crates/hushlog-cli`
+asserts that `--tee` reproduces it byte for byte and that `--raw` copies it
+byte for byte.
+
+Editing it in a text editor will corrupt it. It is `gitattributes`-marked
+`-text` for the same reason the others are.
+
 ## What needs to be collected
 
 Real output from at least these, captured verbatim:
