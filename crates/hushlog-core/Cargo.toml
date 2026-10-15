@@ -12,6 +12,11 @@ readme = "../../README.md"
 keywords.workspace = true
 categories.workspace = true
 
+# A library. Only hushlog-cli ships a binary, so this must not be
+# published as a release archive.
+[package.metadata.dist]
+dist = false
+
 [lints]
 workspace = true
 

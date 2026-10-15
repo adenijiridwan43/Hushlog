@@ -28,33 +28,6 @@ unsafe_code = "warn"
 all = "warn"
 pedantic = "warn"
 
-[workspace.metadata.dist]
-# The binary lives in hushlog-cli but the crate is called hushlog-cli. dist
-# publishes what each package builds, so the installers need to know which one
-# to ship and which to skip.
-cargo-dist-version = "0.28.0"
-ci = "github"
-installers = ["shell", "powershell"]
-targets = [
-    "x86_64-unknown-linux-musl",
-    "aarch64-unknown-linux-musl",
-    "x86_64-apple-darwin",
-    "aarch64-apple-darwin",
-    "x86_64-pc-windows-msvc",
-]
-pr-run-mode = "create"
-install-path = "CARGO_HOME"
-install-updater = false
-
-# Only hushlog-cli ships a binary; the other three are libraries that are
-# published to crates.io but not distributed as archives.
-[workspace.metadata.dist.dependencies]
-hushlog-core = { path = "crates/hushlog-core" }
-hushlog-rules = { path = "crates/hushlog-rules" }
-hushlog-render = { path = "crates/hushlog-render" }
-
-[workspace.metadata.dist."provenance"]
-github = { owner = "adenijiridwan43", repo = "Hushlog" }
 
 [workspace.dependencies]
 hushlog-core = { path = "crates/hushlog-core", version = "0.1.0" }
@@ -80,6 +53,24 @@ portable-pty = "0.8"
 lto = "thin"
 codegen-units = 1
 strip = true
-# Deliberately NOT panic = "abort". A panic mid-stream must not tear down the
-# process before the tee file has been flushed -- see the lossless principle
-# in AGENTS.md section 1.
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
+# Config for 'dist'
+[workspace.metadata.dist]
+# The preferred dist version to use in CI (Cargo.toml SemVer syntax)
+cargo-dist-version = "0.32.0"
+# CI backends to support
+ci = "github"
+# The installers to generate for each app
+installers = ["shell", "powershell"]
+# Target platforms to build apps for (Rust target-triple syntax)
+targets = ["aarch64-apple-darwin", "aarch64-unknown-linux-musl", "x86_64-apple-darwin", "x86_64-unknown-linux-musl", "x86_64-pc-windows-msvc"]
+# Where to host releases
+hosting = "github"
+# Placeholder so dist init has somewhere to write. It fills this in.
+
+[workspace.metadata.dist.dependencies]
