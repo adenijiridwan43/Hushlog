@@ -33,6 +33,7 @@ pedantic = "warn"
 hushlog-core = { path = "crates/hushlog-core", version = "0.1.0" }
 hushlog-rules = { path = "crates/hushlog-rules", version = "0.1.0" }
 hushlog-render = { path = "crates/hushlog-render", version = "0.1.0" }
+hushlog = { path = "crates/hushlog", version = "0.1.0" }
 
 anyhow = "1"
 thiserror = "2"

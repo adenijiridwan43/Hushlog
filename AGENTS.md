@@ -106,7 +106,7 @@ pub trait Renderer { fn render(&mut self, e: &Event) -> std::io::Result<()>; }
 
 No I/O, no process spawning, no clock, no environment reads. It takes data and
 returns data. This keeps it trivially testable and reusable (GitHub Action, WASM
-playground, editor extensions). I/O lives in `hushlog-cli`.
+playground, editor extensions). I/O lives in `hushlog`.
 
 ---
 
@@ -123,7 +123,7 @@ and ask — do not do it.
 | `hushlog-rules/` | WP3 | schema, loader, `RegexSet` classifier |
 | `hushlog-core/src/collapse.rs`, `block.rs` | WP4 | LRU, block detection |
 | `hushlog-render/` | WP5 | all five renderers |
-| `hushlog-cli/` | WP6 | args, pipe/wrap, PTY, signals |
+| `hushlog/` | WP6 | args, pipe/wrap, PTY, signals |
 | CI, docs, benches | WP7 | release pipeline |
 
 ---
@@ -211,8 +211,17 @@ Windows is a first-class target, not an afterthought.
 
 ## 9. Naming
 
-Project `hushlog`, binary `hushlog`. All crates carry the `hushlog-` prefix:
-`hushlog-core`, `hushlog-rules`, `hushlog-render`, `hushlog-cli`.
+Project `hushlog`, binary `hushlog`, binary crate `hushlog`. The three
+library crates carry the `hushlog-` prefix: `hushlog-core`, `hushlog-rules`,
+`hushlog-render`.
 
-The prefix is not cosmetic. `hush-core` and `hush-cli` are already published on
-crates.io by an unrelated project, so the unprefixed names cannot be used.
+The binary crate is named `hushlog`, not `hushlog-cli`, on purpose.
+cargo-dist has no app-name override, so release artifacts and installers are
+named after the *package*: a crate called `hushlog-cli` ships
+`hushlog-cli-installer.sh` and a release page reading "Install hushlog-cli",
+while the command users actually type is `hushlog`. Matching them is worth more
+than the uniformity of a prefix on all four.
+
+The prefix on the libraries is not cosmetic. `hush-core` and `hush-cli` are
+already published on crates.io by an unrelated project, so those unprefixed
+names cannot be used.

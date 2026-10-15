@@ -91,7 +91,7 @@ order, because each crate depends on the one before it:
 cargo publish -p hushlog-core    # no intra-workspace deps
 cargo publish -p hushlog-rules   # after core is live
 cargo publish -p hushlog-render  # after core is live
-cargo publish -p hushlog-cli
+cargo publish -p hushlog         # the binary crate; depends on all three
 ```
 
 `cargo publish` verifies by building the crate **as downloaded from the

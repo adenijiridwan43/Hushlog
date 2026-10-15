@@ -14,7 +14,7 @@ a Kubernetes scheduler actually emit.
 `synthetic-truncated-utf8.log` is not valid UTF-8 and cannot be. It is the
 fixture for the `--tee` guarantee in `AGENTS.md` section 1.0: a log containing
 a truncated multi-byte character, a lone `0xff`, a `NUL`, an ANSI colour, a `\r`
-progress frame, and a final line cut in half by a killed job. `crates/hushlog-cli`
+progress frame, and a final line cut in half by a killed job. `crates/hushlog`
 asserts that `--tee` reproduces it byte for byte and that `--raw` copies it
 byte for byte.
 

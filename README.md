@@ -98,7 +98,7 @@ Four crates, one streaming pipeline, bounded memory:
 | `hushlog-core` | normalize, classify, collapse | **Pure.** No I/O, no clock, no env. |
 | `hushlog-rules` | rule schema and loader | TOML packs, one `RegexSet` |
 | `hushlog-render` | tty, plain, github, gitlab, json | |
-| `hushlog-cli` | args, pipe/wrap, PTY, signals | All I/O lives here |
+| `hushlog` | args, pipe/wrap, PTY, signals | All I/O lives here |
 
 Stages communicate only through the traits in
 [`hushlog-core`](crates/hushlog-core/src/lib.rs). See [`AGENTS.md`](AGENTS.md)

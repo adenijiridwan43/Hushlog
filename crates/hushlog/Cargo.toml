@@ -1,5 +1,5 @@
 [package]
-name = "hushlog-cli"
+name = "hushlog"
 description = "The hushlog binary: pipe and wrap modes, byte-exact --tee, and exit-code passthrough."
 version.workspace = true
 edition.workspace = true

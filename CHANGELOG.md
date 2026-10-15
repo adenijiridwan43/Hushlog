@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Workspace with four crates: `hushlog-core`, `hushlog-rules`, `hushlog-render`,
-  `hushlog-cli`.
+  `hushlog`.
 - The `hushlog` binary: pipe mode, wrap mode, byte-exact `--tee`, `--raw`,
   `--explain`, `--format`, `--rules`, `--collapse-errors`, `--max-tracked`,
   `--no-summary`, and opt-in `--pty`.

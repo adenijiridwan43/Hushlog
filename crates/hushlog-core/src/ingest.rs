@@ -7,7 +7,7 @@
 //! Contract: input bytes in, `Vec<Line>` out. No classification, no I/O
 //! decisions beyond framing. [`Ingest::flush_partial`] is the hook the CLI uses
 //! to make live tailing feel live; it needs no clock, because timing lives in
-//! `hushlog-cli` -- see `AGENTS.md` section 3.1.
+//! `hushlog` -- see `AGENTS.md` section 3.1.
 //!
 //! # Losslessness
 //!
