@@ -13,8 +13,8 @@ If you cannot, the behaviour is wrong.
 ## Getting set up
 
 ```sh
-git clone https://github.com/<you>/hushlog
-cd hushlog
+git clone https://github.com/adenijiridwan43/Hushlog
+cd Hushlog
 cargo build
 cargo test --workspace
 ```
@@ -56,6 +56,59 @@ folding rule can hide a real failure, so:
 - Start with `collapse = false` and opt into collapsing per rule.
 - Include a fixture demonstrating the rule against real output.
 - Say in the PR what the rule matches and, more importantly, what it must not.
+
+## Releasing
+
+Two separate things, deliberately not automated together.
+
+### Binaries — `cargo-dist`, tag-driven
+
+`.github/workflows/release.yml` is **generated**, not hand-written. Regenerate
+it after bumping cargo-dist:
+
+```sh
+cargo dist init --with-ci=github
+```
+
+It builds five targets — Linux `x86_64`/`aarch64` (musl), macOS
+`x86_64`/`aarch64`, Windows `x86_64` — publishes a GitHub Release with shell
+and PowerShell installers, and verifies `sha256sum.txt` exists before
+publishing. A dry run of the plan runs on every push to `main`, so a broken
+config is caught before anyone cuts a tag.
+
+To cut a release:
+
+```sh
+git tag v0.1.0 && git push origin v0.1.0
+```
+
+### crates.io — manual, and in dependency order
+
+Publishing is irreversible in practice and is not wired into CI. It also has an
+order, because each crate depends on the one before it:
+
+```sh
+cargo publish -p hushlog-core    # no intra-workspace deps
+cargo publish -p hushlog-rules   # after core is live
+cargo publish -p hushlog-render  # after core is live
+cargo publish -p hushlog-cli
+```
+
+`cargo publish` verifies by building the crate **as downloaded from the
+registry**, which is why the order matters and why `hushlog-core` can be
+verified immediately while the other three cannot until it is published.
+
+Before the first publish, check the tarball actually contains what it needs:
+
+```sh
+cargo package -p hushlog-rules --no-verify --list
+```
+
+All four rule packs must appear. This check is how the `include_str!` path bug
+was found — a pack outside the crate directory resolves fine in the workspace
+and disappears in the published crate.
+
+You will need `cargo login` with a crates.io API token.
 
 ## Commit messages
 
