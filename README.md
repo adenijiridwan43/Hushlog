@@ -1,6 +1,9 @@
 # hushlog
 
-> **Status: pre-alpha.** The pipeline contracts exist; nothing filters yet.
+> **Status: pre-alpha.** The pipeline works and all 254 tests pass on Linux,
+> macOS and Windows. Two things are not done yet, and both matter: the rule
+> packs have only ever seen **synthetic** logs, and there is no release yet.
+> Treat the folding rules as unproven against real output.
 
 Smart noise filter for terminal and CI logs. Sits in a pipe (`cmd | hushlog`)
 or wraps a command (`hushlog -- cargo build`), highlights what actually
@@ -28,27 +31,63 @@ and `--explain` to show exactly why any given line was folded or kept.
 
 ## Install
 
-Not released yet. Build from source:
+**No release yet.** Build from source:
 
 ```sh
-git clone https://github.com/<you>/hushlog
-cd hushlog
+git clone https://github.com/adenijiridwan43/Hushlog
+cd Hushlog
 cargo build --release
 ./target/release/hushlog --help
 ```
 
+A release pipeline that builds static binaries for five targets is in
+`.github/workflows/release.yml` and runs on a `v*` tag. The `main` branch runs
+its dry-run check on every push, so the configuration is verified before a tag
+exists.
+
 ## Use
 
 ```sh
-# Pipe mode
+# Pipe mode: filter stdin, write stdout
 cargo build 2>&1 | hushlog
 
-# Wrap mode, preserving the exit code
+# Wrap mode: filter the child's output and propagate its exit code
 hushlog -- cargo build
 
-# Keep everything, just get the summary
-hushlog --raw-build-log build.log -- cargo build
+# Keep the full log on disk while still showing the filtered version
+hushlog --tee build.log -- cargo build
+
+# No filtering at all, straight through
+hushlog --raw -- cargo build
+
+# Show why each line was folded or kept (goes to stderr, so it composes
+# with --format json)
+hushlog --explain --format plain -- cargo build
+
+# Native CI fold markers
+hushlog --format github -- cargo test
+
+# Machine-readable, for agents
+hushlog --format json -- npm test
 ```
+
+`--pty` is available and opt-in: it gives the child a real terminal so
+progress bars and colours work. It is off by default, and under `--pty` the tee
+file records what the terminal would have shown rather than the raw bytes.
+
+### Flags
+
+| Flag | Default | What it does |
+|---|---|---|
+| `--tee <FILE>` | off | Write the verbatim input log. Byte-exact. |
+| `--raw` | off | Pass through, no filtering. |
+| `--explain` | off | Annotate every fold decision, on stderr. |
+| `--format <fmt>` | `plain` | `tty`, `plain`, `github`, `gitlab`, `json`. |
+| `--rules <FILE>` | built-ins | Extra TOML pack. Repeatable. |
+| `--collapse-errors` | **off** | Opt in to folding errors. See [§1.1](AGENTS.md#11-errors-are-never-collapsed). |
+| `--max-tracked <N>` | `10000` | LRU capacity, the memory bound. |
+| `--no-summary` | off | Suppress the end-of-run summary. |
+| `--pty` | off | Run the child on a pseudo-terminal. |
 
 ## Architecture
 
