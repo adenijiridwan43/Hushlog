@@ -1,4 +1,5 @@
-//! Every pack shipped in `rules/` must load, compile and be reachable.
+//! Every pack shipped in this crate's `rules/` directory must load, compile and
+//! be reachable.
 //!
 //! A built-in pack that does not parse is a broken release, so this walks the
 //! directory rather than a hard-coded list: adding a pack to `rules/` adds it
@@ -9,16 +10,12 @@ use std::path::{Path, PathBuf};
 use hushlog_core::{Classifier, Level, Line, Stream};
 use hushlog_rules::{RuleClassifier, load_pack};
 
-fn workspace_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .ancestors()
-        .nth(2)
-        .expect("crate lives two levels below the workspace root")
-        .to_path_buf()
+fn crate_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).to_path_buf()
 }
 
 fn rules_dir() -> PathBuf {
-    workspace_root().join("rules")
+    crate_root().join("rules")
 }
 
 /// Every `*.toml` directly under `rules/`, sorted so failures are stable.
@@ -193,7 +190,11 @@ fn build_tools_classify_against_the_real_fixtures() {
     // here. The point is that a pack which loads but does not fire on real
     // output is not a working pack.
     let mut c = load_all();
-    let fixtures = workspace_root().join("tests").join("fixtures");
+    let fixtures = crate_root()
+        .join("..")
+        .join("..")
+        .join("tests")
+        .join("fixtures");
 
     let checks: &[(&str, &[&str])] = &[
         (

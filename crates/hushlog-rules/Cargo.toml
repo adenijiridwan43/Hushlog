@@ -1,10 +1,18 @@
 [package]
 name = "hushlog-rules"
-description = "Rule schema, loader and classifier for hushlog."
+description = "TOML rule schema, loader and single-pass RegexSet classifier for hushlog, with built-in packs for cargo, npm, docker and kubectl."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+# Resolved at package time, so crates.io shows the real README without
+# duplicating it into four crate directories.
+readme = "../../README.md"
+keywords.workspace = true
+categories.workspace = true
 
 [lints]
 workspace = true

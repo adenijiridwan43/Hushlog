@@ -1,10 +1,16 @@
 [package]
 name = "hushlog-core"
-description = "Pure pipeline core for hushlog: normalize, classify, collapse. No I/O."
+description = "Pure pipeline core for hushlog: framing, normalization, fingerprinting, block detection and folding. No I/O, no clock, no process spawning."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+readme = "../../README.md"
+keywords.workspace = true
+categories.workspace = true
 
 [lints]
 workspace = true

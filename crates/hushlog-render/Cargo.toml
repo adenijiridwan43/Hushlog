@@ -1,10 +1,18 @@
 [package]
 name = "hushlog-render"
-description = "Renderers for hushlog: tty, plain, github, gitlab, json."
+description = "Renderers for hushlog: ANSI TTY, plain text, GitHub Actions folds, GitLab collapsible sections, and JSON for machine consumers."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+# Resolved at package time, so crates.io shows the real README without
+# duplicating it into four crate directories.
+readme = "../../README.md"
+keywords.workspace = true
+categories.workspace = true
 
 [lints]
 workspace = true

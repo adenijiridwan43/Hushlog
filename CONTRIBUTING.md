@@ -46,7 +46,11 @@ line is a bug, not a routine update.
 
 ## Rule packs
 
-Rule packs (TOML under `rules/`) are reviewed by a human before merge. A wrong
+Rule packs (TOML under `crates/hushlog-rules/rules/`) are reviewed by a human
+before merge. They live *inside* the crate rather than at the workspace root so
+that `cargo package` actually ships them — a pack outside the crate directory
+would not be in the published crate, and `builtin::classifier()` would fail to
+compile for anyone depending on `hushlog-rules`. A wrong
 folding rule can hide a real failure, so:
 
 - Start with `collapse = false` and opt into collapsing per rule.

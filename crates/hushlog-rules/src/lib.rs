@@ -47,18 +47,24 @@ pub use schema::{BlockMarkers, Matcher, Rule, RuleLevel, RulePack};
 ///
 /// Keeping the built-ins in the executable means a user does not have to find a
 /// `rules/` directory for hushlog to be useful, and it means the packs cannot
-/// go missing between release and run. The files in the workspace `rules/`
-/// directory are the same TOML and are covered by the tests, so a pack cannot
-/// drift from what is embedded here without CI noticing.
+/// go missing between release and run.
 pub mod builtin {
     use super::{RuleClassifier, RuleError, RulePack};
 
     /// `(name, source)` for each pack built into the binary.
+    ///
+    /// These paths reach into `crates/hushlog-rules/rules/`, *inside this
+    /// crate*. They used to point at a workspace-root `rules/` directory, which
+    /// was tidier to browse but meant `cargo package` shipped none of them --
+    /// a published `hushlog-rules` would then fail to compile for every
+    /// downstream user, because `include_str!` would not resolve. Keep these
+    /// files inside the crate; `cargo package -p hushlog-rules --list` must
+    /// always show all four.
     pub const PACKS: [(&str, &str); 4] = [
-        ("cargo", include_str!("../../../rules/cargo.toml")),
-        ("npm", include_str!("../../../rules/npm.toml")),
-        ("docker", include_str!("../../../rules/docker.toml")),
-        ("kubectl", include_str!("../../../rules/kubectl.toml")),
+        ("cargo", include_str!("../rules/cargo.toml")),
+        ("npm", include_str!("../rules/npm.toml")),
+        ("docker", include_str!("../rules/docker.toml")),
+        ("kubectl", include_str!("../rules/kubectl.toml")),
     ];
 
     /// Parse every built-in pack.
