@@ -1,0 +1,40 @@
+# Pino rule pack
+#
+# Covers Pino JSON logging library output for Node.js. Each line is a JSON
+# object with an integer "level" field (60=fatal ... 10=trace).
+#
+# Ported from lnav's pino_log format:
+# https://github.com/tstack/lnav/blob/master/src/formats/pino_log.json
+#
+name = "pino"
+description = "Pino JSON logging library for Node.js."
+
+detect = { patterns = [
+    # JSON object carrying an integer level and a pid.
+    "^\\s*\\{[^}]*\"level\"\\s*:\\s*\\d+[^}]*\"pid\"\\s*:",
+    # JSON object carrying pid and an integer level.
+    "^\\s*\\{[^}]*\"pid\"\\s*:\\s*\\d+[^}]*\"level\"\\s*:\\s*\\d+",
+] }
+
+[[rule]]
+id = "pino.line"
+match = { kind = "regex", pattern = "^\\s*\\{[^}]*\"level\"\\s*:\\s*(?<level>\\d+)[^}]*\\}" }
+level_field = "level"
+level_map = { error = "^(?:60|50)$", warning = "^40$", info = "^30$", trace = "^(?:20|10)$" }
+level = "info"
+
+[[rule.sample]]
+line = "{\"level\":30,\"pid\":1234,\"hostname\":\"host\",\"msg\":\"request completed\"}"
+level = "info"
+
+[[rule.sample]]
+line = "{\"level\":50,\"pid\":1234,\"hostname\":\"host\",\"msg\":\"database connection failed\"}"
+level = "error"
+
+[[rule.sample]]
+line = "{\"level\":40,\"pid\":1234,\"hostname\":\"host\",\"msg\":\"retrying request\"}"
+level = "warning"
+
+[[rule.sample]]
+line = "{\"level\":60,\"pid\":1234,\"hostname\":\"host\",\"msg\":\"out of memory\"}"
+level = "error"

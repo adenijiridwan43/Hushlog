@@ -1,0 +1,40 @@
+# Syslog rule pack
+#
+# Covers BSD syslog ("Apr 28 04:02:03 host process[pid]: message") and
+# RFC5424 syslog ("<30>1 2017-04-27T07:59:12+02:00 host ...").
+#
+# Ported from lnav's syslog_log format:
+# https://github.com/tstack/lnav/blob/master/src/formats/syslog_log.json
+#
+name = "syslog"
+description = "BSD syslog and RFC5424 system logger output."
+
+detect = { patterns = [
+    # BSD syslog timestamp: "Apr 28 04:02:03 host ..."
+    "^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+\\d{1,2} \\d{2}:\\d{2}:\\d{2}\\s+\\S+\\s",
+    # RFC5424: "<30>1 2017-04-27T07:59:12+02:00 ..."
+    "^<\\d{1,3}>1\\s+\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}",
+] }
+
+[[rule]]
+id = "syslog.line"
+match = { kind = "regex", pattern = "^(?:<(?<pri>\\d{1,3})>\\d+\\s+)?(?:\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+\\d{1,2} \\d{2}:\\d{2}:\\d{2})\\s+(?<host>\\S+)\\s+(?:\\S+\\[(?<pid>\\d+)\\]:\\s+)?(?<body>.*)$" }
+level_field = "body"
+level_map = { error = "(?i)\\b(?:error|failed|failure|fatal|critical)\\b", warning = "(?i)\\b(?:warn|deprecation|not responding)\\b" }
+level = "info"
+
+[[rule.sample]]
+line = "Apr 28 04:02:03 tstack-centos5 syslogd 1.4.1: restart."
+level = "info"
+
+[[rule.sample]]
+line = "<30>1 2017-04-27T07:59:12+02:00 nextcloud dhclient - - - DHCPREQUEST on eth0 to 192.168.1.1 port 67"
+level = "info"
+
+[[rule.sample]]
+line = "Jun 20 17:26:13 ip-10-188-149-5 util.py[1472]: failed to bind to port 8080"
+level = "error"
+
+[[rule.sample]]
+line = "<78>1 2017-04-27T08:09:01+02:00 nextcloud CRON 1472 - -  (root) CMD (  [ -x /usr/lib/php5/sessionclean ] && /usr/lib/php5/sessionclean)"
+level = "info"

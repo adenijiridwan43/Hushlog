@@ -1,0 +1,44 @@
+# spdlog rule pack
+#
+# Covers spdlog C++ logging library output. Two layouts are supported:
+#   - envoy:  [timestamp][thread_id][level][logger] message
+#   - std:    [timestamp][logger][level] message
+#
+# Ported from lnav's spdlog_log format:
+# https://github.com/tstack/lnav/blob/master/src/formats/spdlog_log.json
+#
+name = "spdlog"
+description = "spdlog C++ logging library output."
+
+detect = { patterns = [
+    # [timestamp][...][level]... message
+    "^\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\]\\s*\\[\\S+\\]\\s*\\[\\w+\\]\\s+",
+]}
+
+# Envoy layout: [timestamp][thread_id][level][logger] body
+[[rule]]
+id = "spdlog.envoy"
+match = { kind = "regex", pattern = "^\\[(?<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[,.]\\d+)\\]\\s*\\[(?<thread_id>\\d+)\\]\\s*\\[(?<level>\\w+)\\]\\s*\\[(?<logger>[^\\]]+)\\]\\s+(?<body>.*)$" }
+level_field = "level"
+level_map = { error = "^(?:err|error|critical|fatal)$", warning = "^(?:warn|warning)$", info = "^info$", trace = "^(?:debug|trace)$" }
+level = "info"
+
+[[rule.sample]]
+line = "[2025-04-24 19:51:59.688][8][info][config] loading tracing configuration"
+level = "info"
+
+# Standard layout: [timestamp][logger][level] body
+[[rule]]
+id = "spdlog.std"
+match = { kind = "regex", pattern = "^\\[(?<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}[,.]\\d+)\\]\\s*\\[(?<logger>[^\\]]+)\\]\\s*\\[(?<level>\\w+)\\]\\s+(?<body>.*)$" }
+level_field = "level"
+level_map = { error = "^(?:err|error|critical|fatal)$", warning = "^(?:warn|warning)$", info = "^info$", trace = "^(?:debug|trace)$" }
+level = "info"
+
+[[rule.sample]]
+line = "[2014-10-31 23:46:59.678] [my_loggername] [info] Some message"
+level = "info"
+
+[[rule.sample]]
+line = "[2025-04-24 19:51:59.688][my_app][debug] entering handler"
+level = "trace"

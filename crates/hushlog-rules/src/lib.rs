@@ -62,12 +62,24 @@ pub mod builtin {
     /// a published `hushlog-rules` would then fail to compile for every
     /// downstream user, because `include_str!` would not resolve. Keep these
     /// files inside the crate; `cargo package -p hushlog-rules --list` must
-    /// always show all four.
-    pub const PACKS: [(&str, &str); 4] = [
+    /// always show all of them.
+    ///
+    /// Order matters: built-in packs come first so they win when two rules
+    /// match the same line (first match wins). Packs that declare `detect`
+    /// patterns are tried first during format detection regardless of this
+    /// order.
+    pub const PACKS: [(&str, &str); 11] = [
         ("cargo", include_str!("../rules/cargo.toml")),
         ("npm", include_str!("../rules/npm.toml")),
         ("docker", include_str!("../rules/docker.toml")),
         ("kubectl", include_str!("../rules/kubectl.toml")),
+        ("syslog", include_str!("../rules/syslog.toml")),
+        ("journald", include_str!("../rules/journald.toml")),
+        ("otel", include_str!("../rules/otel.toml")),
+        ("pino", include_str!("../rules/pino.toml")),
+        ("bunyan", include_str!("../rules/bunyan.toml")),
+        ("spdlog", include_str!("../rules/spdlog.toml")),
+        ("error_log", include_str!("../rules/error_log.toml")),
     ];
 
     /// Parse every built-in pack.

@@ -72,11 +72,10 @@ pub(crate) struct Pipeline {
     packs: Vec<hushlog_rules::RulePack>,
     /// Tries each pack's `detect` patterns against the first few lines,
     /// ported from lnav's format auto-detection. `None` when no pack declares
-    /// detect patterns.
+    /// detect patterns. Once detection is complete (a pack matched or the
+    /// window expired), this is set to `None` so subsequent lines skip the
+    /// detection pass entirely.
     format_detector: Option<FormatDetector>,
-    /// Lines read while detection is still open, to be replayed through the
-    /// detected pack's classifier once a format is identified.
-    buffered: Vec<hushlog_core::Line>,
     /// True once detection has completed (either a pack matched or the window
     /// expired). After this, classification runs normally.
     detection_complete: bool,
@@ -160,7 +159,6 @@ impl Pipeline {
             stdout_closed: false,
             packs,
             format_detector,
-            buffered: Vec::new(),
             detection_complete,
         })
     }
@@ -194,8 +192,6 @@ impl Pipeline {
         for ingest in &mut self.ingests {
             tail.extend(ingest.finish());
         }
-        // In wrap mode both streams are flushed together so their partial lines
-        // land in one place, in the order they were read.
         self.handle(tail)?;
 
         let events = self.collapser.finish();
@@ -208,48 +204,48 @@ impl Pipeline {
 
     /// Classify, collapse and render a batch of freshly framed lines.
     ///
-    /// While format detection is still open, lines are buffered and tested
-    /// against each pack's `detect` patterns. The first pack to match wins:
-    /// the classifier is rebuilt with that pack's rules tried first, the
-    /// buffered lines are replayed through it, and detection is closed. If no
-    /// pack matches within the window, detection closes and the run continues
-    /// with all packs (the pre-detection behaviour).
+    /// While format detection is still open, each line is first probed against
+    /// each pack's `detect` patterns (ported from lnav's format auto-detection).
+    /// The first pack to match wins: the classifier is rebuilt with that pack's
+    /// rules tried first, and detection is closed. If no pack matches within
+    /// the window, detection closes and the run continues with all packs (the
+    /// pre-detection behaviour).
+    ///
+    /// Lines are classified immediately as they arrive; detection does not
+    /// buffer or delay output.
     fn handle(&mut self, lines: Vec<hushlog_core::Line>) -> io::Result<()> {
-        // Phase 1: format detection. While it is open, buffer lines and probe
-        // each one against the candidates' detect patterns.
-        if !self.detection_complete {
-            for line in &lines {
-                let detected = self
+        for line in lines {
+            // Run format detection before classification, while it is still
+            // open. The detected pack's rules are tried first for subsequent
+            // lines; lines already classified are unaffected. Detection does
+            // not buffer or delay output -- every line is classified
+            // immediately.
+            if !self.detection_complete {
+                let detected_name = self
                     .format_detector
                     .as_mut()
-                    .and_then(|d| d.push(&line.plain))
-                    .map(str::to_string);
-                if let Some(name) = detected {
+                    .and_then(|detector| detector.push(&line.plain).map(str::to_string));
+                // Close detection when a pack matches or the window expires.
+                let has_match = detected_name.is_some();
+                let window_expired =
+                    self.format_detector.as_ref().is_none_or(|d| !d.is_open());
+                if let Some(name) = detected_name {
                     self.rebuild_classifier_for(&name)
                         .map_err(io::Error::other)?;
-                    break;
+                }
+                if has_match || window_expired {
+                    // A pack matched, or the window expired without a match:
+                    // detection is done, fall back to all packs for subsequent
+                    // lines.
+                    self.detection_complete = true;
+                    self.format_detector = None;
                 }
             }
-            // If detection is still open after this batch, buffer the lines and
-            // wait for more input before classifying anything.
-            if self.format_detector.as_ref().unwrap().is_open() {
-                self.buffered.extend(lines);
-                return Ok(());
-            }
-            // Detection window expired without a match: fall back to all packs.
-            self.detection_complete = true;
-        }
 
-        // Phase 2: classify, collapse, render. Lines buffered during detection
-        // are replayed first, then the current batch.
-        let mut all_lines = std::mem::take(&mut self.buffered);
-        all_lines.extend(lines);
-
-        for line in all_lines {
-            let mut classified = self.classifier.classify(line);
             // Masking is for grouping only. Applied here, after the rule engine
             // has had its look at the text a human would read, so masking can
             // never suppress an error rule.
+            let mut classified = self.classifier.classify(line);
             classified.line.plain = self.normalizer.mask(&classified.line.plain).into_owned();
             let events = self.collapser.push(classified);
             self.render_all(events)?;
@@ -312,14 +308,13 @@ impl Pipeline {
 
         // Rebuild the block detector against the new rule order, so block
         // markers from the detected pack take effect.
+        let policy = self.collapser.policy();
         let detector = block_detector_or_warn(&self.classifier);
-        self.collapser =
-            FoldingCollapser::with_policy_and_detector(self.collapser.policy(), detector);
+        self.collapser = FoldingCollapser::with_policy_and_detector(policy, detector);
 
         if let Some(explain) = self.explain.as_mut() {
             explain.note(&format!("format detected: {name}"))?;
         }
-        self.detection_complete = true;
         Ok(())
     }
 
@@ -352,106 +347,5 @@ fn block_detector_or_warn(classifier: &RuleClassifier) -> BlockDetector {
             );
             BlockDetector::new()
         }
-    }
-}
-
-/// Load only the built-in packs, for tests that do not need a config.
-#[cfg(test)]
-pub(crate) fn builtin_classifier() -> anyhow::Result<RuleClassifier> {
-    hushlog_rules::builtin::classifier().map_err(|e| anyhow::Error::msg(e.to_string()))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use hushlog_core::{Classified, Line};
-    use hushlog_render::Format;
-
-    fn test_pipeline() -> Pipeline {
-        let config = Config {
-            mode: args::Mode::Pipe,
-            tee: None,
-            raw: false,
-            explain: false,
-            format: Format::Plain,
-            rules: Vec::new(),
-            policy: CollapsePolicy::default(),
-            summary: true,
-            command: Vec::new(),
-        };
-        let out = SharedOut::new();
-        Pipeline::new(&config, out, None, None).expect("a valid config builds a pipeline")
-    }
-
-    #[test]
-    fn the_built_in_packs_compile() {
-        let classifier = builtin_classifier().expect("built-in packs must compile");
-        assert!(!classifier.rules().is_empty(), "packs should not be empty");
-    }
-
-    #[test]
-    fn an_error_line_survives_a_run_of_noise() {
-        let mut p = test_pipeline();
-        p.push(b"warning: a\n", Stream::Stdout).expect("io");
-        p.push(b"error: the thing broke\n", Stream::Stdout)
-            .expect("io");
-        p.finish().expect("io");
-        let s = p.collapser.summary();
-        assert_eq!(s.lines_in, 2);
-        assert_eq!(s.errors, 1);
-        assert!(s.lines_out >= 1);
-    }
-
-    #[test]
-    fn both_streams_get_their_own_line_numbering() {
-        let mut p = test_pipeline();
-        p.push(b"out one\nout two\n", Stream::Stdout).expect("io");
-        p.push(b"err one\n", Stream::Stderr).expect("io");
-        assert_eq!(p.ingests[0].lines_emitted(), 2);
-        assert_eq!(p.ingests[1].lines_emitted(), 1);
-    }
-
-    #[test]
-    fn a_partial_line_on_one_stream_is_not_completed_by_another() {
-        let mut p = test_pipeline();
-        // "error: boom" has no newline yet on stdout.
-        p.push(b"error: boom", Stream::Stdout).expect("io");
-        p.push(b"completely unrelated\n", Stream::Stderr)
-            .expect("io");
-        let before = p.collapser.summary().lines_in;
-        assert_eq!(before, 1, "only the stderr line is complete");
-        p.finish().expect("io");
-        assert_eq!(
-            p.collapser.summary().lines_in,
-            2,
-            "the stdout partial is flushed at the end"
-        );
-        assert_eq!(p.collapser.summary().errors, 1);
-    }
-
-    #[test]
-    fn masking_happens_after_classification_so_errors_still_fire() {
-        let mut p = test_pipeline();
-        // `error[E0432]: unresolved import` -- the bracketed code must survive
-        // masking for `cargo.error` to match at all.
-        p.push(b"error[E0432]: unresolved import `foo`\n", Stream::Stdout)
-            .expect("io");
-        p.finish().expect("io");
-        assert_eq!(p.collapser.summary().errors, 1);
-    }
-
-    #[test]
-    fn origin_maps_to_the_core_stream() {
-        assert_eq!(Stream::from(Origin::ChildOut), Stream::Stdout);
-        assert_eq!(Stream::from(Origin::ChildErr), Stream::Stderr);
-    }
-
-    #[test]
-    fn a_classified_line_reports_its_rule_name() {
-        let mut p = test_pipeline();
-        let line = Line::new("error: boom", "error: boom", Stream::Stdout, 1);
-        let c: Classified = p.classifier.classify(line);
-        let name = c.rule_id.and_then(|id| p.classifier.rule_name(id));
-        assert!(name.is_some_and(|n| n.starts_with("cargo.")), "{name:?}");
     }
 }

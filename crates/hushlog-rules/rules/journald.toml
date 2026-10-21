@@ -1,0 +1,40 @@
+# Journald rule pack
+#
+# Covers `journalctl -o json` output. Each line is a JSON object with a
+# numeric PRIORITY field (0=emergency ... 7=debug).
+#
+# Ported from lnav's journald_json_log format:
+# https://github.com/tstack/lnav/blob/master/src/formats/journald_json_log.json
+#
+name = "journald"
+description = "systemd journalctl -o json output."
+
+detect = { patterns = [
+    # JSON object carrying __REALTIME_TIMESTAMP and PRIORITY.
+    "^\\s*\\{[^}]*\"__REALTIME_TIMESTAMP\"[^}]*\"PRIORITY\"\\s*:",
+    # JSON object carrying PRIORITY directly.
+    "^\\s*\\{[^}]*\"PRIORITY\"\\s*:\\s*[0-7]",
+] }
+
+[[rule]]
+id = "journald.line"
+match = { kind = "regex", pattern = "^\\s*\\{[^}]*\"PRIORITY\"\\s*:\\s*\"?(?<priority>[0-7])\"?[^}]*\\}" }
+level_field = "priority"
+level_map = { error = "^(?:0|1|2|3)$", warning = "^4$", info = "^(?:5|6)$", trace = "^7$" }
+level = "info"
+
+[[rule.sample]]
+line = "{\"__REALTIME_TIMESTAMP\":\"1234567890\",\"PRIORITY\":\"3\",\"MESSAGE\":\"disk failure on /dev/sda\"}"
+level = "error"
+
+[[rule.sample]]
+line = "{\"__REALTIME_TIMESTAMP\":\"1234567890\",\"PRIORITY\":\"6\",\"MESSAGE\":\"service started successfully\"}"
+level = "info"
+
+[[rule.sample]]
+line = "{\"__REALTIME_TIMESTAMP\":\"1234567890\",\"PRIORITY\":\"7\",\"MESSAGE\":\"debugging module load\"}"
+level = "trace"
+
+[[rule.sample]]
+line = "{\"__REALTIME_TIMESTAMP\":\"1234567890\",\"PRIORITY\":\"0\",\"MESSAGE\":\"system is unusable\"}"
+level = "error"

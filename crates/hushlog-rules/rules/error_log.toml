@@ -1,0 +1,34 @@
+# Error log rule pack
+#
+# Covers Apache common error log format:
+#   [Tue Apr 04 06:28:08.605341 2017] [core:error] [pid 17962] ... message
+#
+# Ported from lnav's error_log format:
+# https://github.com/tstack/lnav/blob/master/src/formats/error_log.json
+#
+name = "error_log"
+description = "Apache common error log format."
+
+detect = { patterns = [
+    # [timestamp] [module:level] ...
+    "^\\[[^\\]]+\\]\\s*\\[[^\\]]+:(?:error|warn|notice|info|debug|crit|emerg|alert)\\]",
+] }
+
+[[rule]]
+id = "error_log.line"
+match = { kind = "regex", pattern = "^\\[(?<timestamp>[^\\]]+)\\]\\s*\\[(?:(?<module>[^:]+):)?(?<level>\\w+)\\](?:\\[pid (?<pid>\\d+)(?::tid (?<tid>\\d+))?\\])?(?:\\[client (?<c_ip>[\\w\\.:\\-]+):(?<c_port>\\d+)\\])?\\s+(?<body>.*)$" }
+level_field = "level"
+level_map = { error = "^(?:err|error|critical|fatal|emerg|alert)$", warning = "^(?:warn|warning)$", info = "^(?:info|notice)$", trace = "^debug$" }
+level = "info"
+
+[[rule.sample]]
+line = "[Tue Apr 04 06:28:08.605341 2017] [core:error] [pid 17962] [client 127.0.0.1:60444] AH00135: Invalid method in request FOO /"
+level = "error"
+
+[[rule.sample]]
+line = "[Tue Apr 04 06:18:29.712806 2017] [mpm_prefork:notice] [pid 17725] AH00163: Apache/2.4.23 (Unix) configured -- resuming normal operations"
+level = "info"
+
+[[rule.sample]]
+line = "[Thu Jan 17 02:42:49 2013] [notice] Digest: generating secret for digest authentication ..."
+level = "info"

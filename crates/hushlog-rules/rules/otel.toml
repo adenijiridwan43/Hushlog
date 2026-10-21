@@ -1,0 +1,36 @@
+# OpenTelemetry Collector rule pack
+#
+# Covers OpenTelemetry Collector file exporter JSON logs. Each line is a JSON
+# object with a "severity" field and a "service.name".
+#
+# Ported from lnav's otel_collector_log format:
+# https://github.com/tstack/lnav/blob/master/src/formats/otel_collector_log.json
+#
+name = "otel"
+description = "OpenTelemetry Collector file exporter JSON logs."
+
+detect = { patterns = [
+    # JSON object carrying both severity and service.name.
+    "^\\s*\\{[^}]*\"severity\"\\s*:[^}]*\"service\\.name\"[^}]*\\}",
+    # JSON object carrying trace_id and span_id.
+    "^\\s*\\{[^}]*\"trace_id\"[^}]*\"span_id\"[^}]*\\}",
+] }
+
+[[rule]]
+id = "otel.line"
+match = { kind = "regex", pattern = "^\\s*\\{[^}]*\"severity\"\\s*:\\s*\"?(?<severity>[A-Za-z]+)\"?[^}]*\\}" }
+level_field = "severity"
+level_map = { error = "^(?:FATAL|ERROR)$", warning = "^(?:WARN|WARNING)$", info = "^INFO$", trace = "^(?:DEBUG|TRACE)$" }
+level = "info"
+
+[[rule.sample]]
+line = "{\"timestamp_ns\":\"1700000000000000000\",\"severity\":\"INFO\",\"severity_number\":9,\"body\":\"Application started successfully\",\"service.name\":\"my-service\"}"
+level = "info"
+
+[[rule.sample]]
+line = "{\"timestamp_ns\":\"1700000000000000000\",\"severity\":\"ERROR\",\"body\":\"failed to connect to backend\",\"service.name\":\"api\"}"
+level = "error"
+
+[[rule.sample]]
+line = "{\"timestamp_ns\":\"1700000000000000000\",\"severity\":\"WARN\",\"body\":\"retry attempt 3/10\",\"service.name\":\"worker\"}"
+level = "warning"

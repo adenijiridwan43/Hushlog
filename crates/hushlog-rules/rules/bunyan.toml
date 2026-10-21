@@ -1,0 +1,36 @@
+# Bunyan rule pack
+#
+# Covers Bunyan JSON logging library output for Node.js. Each line is a JSON
+# object with an integer "level" field (60=fatal ... 10=trace) and a "name".
+#
+# Ported from lnav's bunyan_log format:
+# https://github.com/tstack/lnav/blob/master/src/formats/bunyan_log.json
+#
+name = "bunyan"
+description = "Bunyan JSON logging library for Node.js."
+
+detect = { patterns = [
+    # JSON object carrying an integer level and a name.
+    "^\\s*\\{[^}]*\"level\"\\s*:\\s*\\d+[^}]*\"name\"\\s*:",
+    # JSON object carrying name and an integer level.
+    "^\\s*\\{[^}]*\"name\"\\s*:\\s*\"[^\"]+\"[^}]*\"level\"\\s*:\\s*\\d+",
+] }
+
+[[rule]]
+id = "bunyan.line"
+match = { kind = "regex", pattern = "^\\s*\\{[^}]*\"level\"\\s*:\\s*(?<level>\\d+)[^}]*\\}" }
+level_field = "level"
+level_map = { error = "^(?:60|50)$", warning = "^40$", info = "^30$", trace = "^(?:20|10)$" }
+level = "info"
+
+[[rule.sample]]
+line = "{\"name\":\"myapp\",\"hostname\":\"host\",\"pid\":1234,\"level\":30,\"msg\":\"request started\"}"
+level = "info"
+
+[[rule.sample]]
+line = "{\"name\":\"myapp\",\"hostname\":\"host\",\"pid\":1234,\"level\":50,\"msg\":\"unhandled exception\"}"
+level = "error"
+
+[[rule.sample]]
+line = "{\"name\":\"myapp\",\"hostname\":\"host\",\"pid\":1234,\"level\":10,\"msg\":\"entering handler\"}"
+level = "trace"
