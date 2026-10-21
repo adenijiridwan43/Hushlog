@@ -4,7 +4,7 @@
 //! dangerous than an error, because the pack author believes the rule is doing
 //! something it is not -- see AGENTS.md section 1.
 
-use serde::de::{self, MapAccess, Visitor};
+use serde::de::{self, Error, MapAccess, Visitor};
 use serde::{Deserialize, Deserializer};
 use toml::Spanned;
 
@@ -75,6 +75,32 @@ pub struct Rule {
     /// heuristics are not enough (stack traces, deprecation paragraphs).
     #[serde(default)]
     pub block: Option<BlockMarkers>,
+    /// Name of the capture group whose value selects the level, for formats
+    /// whose severity varies line to line -- lnav's `level-field`.
+    ///
+    /// Only meaningful with [`Self::level_map`]; the classifier reads the
+    /// capture, tests it against each level's pattern, and uses the first
+    /// match. A line whose level field matches nothing falls back to
+    /// [`Self::level`].
+    #[serde(default)]
+    pub level_field: Option<Spanned<String>>,
+    /// Maps a level to the pattern that identifies it in [`Self::level_field`].
+    ///
+    /// Mirrors lnav's `level` object: the key is the level name, the value is
+    /// a regular expression matched against the level field's value. Keys are
+    /// matched case-insensitively. Patterns are tried most-severe first, so the
+    /// order they are written in does not matter.
+    #[serde(default)]
+    pub level_map: Option<LevelMap>,
+    /// Sample lines that must be recognised by this rule.
+    ///
+    /// Every sample is checked when the rule set is built: the rule's pattern
+    /// must match the line, and when the sample declares a `level`, the level
+    /// the rule derives for it must equal it. A pack that does not recognise
+    /// its own samples fails loudly instead of silently under-matching -- the
+    /// same "fail loudly" contract as the rest of the loader (AGENTS.md §1).
+    #[serde(default)]
+    pub sample: Vec<RuleSample>,
     /// Where this rule sits in the source, for error messages.
     #[serde(skip)]
     location: Location,
@@ -269,6 +295,17 @@ impl From<RuleLevel> for hushlog_core::Level {
     }
 }
 
+impl std::str::FromStr for RuleLevel {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        RuleLevel::ALL
+            .into_iter()
+            .find(|level| level.as_str().eq_ignore_ascii_case(s))
+            .ok_or_else(|| format!("unknown level `{s}`, expected {}", level_list()))
+    }
+}
+
 impl<'de> Deserialize<'de> for RuleLevel {
     fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
         de.deserialize_str(LevelVisitor)
@@ -299,4 +336,84 @@ impl Visitor<'_> for LevelVisitor {
 /// `error, warning, info, progress, trace`
 fn level_list() -> String {
     RuleLevel::ALL.map(RuleLevel::as_str).join(", ")
+}
+
+/// A compiled `level` map, in most-severe-first order.
+///
+/// Mirrors lnav's `level` object. Entries are tried in order and the first
+/// pattern that matches the level field's value wins, so ordering them
+/// most-severe first means severity wins regardless of how the pack author
+/// wrote the table.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LevelMap {
+    pub entries: Vec<(RuleLevel, RegexPattern)>,
+}
+
+/// A compiled regular expression, built once at pack load so the classifier
+/// never touches `regex::Regex::new` on the hot path.
+///
+/// Deserialises from a bare TOML string and validates that it is a usable
+/// regex at load time -- a bad pattern fails the pack loudly instead of
+/// failing on the first line it meets.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RegexPattern(pub String);
+
+impl<'de> Deserialize<'de> for RegexPattern {
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        let s = String::deserialize(de)?;
+        regex::Regex::new(&s)
+            .map_err(|e| Error::custom(first_line(&e.to_string())))?;
+        Ok(RegexPattern(s))
+    }
+}
+
+/// A sample line that this rule must recognise.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RuleSample {
+    /// The exact line text.
+    pub line: String,
+    /// The level the rule is expected to derive for this line, if any.
+    pub level: Option<RuleLevel>,
+    /// Free-text note about what this sample exercises.
+    #[serde(default)]
+    pub description: Option<String>,
+}
+
+impl<'de> Deserialize<'de> for LevelMap {
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        use serde::de::{MapAccess, Visitor};
+
+        struct LevelMapVisitor;
+
+        impl<'de> Visitor<'de> for LevelMapVisitor {
+            type Value = LevelMap;
+
+            fn expecting(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                f.write_str("a map of level name to pattern, e.g. { error = \"^err\" }")
+            }
+
+            fn visit_map<A: MapAccess<'de>>(self, mut map: A) -> Result<Self::Value, A::Error> {
+                let mut pairs: Vec<(RuleLevel, RegexPattern)> = Vec::new();
+                while let Some((key, pattern)) = map.next_entry::<String, RegexPattern>()? {
+                    let level = key.parse::<RuleLevel>().map_err(de::Error::custom)?;
+                    pairs.push((level, pattern));
+                }
+                // Most-severe first: the classifier tries entries in order and
+                // stops at the first match, so severe levels win regardless of
+                // how the pack author ordered the table.
+                pairs.sort_by_key(|(level, _)| *level as u8);
+                Ok(LevelMap {
+                    entries: pairs,
+                })
+            }
+        }
+
+        de.deserialize_map(LevelMapVisitor)
+    }
+}
+
+/// The `regex` crate puts its explanation on several lines; our errors are one.
+fn first_line(message: &str) -> String {
+    message.lines().next().unwrap_or(message).trim().to_string()
 }

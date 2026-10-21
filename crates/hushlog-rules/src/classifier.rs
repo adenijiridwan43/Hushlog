@@ -15,7 +15,9 @@ use hushlog_core::{Classified, Classifier, Level, Line, RuleId};
 use regex::RegexSetBuilder;
 
 use crate::error::{Location, RuleError};
-use crate::schema::{BlockMarkers, Matcher, Rule, RulePack};
+use crate::schema::{
+    BlockMarkers, LevelMap, Matcher, Rule, RulePack, RuleSample,
+};
 
 /// Ceiling on rules in one classifier.
 ///
@@ -31,8 +33,18 @@ pub struct CompiledRule {
     pub index: u16,
     /// The rule's id, exactly as written in the pack.
     pub id: String,
+    /// The compiled regex source, stored so `capture_value` can re-run it to
+    /// read named capture groups without re-validating at match time.
+    pub pattern: String,
     /// Severity assigned to matching lines.
     pub level: Level,
+    /// Name of the capture group whose value selects the level, if the pack
+    /// declared one (lnav's `level-field`). The classifier consults
+    /// [`Self::level_map`] when this is set.
+    pub level_field: Option<String>,
+    /// Level→pattern map used with [`Self::level_field`], tried most-severe
+    /// first.
+    pub level_map: Option<LevelMap>,
     /// Whether the renderer should draw attention to matching lines.
     pub highlight: bool,
     /// Whether repeats of this line may be folded.
@@ -43,6 +55,8 @@ pub struct CompiledRule {
     pub block: Option<BlockMarkers>,
     /// Where the rule came from, for `--explain` and for error messages.
     pub location: Location,
+    /// Sample lines this rule must recognise, validated at load time.
+    pub sample: Vec<RuleSample>,
 }
 
 /// Assigns a [`Level`] to each line using a set of compiled rules.
@@ -106,8 +120,60 @@ impl RuleClassifier {
                     });
                 }
 
+                // Every declared sample must be recognised by this rule: a pack
+                // that does not match its own samples fails loudly instead of
+                // silently under-matching (AGENTS.md section 1).
+                let re = regex::Regex::new(&pattern).map_err(|e| {
+                    RuleError::Rule {
+                        location: pattern_location(rule).clone(),
+                        id: rule.id_str().to_string(),
+                        message: format!("invalid pattern: {}", first_line(&e.to_string())),
+                    }
+                })?;
+                for sample in &rule.sample {
+                    if !re.is_match(&sample.line) {
+                        return Err(RuleError::Rule {
+                            location: rule.location().clone(),
+                            id: id.to_string(),
+                            message: format!(
+                                "sample line does not match rule `{id}` pattern: {}",
+                                escape_for_error(&sample.line)
+                            ),
+                        });
+                    }
+                    if let Some(expected) = sample.level {
+                        let derived = re
+                            .captures(&sample.line)
+                            .and_then(|caps| {
+                                rule.level_field
+                                    .as_ref()
+                                    .map(|s| s.get_ref().as_str())
+                                    .and_then(|field| caps.name(field).map(|m| m.as_str().to_string()))
+                            })
+                            .and_then(|value| {
+                                rule.level_map
+                                    .as_ref()
+                                    .and_then(|map| level_for_map(map, &value))
+                            })
+                            .unwrap_or(rule.level.into());
+                        if derived != Level::from(expected) {
+                            return Err(RuleError::Rule {
+                                location: rule.location().clone(),
+                                id: id.to_string(),
+                                message: format!(
+                                    "sample line derives level `{derived:?}` but declares `{expected:?}`"
+                                ),
+                            });
+                        }
+                    }
+                }
+
+                rules.push(CompiledRule::from_rule(
+                    index_of(rules.len()),
+                    rule,
+                    pattern.clone(),
+                ));
                 patterns.push(pattern);
-                rules.push(CompiledRule::from_rule(index_of(rules.len()), rule));
             }
         }
 
@@ -154,6 +220,7 @@ impl RuleClassifier {
     pub fn rule_name(&self, id: RuleId) -> Option<&str> {
         self.rule(id).map(|r| r.id.as_str())
     }
+
 }
 
 impl Classifier for RuleClassifier {
@@ -171,8 +238,13 @@ impl Classifier for RuleClassifier {
             Some(index) => {
                 let index = index_of(index);
                 let rule = &self.rules[usize::from(index)];
+                let level = rule
+                    .level_field
+                    .as_deref()
+                    .and_then(|field| rule.capture_value(&line.plain, field))
+                    .and_then(|value| rule.level_for(&value));
                 Classified {
-                    level: rule.level,
+                    level: level.unwrap_or(rule.level),
                     rule_id: Some(RuleId(index)),
                     highlight: rule.highlight,
                     line,
@@ -201,17 +273,57 @@ fn index_of(index: usize) -> u16 {
 }
 
 impl CompiledRule {
-    fn from_rule(index: u16, rule: &Rule) -> Self {
+    fn from_rule(index: u16, rule: &Rule, pattern: String) -> Self {
         Self {
             index,
             id: rule.id_str().to_string(),
+            pattern,
             level: rule.level.into(),
+            level_field: rule.level_field.as_ref().map(|s| s.get_ref().clone()),
+            level_map: rule.level_map.clone(),
             highlight: rule.highlight,
             collapse: rule.collapse,
             context_lines: rule.context_lines,
             block: rule.block.clone(),
             location: rule.location().clone(),
+            sample: rule.sample.clone(),
         }
+    }
+
+    /// The value of a rule's named capture group in a line, if the rule
+    /// declared one and it took part in the match.
+    ///
+    /// Re-runs just this rule's pattern because [`RegexSet`] matches report
+    /// indices but not capture text. The pattern already compiled successfully
+    /// at load time, so this cannot fail.
+    #[must_use]
+    pub fn capture_value(&self, line: &str, group: &str) -> Option<String> {
+        regex::Regex::new(&self.pattern)
+            .ok()?
+            .captures(line)?
+            .name(group)
+            .map(|m| m.as_str().to_string())
+    }
+
+    /// The level derived from `value` by testing it against this rule's
+    /// [`level_map`](Self::level_map), most-severe first. Returns `None` when
+    /// nothing matches, so the rule's declared [`level`](Self::level) applies.
+    ///
+    /// Matching is case-insensitive: `ERROR`, `Error` and `error` all match the
+    /// `error` pattern, mirroring lnav's level table.
+    #[must_use]
+    pub fn level_for(&self, value: &str) -> Option<Level> {
+        let value = value.to_ascii_lowercase();
+        self.level_map
+            .as_ref()?
+            .entries
+            .iter()
+            .find_map(|(level, pattern)| {
+                regex::Regex::new(&pattern.0)
+                    .ok()?
+                    .is_match(&value)
+                    .then_some(Level::from(*level))
+            })
     }
 }
 
@@ -231,4 +343,37 @@ fn pattern_location(rule: &Rule) -> &Location {
 /// The `regex` crate puts its explanation on several lines; our errors are one.
 fn first_line(message: &str) -> String {
     message.lines().next().unwrap_or(message).trim().to_string()
+}
+
+use std::fmt::Write as _;
+
+/// Escape a sample line so it can be embedded in an error message without
+/// swallowing the surrounding punctuation.
+fn escape_for_error(line: &str) -> String {
+    let mut out = String::with_capacity(line.len());
+    for ch in line.chars() {
+        match ch {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            ch if ch.is_control() => {
+                let _ = write!(out, "U+{:04X}", ch as u32);
+            }
+            ch => out.push(ch),
+        }
+    }
+    out
+}
+
+/// Test `value` against a level map's entries, most-severe first, returning the
+/// first level whose pattern matches. `None` when nothing matches.
+fn level_for_map(map: &LevelMap, value: &str) -> Option<Level> {
+    map.entries.iter().find_map(|(level, pattern)| {
+        regex::Regex::new(&pattern.0)
+            .ok()?
+            .is_match(value)
+            .then_some(Level::from(*level))
+    })
 }

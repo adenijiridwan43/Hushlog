@@ -75,6 +75,92 @@ pub enum Level {
     Trace,
 }
 
+impl Level {
+    /// Recognise a severity token from the vocabularies real logs use.
+    ///
+    /// Ported from lnav's level table (`docs.lnav.org/en/latest/formats.html`):
+    /// lnav recognises `trace`/`debug`/`info`/`notice`/`stats`/`warning`/
+    /// `error`/`critical`/`fatal`, their common aliases, and single-letter
+    /// abbreviations. Hushlog has five levels, so the extra names collapse onto
+    /// the nearest one: `debug` and below become [`Level::Trace`], `notice` and
+    /// `stats` become [`Level::Info`], and `critical`/`fatal` become
+    /// [`Level::Error`].
+    ///
+    /// Matching is case-insensitive. It allocates one small `String` for the
+    /// case-folded token; this is a normalization helper for pack authors, not
+    /// the classify hot path.
+    #[must_use]
+    pub fn from_token(token: &str) -> Option<Self> {
+        let token = token.trim();
+        if token.is_empty() {
+            return None;
+        }
+        let lower = token.to_ascii_lowercase();
+        if lower.len() == 1 {
+            return match lower.as_str() {
+                "t" | "d" | "v" => Some(Self::Trace),
+                "i" | "s" | "n" => Some(Self::Info),
+                "w" => Some(Self::Warning),
+                "e" | "c" | "f" => Some(Self::Error),
+                _ => None,
+            };
+        }
+        Some(match lower.as_str() {
+            "trace" | "verbose" | "debug" | "debug2" | "debug3" | "debug4" | "debug5" => {
+                Self::Trace
+            }
+            "info" | "system" | "notice" | "note" | "log" | "stats" => Self::Info,
+            "warn" | "warning" | "deprecation" => Self::Warning,
+            "err" | "error" | "fail" | "critical" | "severe" | "alert" | "fatal"
+            | "emergency" => Self::Error,
+            _ => return None,
+        })
+    }
+}
+
+#[cfg(test)]
+mod level_token_tests {
+    use super::Level;
+
+    #[test]
+    fn canonical_names_resolve() {
+        assert_eq!(Level::from_token("error"), Some(Level::Error));
+        assert_eq!(Level::from_token("warning"), Some(Level::Warning));
+        assert_eq!(Level::from_token("info"), Some(Level::Info));
+        assert_eq!(Level::from_token("trace"), Some(Level::Trace));
+    }
+
+    #[test]
+    fn aliases_and_case_are_accepted() {
+        assert_eq!(Level::from_token("ERROR"), Some(Level::Error));
+        assert_eq!(Level::from_token("Warn"), Some(Level::Warning));
+        assert_eq!(Level::from_token("deprecation"), Some(Level::Warning));
+        assert_eq!(Level::from_token("err"), Some(Level::Error));
+        assert_eq!(Level::from_token("fail"), Some(Level::Error));
+        assert_eq!(Level::from_token("fatal"), Some(Level::Error));
+        assert_eq!(Level::from_token("critical"), Some(Level::Error));
+        assert_eq!(Level::from_token("notice"), Some(Level::Info));
+        assert_eq!(Level::from_token("stats"), Some(Level::Info));
+        assert_eq!(Level::from_token("debug"), Some(Level::Trace));
+    }
+
+    #[test]
+    fn single_letter_abbreviations_resolve() {
+        assert_eq!(Level::from_token("E"), Some(Level::Error));
+        assert_eq!(Level::from_token("W"), Some(Level::Warning));
+        assert_eq!(Level::from_token("I"), Some(Level::Info));
+        assert_eq!(Level::from_token("T"), Some(Level::Trace));
+    }
+
+    #[test]
+    fn unknown_tokens_are_none() {
+        assert_eq!(Level::from_token(""), None);
+        assert_eq!(Level::from_token("   "), None);
+        assert_eq!(Level::from_token("verbose-ish"), None);
+        assert_eq!(Level::from_token("2"), None);
+    }
+}
+
 /// Opaque handle to the rule that classified a line.
 ///
 /// This is an index into the owning [`Classifier`]'s rule set, not the rule's

@@ -326,3 +326,70 @@ fn classification_cost_does_not_scale_with_pack_size() {
          classification is supposed to cost one pass regardless of pack size"
     );
 }
+
+const LEVEL_FIELD_PACK: &str = r#"
+[[rule]]
+id = "klog.line"
+match = { kind = "regex", pattern = "^(?<ts>\\d{4}-\\d{2}-\\d{2}T\\S*Z)\\s+(?<level>\\w+)\\s" }
+level_field = "level"
+level_map = { error = "^(?:err|error|fail|critical|fatal)$", warning = "^(?:warn|warning)$" }
+level = "info"
+"#;
+
+#[test]
+fn level_field_map_picks_most_severe_match() {
+    let mut c = build(LEVEL_FIELD_PACK);
+
+    let got = classify(&mut c, "2026-10-12T09:14:03Z ERROR scheduler: boom");
+    assert_eq!(got.level, Level::Error);
+
+    let got = classify(&mut c, "2026-10-12T09:14:03Z WARN scheduler: retrying");
+    assert_eq!(got.level, Level::Warning);
+
+    let got = classify(&mut c, "2026-10-12T09:14:03Z INFO scheduler: started");
+    assert_eq!(got.level, Level::Info);
+
+    // Unknown level token falls back to the rule's declared level.
+    let got = classify(&mut c, "2026-10-12T09:14:03Z TRACE scheduler: tracing");
+    assert_eq!(got.level, Level::Info);
+}
+
+#[test]
+fn sample_line_that_does_not_match_is_rejected() {
+    let src = r#"
+[[rule]]
+id = "bad.sample"
+match = { kind = "literal", pattern = "actual" }
+level = "info"
+[[rule.sample]]
+line = "not present"
+"#;
+    let err = parse_pack("bad.sample.toml", src)
+        .and_then(|p| RuleClassifier::from_pack(&p))
+        .expect_err("sample that does not match must fail");
+    let text = err.to_string();
+    assert!(text.contains("bad.sample.toml"), "got: {text}");
+    assert!(
+        text.contains("does not match"),
+        "error should name the mismatch, got: {text}"
+    );
+}
+
+#[test]
+fn sample_line_with_wrong_declared_level_is_rejected() {
+    let src = r#"
+[[rule]]
+id = "wrong.level"
+match = { kind = "literal", pattern = "error: x" }
+level = "info"
+[[rule.sample]]
+line = "error: x"
+level = "warning"
+"#;
+    let err = parse_pack("wrong.level.toml", src)
+        .and_then(|p| RuleClassifier::from_pack(&p))
+        .expect_err("sample level mismatch must fail");
+    let text = err.to_string();
+    assert!(text.contains("derives level"), "got: {text}");
+    assert!(text.contains("Warning"), "got: {text}");
+}
