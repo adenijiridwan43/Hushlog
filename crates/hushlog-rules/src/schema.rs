@@ -18,6 +18,11 @@ pub struct RulePack {
     pub name: Option<String>,
     /// Free-text note for whoever reads the pack later.
     pub description: Option<String>,
+    /// Detection patterns that identify this pack's format, tried against the
+    /// first few lines of input. When declared, format detection runs before
+    /// classification and locks on to the first matching pack.
+    #[serde(default)]
+    pub detect: Option<FormatDetect>,
     /// The rules, in declaration order. Declaration order decides which rule
     /// wins when more than one matches; see [`Matcher`].
     ///
@@ -108,6 +113,18 @@ pub struct Rule {
     /// regex is reported against the regex rather than against the id above it.
     #[serde(skip)]
     pattern_location: Location,
+}
+
+/// Patterns that identify this pack's format, tried against the first few
+/// lines of input before classification. Mirrors lnav's format auto-detection
+/// (`docs.lnav.org/en/latest/formats.html`): the first pack whose detect
+/// pattern matches a line wins, and the run locks on to that pack's rules.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct FormatDetect {
+    /// Regular expressions matched against the first lines of the stream.
+    /// The first pattern that matches any line identifies this pack's format.
+    pub patterns: Vec<RegexPattern>,
 }
 
 impl Rule {

@@ -250,7 +250,7 @@ Why v1.0 is slower:
 - **One module per agent**, communicating only through the traits in §4.2; no cross-crate edits without review.
 - **Pin dependency versions**; require `cargo check`/`clippy` to pass before any merge.
 - **You review every rule pack** and every change to collapse policy.
-- Keep an `AGENTS.md` / `CLAUDE.md` in the repo stating the lossless principle, the contracts, and "never collapse errors by default".
+- Keep an `AGENTS.md` in the repo stating the lossless principle, the contracts, and "never collapse errors by default".
 
 ---
 

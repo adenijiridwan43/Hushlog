@@ -116,8 +116,8 @@ Most of this code was written with AI assistance, and it would be dishonest to
 imply otherwise. Concretely:
 
 - The pipeline crates (`hushlog-core`, `hushlog-rules`, `hushlog-render`) and the
-  `hushlog` binary were written in parallel by separate Claude agents working
-  against the trait contracts in [`AGENTS.md`](AGENTS.md).
+  `hushlog` binary were written with AI assistance against the trait contracts
+  in [`AGENTS.md`](AGENTS.md).
 - **Every change was reviewed before it landed.** Each agent's output was read,
   the workspace gate was run against the merged result, and the integration
   bugs those reviews caught are recorded in the git history — a rule bridge that

@@ -18,11 +18,13 @@
 
 mod block;
 mod collapse;
+mod format;
 mod ingest;
 mod normalize;
 
 pub use block::BlockDetector;
 pub use collapse::FoldingCollapser;
+pub use format::FormatDetector;
 pub use ingest::Ingest;
 pub use normalize::Normalizer;
 

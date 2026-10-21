@@ -22,8 +22,8 @@ use std::io;
 
 use anyhow::Context as _;
 use hushlog_core::{
-    BlockDetector, Classifier, CollapsePolicy, Collapser, Event, FoldingCollapser, Ingest,
-    Normalizer, Renderer, Stream,
+    BlockDetector, Classifier, CollapsePolicy, Collapser, Event, FoldingCollapser, FormatDetector,
+    Ingest, Normalizer, Renderer, Stream,
 };
 use hushlog_rules::RuleClassifier;
 
@@ -67,6 +67,19 @@ pub(crate) struct Pipeline {
     tee_path: Option<String>,
     /// True once stdout is gone (`hushlog ... | head`), so we stop writing.
     stdout_closed: bool,
+    /// Loaded packs, kept so the classifier can be rebuilt once a format is
+    /// detected (the detected pack's rules are tried first).
+    packs: Vec<hushlog_rules::RulePack>,
+    /// Tries each pack's `detect` patterns against the first few lines,
+    /// ported from lnav's format auto-detection. `None` when no pack declares
+    /// detect patterns.
+    format_detector: Option<FormatDetector>,
+    /// Lines read while detection is still open, to be replayed through the
+    /// detected pack's classifier once a format is identified.
+    buffered: Vec<hushlog_core::Line>,
+    /// True once detection has completed (either a pack matched or the window
+    /// expired). After this, classification runs normally.
+    detection_complete: bool,
 }
 
 impl Pipeline {
@@ -97,6 +110,29 @@ impl Pipeline {
 
         let renderer = hushlog_render::renderer(config.format, out.clone());
 
+        // Format detection: collect each pack's `detect` patterns. When no pack
+        // declares any, detection is skipped and the run uses all packs as
+        // before.
+        let candidates: Vec<(String, Vec<String>)> = packs
+            .iter()
+            .filter_map(|p| {
+                p.detect.as_ref().map(|d| {
+                    (
+                        p.name.clone().unwrap_or_else(|| p.location().to_string()),
+                        d.patterns.iter().map(|pat| pat.0.clone()).collect(),
+                    )
+                })
+            })
+            .collect();
+        let format_detector = if candidates.is_empty() {
+            None
+        } else {
+            Some(
+                FormatDetector::new(candidates)
+                    .map_err(|e| anyhow::anyhow!("building format detector: {e}"))?,
+            )
+        };
+
         if let Some(explain) = explain.as_mut() {
             // The banner states the policy the whole run is governed by, so a
             // `--explain` transcript can be read without the command line.
@@ -110,6 +146,7 @@ impl Pipeline {
             ))?;
         }
 
+        let detection_complete = format_detector.is_none();
         Ok(Self {
             classifier,
             ingests: [Ingest::new(Stream::Stdout), Ingest::new(Stream::Stderr)],
@@ -121,6 +158,10 @@ impl Pipeline {
             summary: config.summary,
             tee_path,
             stdout_closed: false,
+            packs,
+            format_detector,
+            buffered: Vec::new(),
+            detection_complete,
         })
     }
 
@@ -166,8 +207,45 @@ impl Pipeline {
     }
 
     /// Classify, collapse and render a batch of freshly framed lines.
+    ///
+    /// While format detection is still open, lines are buffered and tested
+    /// against each pack's `detect` patterns. The first pack to match wins:
+    /// the classifier is rebuilt with that pack's rules tried first, the
+    /// buffered lines are replayed through it, and detection is closed. If no
+    /// pack matches within the window, detection closes and the run continues
+    /// with all packs (the pre-detection behaviour).
     fn handle(&mut self, lines: Vec<hushlog_core::Line>) -> io::Result<()> {
-        for line in lines {
+        // Phase 1: format detection. While it is open, buffer lines and probe
+        // each one against the candidates' detect patterns.
+        if !self.detection_complete {
+            for line in &lines {
+                let detected = self
+                    .format_detector
+                    .as_mut()
+                    .and_then(|d| d.push(&line.plain))
+                    .map(str::to_string);
+                if let Some(name) = detected {
+                    self.rebuild_classifier_for(&name)
+                        .map_err(io::Error::other)?;
+                    break;
+                }
+            }
+            // If detection is still open after this batch, buffer the lines and
+            // wait for more input before classifying anything.
+            if self.format_detector.as_ref().unwrap().is_open() {
+                self.buffered.extend(lines);
+                return Ok(());
+            }
+            // Detection window expired without a match: fall back to all packs.
+            self.detection_complete = true;
+        }
+
+        // Phase 2: classify, collapse, render. Lines buffered during detection
+        // are replayed first, then the current batch.
+        let mut all_lines = std::mem::take(&mut self.buffered);
+        all_lines.extend(lines);
+
+        for line in all_lines {
             let mut classified = self.classifier.classify(line);
             // Masking is for grouping only. Applied here, after the rule engine
             // has had its look at the text a human would read, so masking can
@@ -209,6 +287,39 @@ impl Pipeline {
                 Err(e) => return Err(e),
             }
         }
+        Ok(())
+    }
+
+    /// Rebuild the classifier so the detected pack's rules are tried first,
+    /// followed by every other pack's rules in their original order. Called
+    /// once, when format detection locks on to a pack.
+    fn rebuild_classifier_for(&mut self, name: &str) -> anyhow::Result<()> {
+        let mut ordered: Vec<hushlog_rules::RulePack> = self
+            .packs
+            .iter()
+            .filter(|p| p.name.as_deref() == Some(name))
+            .cloned()
+            .collect();
+        ordered.extend(
+            self.packs
+                .iter()
+                .filter(|p| p.name.as_deref() != Some(name))
+                .cloned(),
+        );
+        self.classifier = RuleClassifier::new(&ordered)
+            .map_err(|e| anyhow::Error::msg(e.to_string()))
+            .context(format!("rebuilding rule set for detected format {name}"))?;
+
+        // Rebuild the block detector against the new rule order, so block
+        // markers from the detected pack take effect.
+        let detector = block_detector_or_warn(&self.classifier);
+        self.collapser =
+            FoldingCollapser::with_policy_and_detector(self.collapser.policy(), detector);
+
+        if let Some(explain) = self.explain.as_mut() {
+            explain.note(&format!("format detected: {name}"))?;
+        }
+        self.detection_complete = true;
         Ok(())
     }
 

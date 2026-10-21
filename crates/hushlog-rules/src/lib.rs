@@ -42,7 +42,8 @@ pub use classifier::{CompiledRule, MAX_RULES, RuleClassifier};
 pub use error::{Location, RuleError};
 pub use loader::{load_pack, load_packs, parse_pack};
 pub use schema::{
-    BlockMarkers, LevelMap, Matcher, RegexPattern, Rule, RuleLevel, RulePack, RuleSample,
+    BlockMarkers, FormatDetect, LevelMap, Matcher, RegexPattern, Rule, RuleLevel, RulePack,
+    RuleSample,
 };
 
 /// The rule packs shipped with hushlog, compiled into the binary.
