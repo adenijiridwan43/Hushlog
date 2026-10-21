@@ -37,6 +37,7 @@ pub(crate) enum Mode {
 /// Everything a run needs, after parsing and after every "this combination does
 /// not make sense" check has passed.
 #[derive(Debug, Clone)]
+#[allow(clippy::struct_excessive_bools)]
 pub(crate) struct Config {
     pub(crate) mode: Mode,
     /// Where to write the verbatim input, if anywhere.
@@ -51,6 +52,8 @@ pub(crate) struct Config {
     pub(crate) policy: CollapsePolicy,
     /// Emit the end-of-run summary.
     pub(crate) summary: bool,
+    /// Anonymize sensitive data in the rendered output.
+    pub(crate) anonymize: bool,
     /// The child command and its arguments, for wrap and PTY mode.
     pub(crate) command: Vec<String>,
 }
@@ -125,6 +128,7 @@ pub(crate) struct Cli {
 /// Split out as its own struct so the help text can head them as a group, and
 /// so this one struct does not carry every boolean in the binary.
 #[derive(Debug, Clone, clap::Args)]
+#[allow(clippy::struct_excessive_bools)]
 pub(crate) struct Lossless {
     /// Write the full verbatim input log to FILE, byte for byte (created or truncated)
     #[arg(long, value_name = "FILE")]
@@ -141,6 +145,14 @@ pub(crate) struct Lossless {
     /// Suppress the end-of-run summary
     #[arg(long = "no-summary")]
     pub(crate) no_summary: bool,
+
+    /// Anonymize sensitive data in the rendered output: IPs, UUIDs, MACs,
+    /// emails, URLs, credit-card numbers and hex dumps are replaced with
+    /// consistent fake values. Opt-in: the full-log tee file is always written
+    /// byte-exact from the input and is never anonymized, so `--tee` plus
+    /// `--anonymize` gives both a private display and a complete recovery copy.
+    #[arg(long)]
+    pub(crate) anonymize: bool,
 }
 
 /// What may be folded. `AGENTS.md` section 1.1 is the reason errors need a flag
@@ -193,6 +205,7 @@ impl Cli {
                 max_tracked: self.max_tracked,
             },
             summary: !self.lossless.no_summary,
+            anonymize: self.lossless.anonymize,
             command: self.command,
         })
     }

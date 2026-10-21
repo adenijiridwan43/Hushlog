@@ -586,7 +586,7 @@ fn digits_run(b: &[u8], i: usize) -> usize {
     j
 }
 
-fn hex_run(b: &[u8], i: usize) -> usize {
+pub(crate) fn hex_run(b: &[u8], i: usize) -> usize {
     let mut j = i;
     while b.get(j).is_some_and(u8::is_ascii_hexdigit) {
         j += 1;

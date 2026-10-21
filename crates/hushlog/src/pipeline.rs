@@ -22,8 +22,8 @@ use std::io;
 
 use anyhow::Context as _;
 use hushlog_core::{
-    BlockDetector, Classifier, CollapsePolicy, Collapser, Event, FoldingCollapser, FormatDetector,
-    Ingest, Normalizer, Renderer, Stream,
+    Anonymizer, BlockDetector, Classifier, CollapsePolicy, Collapser, Event, FoldingCollapser,
+    FormatDetector, Ingest, Normalizer, Renderer, Stream,
 };
 use hushlog_rules::RuleClassifier;
 
@@ -51,6 +51,7 @@ impl From<Origin> for Stream {
 }
 
 /// The assembled pipeline. One instance per run.
+#[allow(clippy::struct_excessive_bools)]
 pub(crate) struct Pipeline {
     classifier: RuleClassifier,
     ingests: [Ingest; 2],
@@ -67,6 +68,12 @@ pub(crate) struct Pipeline {
     tee_path: Option<String>,
     /// True once stdout is gone (`hushlog ... | head`), so we stop writing.
     stdout_closed: bool,
+    /// Whether `--anonymize` is active: sensitive values in rendered output
+    /// are replaced with consistent fake values. The tee file is never
+    /// anonymized, so `--tee` plus `--anonymize` is safe.
+    anonymize: bool,
+    /// The anonymizer, only allocated when `--anonymize` is active.
+    anonymizer: Option<Anonymizer>,
     /// Loaded packs, kept so the classifier can be rebuilt once a format is
     /// detected (the detected pack's rules are tried first).
     packs: Vec<hushlog_rules::RulePack>,
@@ -146,6 +153,7 @@ impl Pipeline {
         }
 
         let detection_complete = format_detector.is_none();
+        let anonymize = config.anonymize;
         Ok(Self {
             classifier,
             ingests: [Ingest::new(Stream::Stdout), Ingest::new(Stream::Stderr)],
@@ -157,6 +165,12 @@ impl Pipeline {
             summary: config.summary,
             tee_path,
             stdout_closed: false,
+            anonymize,
+            anonymizer: if anonymize {
+                Some(Anonymizer::new())
+            } else {
+                None
+            },
             packs,
             format_detector,
             detection_complete,
@@ -247,6 +261,14 @@ impl Pipeline {
             // never suppress an error rule.
             let mut classified = self.classifier.classify(line);
             classified.line.plain = self.normalizer.mask(&classified.line.plain).into_owned();
+            // Anonymize the rendered text (what the user sees). The tee file
+            // is written byte-exact upstream of ingestion and is never
+            // anonymized, so `--tee` plus `--anonymize` is safe.
+            if self.anonymize {
+                if let Some(anon) = self.anonymizer.as_mut() {
+                    classified.line.raw = anon.anonymize(&classified.line.raw);
+                }
+            }
             let events = self.collapser.push(classified);
             self.render_all(events)?;
         }

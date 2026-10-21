@@ -16,12 +16,14 @@
 
 #![forbid(unsafe_code)]
 
+mod anonymize;
 mod block;
 mod collapse;
 mod format;
 mod ingest;
 mod normalize;
 
+pub use anonymize::Anonymizer;
 pub use block::BlockDetector;
 pub use collapse::FoldingCollapser;
 pub use format::FormatDetector;
