@@ -201,7 +201,7 @@ mod tests {
         got.extend_from_slice(&d.finish().unwrap());
         assert_eq!(got, b"hello world\nhello world\n");
         assert_eq!(d.format, Some(Format::Gzip));
-        assert!(d.pending.is_empty());
+        assert_eq!(d.pending, [] as [u8; 0]);
     }
 
     /// A real bzip2 stream decompresses transparently too.
@@ -219,7 +219,7 @@ mod tests {
         got.extend_from_slice(&d.finish().unwrap());
         assert_eq!(got, b"hello world\nhello world\n");
         assert_eq!(d.format, Some(Format::Bzip2));
-        assert!(d.pending.is_empty());
+        assert_eq!(d.pending, [] as [u8; 0]);
     }
 
     /// Chunk boundaries never matter for plain input either.
@@ -233,7 +233,7 @@ mod tests {
         }
         got.extend_from_slice(&d.finish().expect("finish"));
         assert_eq!(got, b"hello world\n");
-        assert!(d.pending.is_empty());
+        assert_eq!(d.pending, [] as [u8; 0]);
     }
 
     /// Push returns everything for plain input; finish then has nothing left.
