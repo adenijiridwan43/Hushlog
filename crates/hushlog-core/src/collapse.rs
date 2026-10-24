@@ -898,4 +898,29 @@ mod tests {
         assert_eq!(s.lines_in, s.lines_out + s.lines_folded, "{s:?}");
         assert_eq!(s.errors, 3);
     }
+
+    /// Fold counts are u64, so a very long retry storm is tracked exactly.
+    /// lnav's tracker used 32-bit line counts and overflowed; hushlog does not.
+    #[test]
+    fn fold_count_stays_exact_at_large_repeat_counts() {
+        let mut c = FoldingCollapser::default();
+        for no in 1..=100_000u64 {
+            let events = c.push(classified(no, Level::Warning, "same"));
+            match events.as_slice() {
+                [Event::Emit(_)] => assert_eq!(no, 1, "only the first sighting is emitted"),
+                [Event::Folded { count, .. }] => {
+                    assert_eq!(*count, no, "the fold count must stay exact");
+                }
+                other => panic!("unexpected event {other:?}"),
+            }
+        }
+        let events = c.finish();
+        let [Event::Summary(s)] = events.as_slice() else {
+            panic!("expected a trailing summary, got {events:?}");
+        };
+        assert_eq!(s.lines_in, 100_000);
+        assert_eq!(s.lines_out, 1);
+        assert_eq!(s.lines_folded, 99_999);
+        assert_eq!(s.groups, 1);
+    }
 }

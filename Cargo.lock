@@ -439,6 +439,7 @@ dependencies = [
  "insta",
  "is-terminal",
  "owo-colors",
+ "proptest",
  "serde",
  "serde_json",
  "thiserror 2.0.21",

@@ -1,0 +1,9 @@
+2026-10-12T09:14:10Z INFO  scheduler: starting reconciliation loop
+2026-10-12T09:14:09Z WARN  scheduler: Retry 3/10 for pod checkout-api-7f9c4d8b6-x2k9m after backoff 200ms
+2026-10-12T09:14:11Z ERROR scheduler: pod checkout-api-7f9c4d8b6-x2k9m failed readiness probe 3 times
+2026-10-12T09:14:08Z INFO  scheduler: starting reconciliation loop
+2026-10-12T09:14:08Z WARN  scheduler: Retry 1/10 for pod inventory-api-2c8e3f6a9-d4k7m after backoff 100ms
+2026-10-12T09:14:11Z ERROR scheduler: giving up on checkout-api after 10 attempts
+2026-10-12T09:14:08Z INFO  scheduler: starting reconciliation loop
+2026-10-12T09:14:09Z WARN  scheduler: Retry 3/10 for pod checkout-api-7f9c4d8b6-x2k9m after backoff 200ms
+2026-10-12T09:14:12Z INFO  scheduler: health probe ok for inventory-api

@@ -92,7 +92,7 @@ pub struct Rule {
     /// Name of the capture group whose value becomes this line's operation id.
     ///
     /// When set, the classifier extracts the group's value from each matching
-    /// line and carries it on [`Classified::opid`]. The collapser folds lines
+    /// line and carries it on [`hushlog_core::Classified::opid`]. The collapser folds lines
     /// only with the same opid, so `Retry 1/10 for pod abc-123` under `op-1`
     /// and the same masked line under `op-2` stay in separate fold groups --
     /// two retry storms never collapse into one just because they look alike.

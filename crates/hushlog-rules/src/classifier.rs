@@ -1,6 +1,6 @@
 //! Stage 3: the classifier.
 //!
-//! Every rule's pattern goes into one [`RegexSet`], compiled once at load time.
+//! Every rule's pattern goes into one [`regex::RegexSet`], compiled once at load time.
 //! Classification is then a single pass over the line regardless of how many
 //! rules exist, which is what keeps the 200 MB/s target in AGENTS.md section 7
 //! reachable: the work per line does not grow with the size of the pack.
@@ -317,7 +317,7 @@ impl CompiledRule {
     /// The value of a rule's named capture group in a line, if the rule
     /// declared one and it took part in the match.
     ///
-    /// Re-runs just this rule's pattern because [`RegexSet`] matches report
+    /// Re-runs just this rule's pattern because [`regex::RegexSet`] matches report
     /// indices but not capture text. The pattern already compiled successfully
     /// at load time, so this cannot fail.
     #[must_use]
