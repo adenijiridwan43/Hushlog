@@ -43,6 +43,8 @@ regex = "1"
 aho-corasick = "1"
 toml = "0.9"
 xxhash-rust = { version = "0.8", features = ["xxh3"] }
+flate2 = "1"
+bzip2 = "0.4"
 clap = { version = "4", features = ["derive"] }
 anstream = "0.6"
 owo-colors = "4"

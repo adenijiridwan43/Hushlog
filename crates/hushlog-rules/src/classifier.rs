@@ -45,6 +45,15 @@ pub struct CompiledRule {
     /// Level→pattern map used with [`Self::level_field`], tried most-severe
     /// first.
     pub level_map: Option<LevelMap>,
+    /// Name of the capture group whose value becomes this line's operation id.
+    ///
+    /// When set, the classifier extracts this group from each matching line and
+    /// carries it on [`hushlog_core::Classified::opid`]. The collapser folds
+    /// lines only with the same opid, so `Retry 1/10 for pod abc-123` under
+    /// `op-1` and the same masked line under `op-2` stay in separate fold
+    /// groups -- two retry storms never collapse into one just because they
+    /// look alike.
+    pub opid: Option<String>,
     /// Whether the renderer should draw attention to matching lines.
     pub highlight: bool,
     /// Whether repeats of this line may be folded.
@@ -110,6 +119,14 @@ impl RuleClassifier {
                     id: rule.id_str().to_string(),
                     message: format!("invalid pattern: {}", first_line(&e.to_string())),
                 })?;
+
+                // When a rule declares an opid capture group, it must exist in
+                // the pattern: a pack that names a group the regex never opens
+                // would silently never produce an opid, which is exactly the
+                // kind of silent loss this crate refuses (AGENTS.md section 1).
+                if rule.opid.is_some() {
+                    validate_opid_group(rule, &pattern)?;
+                }
 
                 let id = rule.id_str();
                 if !seen.insert(id) {
@@ -243,11 +260,16 @@ impl Classifier for RuleClassifier {
                     .as_deref()
                     .and_then(|field| rule.capture_value(&line.plain, field))
                     .and_then(|value| rule.level_for(&value));
+                let opid = rule
+                    .opid
+                    .as_deref()
+                    .and_then(|field| rule.capture_value(&line.plain, field));
                 Classified {
                     level: level.unwrap_or(rule.level),
                     rule_id: Some(RuleId(index)),
                     highlight: rule.highlight,
                     line,
+                    opid,
                 }
             }
             // A line no rule matched is ordinary output. Saying so here does not
@@ -257,6 +279,7 @@ impl Classifier for RuleClassifier {
                 rule_id: None,
                 highlight: false,
                 line,
+                opid: None,
             },
         }
     }
@@ -287,6 +310,7 @@ impl CompiledRule {
             block: rule.block.clone(),
             location: rule.location().clone(),
             sample: rule.sample.clone(),
+            opid: rule.opid.as_ref().map(|s| s.get_ref().clone()),
         }
     }
 
@@ -333,6 +357,36 @@ fn compile(rule: &Rule) -> String {
         Matcher::Regex { pattern } => pattern.get_ref().clone(),
         Matcher::Literal { pattern } => regex::escape(pattern.get_ref()),
     }
+}
+
+/// When a rule declares an opid capture group, it must exist in the pattern:
+/// a pack that names a group the regex never opens would silently never
+/// produce an opid, which is exactly the kind of silent loss this crate
+/// refuses (AGENTS.md section 1).
+///
+/// # Errors
+///
+/// Returns [`RuleError`] naming the rule and its source location when the
+/// declared capture group is not present in the pattern.
+fn validate_opid_group(rule: &Rule, pattern: &str) -> Result<(), RuleError> {
+    let Some(group) = &rule.opid else { return Ok(()) };
+    let re = regex::Regex::new(pattern).map_err(|e| RuleError::Rule {
+        location: pattern_location(rule).clone(),
+        id: rule.id_str().to_string(),
+        message: format!("invalid pattern: {}", first_line(&e.to_string())),
+    })?;
+    if re.capture_names().all(|name| name != Some(group.get_ref())) {
+        return Err(RuleError::Rule {
+            location: rule.location().clone(),
+            id: rule.id_str().to_string(),
+            message: format!(
+                "rule `{}` declares opid capture group {} but the pattern has no group of that name",
+                rule.id_str(),
+                group.get_ref()
+            ),
+        });
+    }
+    Ok(())
 }
 
 /// Prefer the pattern's own span, so the error points at the regex, not the id.

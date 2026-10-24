@@ -179,6 +179,7 @@ mod tests {
             line: Line::new(text, text, Stream::Stdout, no),
             level,
             rule_id: None,
+            opid: None,
             highlight: false,
         }
     }

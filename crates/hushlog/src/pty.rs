@@ -36,6 +36,7 @@ use hushlog_core::Stream;
 use portable_pty::{CommandBuilder, PtySize, native_pty_system};
 
 use crate::args::Config;
+use crate::decompress::Decompressor;
 use crate::explain::Explainer;
 use crate::pipe::{READ_CHUNK, count_newlines, report_raw_summary};
 use crate::pipeline::Pipeline;
@@ -79,6 +80,12 @@ const PTY_DRAIN_MAX: Duration = Duration::from_secs(2);
 /// Returns an error if the pseudo-terminal cannot be opened or the child cannot
 /// be spawned. A failure *inside* the child is the child's exit code, not an
 /// error here.
+///
+/// This function is intentionally long: PTY setup, the polling/drain loop, and
+/// teardown are each necessary and hard to split without threading a dozen
+/// mutable references through a helper. Keeping it in one function is the
+/// clearest structure.
+#[allow(clippy::too_many_lines)]
 pub(crate) fn run(config: &Config, program: &str, args: &[String]) -> Result<i32> {
     let mut tee = Tee::open(config.tee.as_deref()).context("opening the tee file")?;
     let raw = config.raw;
@@ -154,6 +161,9 @@ pub(crate) fn run(config: &Config, program: &str, args: &[String]) -> Result<i32
             )
         })
         .transpose()?;
+    // Auto-decompress the single PTY stream; `--tee` already captured the raw
+    // bytes upstream, and `--raw` bypasses the pipeline entirely.
+    let mut decompress = (!raw).then(Decompressor::new);
     let mut stdout = io::stdout().lock();
     let mut bytes = 0u64;
     let mut lines = 0u64;
@@ -167,10 +177,14 @@ pub(crate) fn run(config: &Config, program: &str, args: &[String]) -> Result<i32
                 bytes += chunk.len() as u64;
                 lines += count_newlines(&chunk);
                 tee.write(&chunk).context("writing the tee log")?;
+                let decompressed = match &mut decompress {
+                    Some(d) => d.push(&chunk)?,
+                    None => chunk.clone(),
+                };
                 match pipeline.as_mut() {
                     // A PTY merges the child's two streams; see the module docs.
-                    Some(p) => p.push(&chunk, Stream::Stdout)?,
-                    None => stdout.write_all(&chunk).context("writing stdout")?,
+                    Some(p) => p.push(&decompressed, Stream::Stdout)?,
+                    None => stdout.write_all(&decompressed).context("writing stdout")?,
                 }
             }
             // The reader thread finished: a real EOF, which is what Unix gives.
@@ -191,6 +205,18 @@ pub(crate) fn run(config: &Config, program: &str, args: &[String]) -> Result<i32
         }
     }
     stdout.flush().context("flushing stdout")?;
+
+    // Flush any decompressed bytes still held by the decoder at end of input.
+    if let Some(d) = &mut decompress {
+        let tail = d.finish().context("flushing the decompressor")?;
+        if !tail.is_empty() {
+            if let Some(p) = pipeline.as_mut() {
+                p.push(&tail, Stream::Stdout)?;
+            } else {
+                stdout.write_all(&tail).context("writing stdout")?;
+            }
+        }
+    }
 
     let status = child.wait().context("waiting for the pty child")?;
     // Both of these are parked on a blocking read that may never finish; the

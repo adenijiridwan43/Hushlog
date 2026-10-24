@@ -23,12 +23,13 @@ use std::io;
 use anyhow::Context as _;
 use hushlog_core::{
     Anonymizer, BlockDetector, Classifier, CollapsePolicy, Collapser, Event, FoldingCollapser,
-    FormatDetector, Ingest, Normalizer, Renderer, Stream,
+    FormatDetector, Ingest, Level, Normalizer, Renderer, Summary, Stream,
 };
 use hushlog_rules::RuleClassifier;
 
 use crate::args::{self, Config};
 use crate::explain::Explainer;
+use crate::query::Query;
 use crate::sink::SharedOut;
 
 /// Which of the child's two streams a batch of bytes came from, when wrap mode
@@ -62,6 +63,9 @@ pub(crate) struct Pipeline {
     /// Kept so `--explain` can show why two lines were considered the same.
     normalizer: Normalizer,
     summary: bool,
+    /// Running counts for the current query-mode run; `summary` (the bool)
+    /// gates whether the final `Event::Summary` is rendered.
+    stats: Summary,
     /// Where the verbatim log went, for the summary's "full log: PATH" tail.
     /// `hushlog-core` builds the `Summary` and knows nothing about `--tee`,
     /// so the CLI fills this in on the way out.
@@ -74,6 +78,9 @@ pub(crate) struct Pipeline {
     anonymize: bool,
     /// The anonymizer, only allocated when `--anonymize` is active.
     anonymizer: Option<Anonymizer>,
+    /// The parsed `--query` predicate, if any. When set the pipeline skips the
+    /// collapser and emits only matching lines as structured records.
+    query: Option<Query>,
     /// Loaded packs, kept so the classifier can be rebuilt once a format is
     /// detected (the detected pack's rules are tried first).
     packs: Vec<hushlog_rules::RulePack>,
@@ -152,8 +159,17 @@ impl Pipeline {
             ))?;
         }
 
-        let detection_complete = format_detector.is_none();
+        let query_mode = config.query.is_some();
+        // Query mode classifies against all packs and must not let format
+        // detection swap the classifier out from under a running predicate.
+        let detection_complete = format_detector.is_none() || query_mode;
         let anonymize = config.anonymize;
+        let query = config
+            .query
+            .as_deref()
+            .map(Query::parse)
+            .transpose()
+            .map_err(|e| anyhow::anyhow!("invalid --query expression: {e}"))?;
         Ok(Self {
             classifier,
             ingests: [Ingest::new(Stream::Stdout), Ingest::new(Stream::Stderr)],
@@ -163,6 +179,7 @@ impl Pipeline {
             explain,
             normalizer: Normalizer::new(),
             summary: config.summary,
+            stats: Summary::default(),
             tee_path,
             stdout_closed: false,
             anonymize,
@@ -174,6 +191,7 @@ impl Pipeline {
             packs,
             format_detector,
             detection_complete,
+            query,
         })
     }
 
@@ -208,8 +226,13 @@ impl Pipeline {
         }
         self.handle(tail)?;
 
-        let events = self.collapser.finish();
-        self.render_all(events)?;
+        if self.query.is_some() {
+            // Query mode bypasses the collapser, so the summary is rendered here.
+            self.render_all(vec![Event::Summary(self.stats.clone())])?;
+        } else {
+            let events = self.collapser.finish();
+            self.render_all(events)?;
+        }
         if let Some(explain) = self.explain.as_mut() {
             explain.flush()?;
         }
@@ -228,6 +251,9 @@ impl Pipeline {
     /// Lines are classified immediately as they arrive; detection does not
     /// buffer or delay output.
     fn handle(&mut self, lines: Vec<hushlog_core::Line>) -> io::Result<()> {
+        if self.query.is_some() {
+            return self.handle_query(lines);
+        }
         for line in lines {
             // Run format detection before classification, while it is still
             // open. The detected pack's rules are tried first for subsequent
@@ -271,6 +297,38 @@ impl Pipeline {
             }
             let events = self.collapser.push(classified);
             self.render_all(events)?;
+        }
+        Ok(())
+    }
+
+    /// Query mode: classify and mask each line, then emit it as an [`Event::Emit`]
+    /// only when the `--query` predicate matches. The collapser is bypassed, so
+    /// nothing is folded and every matching line appears verbatim.
+    fn handle_query(&mut self, lines: Vec<hushlog_core::Line>) -> io::Result<()> {
+        for line in lines {
+            // Masking is for grouping only; applied after classification so it
+            // can never suppress an error rule.
+            let mut classified = self.classifier.classify(line);
+            classified.line.plain = self.normalizer.mask(&classified.line.plain).into_owned();
+            if self.anonymize {
+                if let Some(anon) = self.anonymizer.as_mut() {
+                    classified.line.raw = anon.anonymize(&classified.line.raw);
+                }
+            }
+
+            let matched = {
+                let q = self.query.as_ref().expect("query mode is active");
+                q.matches(&classified)
+            };
+
+            self.stats.lines_in += 1;
+            if matched {
+                if classified.level == Level::Error {
+                    self.stats.errors += 1;
+                }
+                self.stats.lines_out += 1;
+                self.render_all(vec![Event::Emit(classified)])?;
+            }
         }
         Ok(())
     }

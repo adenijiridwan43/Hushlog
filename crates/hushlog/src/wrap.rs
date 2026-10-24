@@ -26,6 +26,7 @@ use crossbeam_channel::{Receiver, Sender, unbounded};
 use hushlog_core::Stream;
 
 use crate::args::Config;
+use crate::decompress::Decompressor;
 use crate::explain::Explainer;
 use crate::pipe::{READ_CHUNK, count_newlines, report_raw_summary};
 use crate::pipeline::{Origin, Pipeline};
@@ -104,7 +105,11 @@ fn drive(config: &Config, child: &mut Child, tee: &mut Tee) -> Result<ExitStatus
         raw_pump(&rx, tee, config.summary)
     } else {
         let mut pipeline = Pipeline::new(config, out, explain, tee.path())?;
-        let pumped = pump(&rx, &mut pipeline, tee);
+        // One decompressor per stream: each stream is decompressed independently
+        // so that the same compressed text on stdout and stderr stays two
+        // streams, just as uncompressed text does.
+        let mut decompress = [Some(Decompressor::new()), Some(Decompressor::new())];
+        let pumped = pump(&rx, &mut pipeline, tee, &mut decompress);
         pumped.and_then(|()| pipeline.finish().context("finishing the pipeline"))
     };
     result?;
@@ -145,14 +150,37 @@ fn raw_pump(rx: &Receiver<Batch>, tee: &mut Tee, summary: bool) -> Result<()> {
 }
 
 /// Drain both reader threads into the pipeline.
-fn pump(rx: &Receiver<Batch>, pipeline: &mut Pipeline, tee: &mut Tee) -> Result<()> {
+fn pump(
+    rx: &Receiver<Batch>,
+    pipeline: &mut Pipeline,
+    tee: &mut Tee,
+    decompress: &mut [Option<Decompressor>; 2],
+) -> Result<()> {
     while let Ok((origin, bytes)) = rx.recv() {
         let stream: Stream = origin.into();
         // The tee write happens here, upstream of `Ingest`, on the bytes as the
         // reader thread received them. Each stream's bytes land contiguously;
         // the two may interleave, which is what a merged terminal view is.
         tee.write(&bytes).context("writing the tee log")?;
-        pipeline.push(&bytes, stream)?;
+        let idx = stream as usize;
+        let decompressed = match &mut decompress[idx] {
+            Some(d) => d.push(&bytes)?,
+            None => bytes.clone(),
+        };
+        pipeline.push(&decompressed, stream)?;
+    }
+    // Flush any decompressed bytes still held by either decoder at end of input.
+    for (idx, d) in decompress.iter_mut().enumerate() {
+        if let Some(d) = d {
+            let tail = d.finish().context("flushing the decompressor")?;
+            if !tail.is_empty() {
+                let stream = match idx {
+                    0 => Stream::Stdout,
+                    _ => Stream::Stderr,
+                };
+                pipeline.push(&tail, stream)?;
+            }
+        }
     }
     pipeline.finish().context("finishing the pipeline")?;
     Ok(())

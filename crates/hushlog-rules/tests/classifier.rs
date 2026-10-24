@@ -336,6 +336,15 @@ level_map = { error = "^(?:err|error|fail|critical|fatal)$", warning = "^(?:warn
 level = "info"
 "#;
 
+const OPID_PACK: &str = r#"
+[[rule]]
+id = "retry.op"
+match = { kind = "regex", pattern = "Retry (?<n>\\d+)/10 for pod (?<op>[a-z0-9-]+)" }
+level = "warning"
+collapse = true
+opid = "op"
+"#;
+
 #[test]
 fn level_field_map_picks_most_severe_match() {
     let mut c = build(LEVEL_FIELD_PACK);
@@ -392,4 +401,57 @@ level = "warning"
     let text = err.to_string();
     assert!(text.contains("derives level"), "got: {text}");
     assert!(text.contains("Warning"), "got: {text}");
+}
+
+#[test]
+fn opid_is_extracted_from_named_capture() {
+    let mut c = build(OPID_PACK);
+
+    let got = classify(&mut c, "Retry 3/10 for pod checkout-api-7f9c4d8b6-x2k9m");
+    assert_eq!(got.opid.as_deref(), Some("checkout-api-7f9c4d8b6-x2k9m"));
+    assert_eq!(got.level, Level::Warning);
+
+    let got = classify(&mut c, "Retry 4/10 for pod inventory-api-2c8e3f6a9-d4k7m");
+    assert_eq!(got.opid.as_deref(), Some("inventory-api-2c8e3f6a9-d4k7m"));
+}
+
+#[test]
+fn opid_is_none_when_rule_has_no_opid() {
+    let mut c = build(CARGO_LIKE);
+    let got = classify(&mut c, "warning: unused variable: `ctx`");
+    assert_eq!(got.opid, None);
+}
+
+#[test]
+fn invalid_opid_group_is_rejected() {
+    let src = r#"
+[[rule]]
+id = "bad.opid"
+match = { kind = "regex", pattern = "Retry \\d+/10 for pod [a-z-]+" }
+level = "warning"
+opid = "no_such_group"
+"#;
+    let err = parse_pack("bad.opid.toml", src)
+        .and_then(|p| RuleClassifier::from_pack(&p))
+        .expect_err("opid group not in pattern must fail");
+    let text = err.to_string();
+    assert!(text.contains("bad.opid"), "must name the rule, got: {text}");
+    assert!(text.contains("opid"), "must mention the opid, got: {text}");
+}
+
+#[test]
+fn opid_and_level_field_can_coexist() {
+    let src = r#"
+[[rule]]
+id = "klog.op"
+match = { kind = "regex", pattern = "^(?<ts>\\S+) (?<level>\\w+) op=(?<op>\\S+)" }
+level = "info"
+level_field = "level"
+level_map = { error = "^error$", warning = "^warning$" }
+opid = "op"
+"#;
+    let mut c = build(src);
+    let got = classify(&mut c, "2026-10-12T09:14:03Z ERROR op=abc-123");
+    assert_eq!(got.level, Level::Error);
+    assert_eq!(got.opid.as_deref(), Some("abc-123"));
 }

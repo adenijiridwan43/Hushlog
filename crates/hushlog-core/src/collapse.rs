@@ -67,11 +67,20 @@ fn stream_tag(stream: crate::Stream) -> u8 {
 }
 
 /// Fingerprint one line for grouping purposes.
-fn fingerprint(line: &Line, level: Level) -> u64 {
+///
+/// The group key is `(plain, level, stream, opid)`. Two lines fold only when
+/// they share the masked text *and* the operation id, so a retry storm for
+/// `op-abc` never merges with one for `op-xyz` just because both lines look
+/// alike after masking. A line with no opid never shares a group with one
+/// that has one.
+fn fingerprint(line: &Line, level: Level, opid: Option<&str>) -> u64 {
     let mut hash = Xxh3::new();
     // Fixed-width tags keep the encoding unambiguous: byte 0 is the domain,
-    // byte 1 the level, byte 2 the stream, the rest is the masked text.
+    // byte 1 the level, byte 2 the stream, then an opid marker followed by the
+    // opid text (empty when None), then the masked text.
     hash.update(&[LINE_DOMAIN, level_tag(level), stream_tag(line.stream)]);
+    hash.update(if opid.is_some() { &[1u8] } else { &[0u8] });
+    hash.update(opid.unwrap_or_default().as_bytes());
     hash.update(line.plain.as_bytes());
     hash.digest()
 }
@@ -325,7 +334,7 @@ impl FoldingCollapser {
     }
 
     fn collapse_line(&mut self, c: Classified) -> Vec<Event> {
-        let fp = fingerprint(&c.line, c.level);
+        let fp = fingerprint(&c.line, c.level, c.opid.as_deref());
         let may_fold = self.may_fold(c.level);
 
         // End the borrow on `self.lines` before touching the summary.
@@ -452,6 +461,7 @@ mod tests {
             line: line(no, text),
             level,
             rule_id: None,
+            opid: None,
             highlight: level == Level::Error,
         }
     }
@@ -484,6 +494,38 @@ mod tests {
             [Event::Folded { count, .. }] => assert_eq!(*count, 3),
             other => panic!("expected one Folded, got {other:?}"),
         }
+    }
+
+    /// Identical masked text with different opids never merges: two retry
+    /// storms for different operations stay in separate fold groups.
+    #[test]
+    fn identical_text_with_different_opids_stays_separate() {
+        let mut c = FoldingCollapser::default();
+        let op_a = classified(1, Level::Warning, "retrying request");
+        let op_a2 = Classified { opid: Some("op-1".to_string()), ..op_a };
+        let op_b = Classified { opid: Some("op-2".to_string()), ..classified(2, Level::Warning, "retrying request") };
+
+        let events = c.push(op_a2);
+        assert!(matches!(events.as_slice(), [Event::Emit(_)]), "{events:?}");
+
+        let events = c.push(op_b);
+        assert!(matches!(events.as_slice(), [Event::Emit(_)]), "{events:?}");
+
+        // The same opid folds as usual.
+        let op_a3 = Classified { opid: Some("op-1".to_string()), ..classified(3, Level::Warning, "retrying request") };
+        let events = c.push(op_a3);
+        match events.as_slice() {
+            [Event::Folded { count, sample, .. }] => {
+                assert_eq!(*count, 2);
+                assert_eq!(sample.line.no, 1);
+            }
+            other => panic!("expected one Folded, got {other:?}"),
+        }
+
+        // A line with no opid shares a group with neither.
+        let plain = classified(4, Level::Warning, "retrying request");
+        let events = c.push(plain);
+        assert!(matches!(events.as_slice(), [Event::Emit(_)]), "{events:?}");
     }
 
     #[test]

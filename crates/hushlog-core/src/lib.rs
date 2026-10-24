@@ -182,6 +182,11 @@ pub struct Classified {
     pub rule_id: Option<RuleId>,
     /// Whether the renderer should draw attention to this line.
     pub highlight: bool,
+    /// Operation id extracted from a rule's named capture group, if the rule
+    /// declared one. Part of the fold group key: lines with different opids
+    /// never merge into one fold group, even when their masked text matches.
+    /// `None` when no opid rule fired.
+    pub opid: Option<String>,
 }
 
 /// Assigns a [`Level`] to each line.

@@ -85,7 +85,7 @@ pub struct Line { pub raw: String, pub plain: String, pub stream: Stream, pub no
 
 pub enum Level { Error, Warning, Info, Progress, Trace }
 
-pub struct Classified { pub line: Line, pub level: Level, pub rule_id: Option<RuleId>, pub highlight: bool }
+pub struct Classified { pub line: Line, pub level: Level, pub rule_id: Option<RuleId>, pub highlight: bool, pub opid: Option<String> }
 
 pub trait Classifier { fn classify(&mut self, line: Line) -> Classified; }
 

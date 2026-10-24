@@ -27,12 +27,14 @@
 //! the way out; every renderer exposes [`flush`](TtyRenderer::flush) for that.
 
 mod common;
+mod csv;
 mod github;
 mod gitlab;
 mod json;
 mod plain;
 mod tty;
 
+pub use csv::CsvRenderer;
 pub use github::GithubRenderer;
 pub use gitlab::GitlabRenderer;
 pub use json::JsonRenderer;
@@ -65,16 +67,19 @@ pub enum Format {
     Gitlab,
     /// Newline-delimited JSON, one record per event, for machines and agents.
     Json,
+    /// Comma-separated values, one row per event, for spreadsheets and agents.
+    Csv,
 }
 
 impl Format {
     /// Every format, in the order `--help` lists them.
-    pub const ALL: [Format; 5] = [
+    pub const ALL: [Format; 6] = [
         Format::Tty,
         Format::Plain,
         Format::Github,
         Format::Gitlab,
         Format::Json,
+        Format::Csv,
     ];
 
     /// The canonical name, as accepted by [`Format::from_str`].
@@ -86,6 +91,7 @@ impl Format {
             Format::Github => "github",
             Format::Gitlab => "gitlab",
             Format::Json => "json",
+            Format::Csv => "csv",
         }
     }
 }
@@ -107,6 +113,7 @@ impl FromStr for Format {
             "github" | "gh" => Ok(Format::Github),
             "gitlab" | "gl" => Ok(Format::Gitlab),
             "json" => Ok(Format::Json),
+            "csv" => Ok(Format::Csv),
             other => Err(ParseFormatError {
                 got: other.to_string(),
             }),
@@ -116,7 +123,7 @@ impl FromStr for Format {
 
 /// [`Format`] did not parse.
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-#[error("unknown output format {got:?}; expected tty, plain, github, gitlab or json")]
+#[error("unknown output format {got:?}; expected tty, plain, github, gitlab, json or csv")]
 pub struct ParseFormatError {
     got: String,
 }
@@ -132,6 +139,7 @@ pub fn renderer(format: Format, out: impl Write + 'static) -> Box<dyn Renderer> 
         Format::Github => Box::new(GithubRenderer::new(out)),
         Format::Gitlab => Box::new(GitlabRenderer::new(out)),
         Format::Json => Box::new(JsonRenderer::new(out)),
+        Format::Csv => Box::new(CsvRenderer::new(out)),
     }
 }
 
@@ -229,6 +237,7 @@ mod tests {
             line: hushlog_core::Line::new(text, text, hushlog_core::Stream::Stdout, 1),
             level: hushlog_core::Level::Error,
             rule_id: None,
+            opid: None,
             highlight: false,
         }
     }

@@ -30,6 +30,9 @@ anyhow.workspace = true
 thiserror.workspace = true
 crossbeam-channel.workspace = true
 portable-pty.workspace = true
+regex.workspace = true
+flate2.workspace = true
+bzip2.workspace = true
 
 [dev-dependencies]
 xxhash-rust = { version = "0.8", features = ["xxh3"] }

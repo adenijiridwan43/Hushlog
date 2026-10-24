@@ -97,6 +97,10 @@ impl Normalizer {
     /// This is the hot path. It never allocates -- the masked bytes are fed
     /// straight into `xxh3` -- so the only cost per line is the scan itself.
     ///
+    /// Lines that contain no byte capable of starting a maskable token are
+    /// hashed verbatim: `scan` would find nothing to mask, so skipping it is
+    /// the fast path that keeps the common case cheap.
+    ///
     /// ```
     /// use hushlog_core::Normalizer;
     ///
@@ -108,6 +112,12 @@ impl Normalizer {
     #[must_use]
     pub fn fingerprint(&self, plain: &str) -> u64 {
         let mut hash = Xxh3::new();
+        if !has_stop_byte(plain.as_bytes()) {
+            // No byte can begin a maskable token, so nothing would change.
+            // Hash the line whole rather than running the scan.
+            hash.update(plain.as_bytes());
+            return hash.digest();
+        }
         let mut sink = |chunk: &str| hash.update(chunk.as_bytes());
         if !scan(plain, &mut sink) {
             // Nothing was masked, so `scan` had nothing to flush. Feed the
@@ -131,6 +141,10 @@ impl Normalizer {
     /// ```
     #[must_use]
     pub fn mask<'a>(&self, plain: &'a str) -> Cow<'a, str> {
+        if !has_stop_byte(plain.as_bytes()) {
+            // No byte can begin a maskable token, so nothing would change.
+            return Cow::Borrowed(plain);
+        }
         let mut buf = String::new();
         let mut sink = |chunk: &str| buf.push_str(chunk);
         if scan(plain, &mut sink) {
@@ -567,6 +581,22 @@ fn is_stop(b: &[u8], i: usize) -> bool {
         || (c.is_ascii_alphabetic() && b.get(i + 1) == Some(&b'-'))
 }
 
+/// Whether any byte in `b` could begin a maskable token.
+///
+/// These are the bytes [`is_stop`] can recognise: hex digits (which open
+/// numbers, dates, hashes and UUIDs) and `:`, `/` and `\` (times and paths).
+/// The `alphabetic-followed-by-hyphen` case in [`is_stop`] is deliberately
+/// excluded: a slug like `use-std` or `x-y` has no digit, colon or slash, so
+/// it would skip this check, but `match_slug` would not mask it anyway
+/// (neither segment is volatile), so the fingerprint is unchanged.
+///
+/// A line that returns `false` here cannot contain any maskable token, so the
+/// normalizer skips the scan entirely and hashes the line verbatim.
+#[inline]
+fn has_stop_byte(b: &[u8]) -> bool {
+    b.iter().any(|&c| c.is_ascii_hexdigit() || matches!(c, b':' | b'/' | b'\\'))
+}
+
 /// Bytes that may appear inside an identifier, including its separators.
 const fn is_word_join(c: u8) -> bool {
     c.is_ascii_alphanumeric() || c == b'-' || c == b'_'
@@ -752,6 +782,32 @@ mod tests {
         assert_eq!(n.mask(b), n.mask(c));
         assert_eq!(n.fingerprint(a), n.fingerprint(b));
         assert_eq!(n.fingerprint(b), n.fingerprint(c));
+    }
+
+    /// The fast path: lines with no byte capable of starting a maskable token
+    /// are borrowed unchanged. No token can begin in such a line, so `mask`
+    /// must return a borrow and `fingerprint` must hash the line verbatim.
+    #[test]
+    fn fast_path_skips_scan_for_plain_lines() {
+        let n = norm();
+        let plain = [
+            "",
+            "connection refused",
+            "permission denied",
+            "starting reconciliation loop",
+            "health probe ok for checkout-api",
+            "just some ordinary output",
+        ];
+        for line in plain {
+            // mask borrows when there's nothing to mask.
+            assert!(
+                matches!(n.mask(line), Cow::Borrowed(s) if s == line),
+                "{line:?} should borrow unchanged"
+            );
+            // Fingerprint is stable: hashing the line directly is the same as
+            // masking then hashing, since nothing changes.
+            assert_eq!(n.fingerprint(line), n.fingerprint(line));
+        }
     }
 
     /// Masking must not be so aggressive that distinct lines merge.

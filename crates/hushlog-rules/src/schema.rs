@@ -89,6 +89,15 @@ pub struct Rule {
     /// [`Self::level`].
     #[serde(default)]
     pub level_field: Option<Spanned<String>>,
+    /// Name of the capture group whose value becomes this line's operation id.
+    ///
+    /// When set, the classifier extracts the group's value from each matching
+    /// line and carries it on [`Classified::opid`]. The collapser folds lines
+    /// only with the same opid, so `Retry 1/10 for pod abc-123` under `op-1`
+    /// and the same masked line under `op-2` stay in separate fold groups --
+    /// two retry storms never collapse into one just because they look alike.
+    #[serde(default)]
+    pub opid: Option<Spanned<String>>,
     /// Maps a level to the pattern that identifies it in [`Self::level_field`].
     ///
     /// Mirrors lnav's `level` object: the key is the level name, the value is

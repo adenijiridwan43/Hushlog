@@ -31,10 +31,12 @@
 //! (`AGENTS.md` section 1).
 
 mod args;
+mod decompress;
 mod explain;
 mod pipe;
 mod pipeline;
 mod pty;
+mod query;
 mod sink;
 mod tee;
 mod wrap;

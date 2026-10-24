@@ -53,6 +53,7 @@ pub fn classify(raw: &str, no: u64) -> Classified {
         line: Line::new(raw, raw, Stream::Stdout, no),
         level,
         rule_id,
+        opid: None,
         // The first type error is the one a human is looking for.
         highlight: raw.contains("user.ts(42,9)"),
     }

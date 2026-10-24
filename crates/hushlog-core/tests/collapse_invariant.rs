@@ -77,6 +77,7 @@ fn input_strategy() -> impl Strategy<Value = Vec<Classified>> {
                 ),
                 level,
                 rule_id: None,
+                opid: None,
                 highlight: level == Level::Error,
             })
             .collect()
@@ -148,6 +149,7 @@ fn identical_error_lines_all_survive_in_both_modes() {
             ),
             level: Level::Error,
             rule_id: None,
+            opid: None,
             highlight: true,
         })
         .collect();
@@ -183,6 +185,7 @@ fn repeated_warnings_still_collapse() {
             ),
             level: Level::Warning,
             rule_id: None,
+            opid: None,
             highlight: false,
         })
         .collect();

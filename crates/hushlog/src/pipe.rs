@@ -13,6 +13,7 @@ use anyhow::{Context as _, Result};
 use hushlog_core::{Stream, Summary};
 
 use crate::args::Config;
+use crate::decompress::Decompressor;
 use crate::explain::Explainer;
 use crate::pipeline::Pipeline;
 use crate::sink::SharedOut;
@@ -39,6 +40,10 @@ pub(crate) fn run(config: &Config) -> Result<i32> {
     }
 
     let explain = config.explain.then(Explainer::new);
+    // Auto-decompress gzip/bzip2: `--tee` already wrote the raw bytes upstream,
+    // and `--raw` bypasses this whole path, so the decompressor only sees the
+    // filtered stream. See `AGENTS.md` section 1.0.
+    let mut decompress = (!config.raw).then(Decompressor::new);
     let mut pipeline = Pipeline::new(config, out, explain, tee.path())?;
     let mut stdin = io::stdin().lock();
     let mut buf = vec![0u8; READ_CHUNK];
@@ -51,12 +56,24 @@ pub(crate) fn run(config: &Config) -> Result<i32> {
                 // bytes as read. Nothing downstream can corrupt it. See
                 // `AGENTS.md` section 1.0.
                 tee.write(&buf[..n]).context("writing the tee log")?;
-                pipeline.push(&buf[..n], Stream::Stdout)?;
+                let decompressed = match &mut decompress {
+                    Some(d) => d.push(&buf[..n])?,
+                    None => buf[..n].to_vec(),
+                };
+                pipeline.push(&decompressed, Stream::Stdout)?;
             }
             // A signal interrupted the read. Falling through to the next
             // iteration is the retry.
             Err(e) if e.kind() == io::ErrorKind::Interrupted => {}
             Err(e) => return Err(e).context("reading stdin"),
+        }
+    }
+
+    // Flush any decompressed bytes still held by the decoder at end of input.
+    if let Some(d) = &mut decompress {
+        let tail = d.finish().context("flushing the decompressor")?;
+        if !tail.is_empty() {
+            pipeline.push(&tail, Stream::Stdout)?;
         }
     }
 

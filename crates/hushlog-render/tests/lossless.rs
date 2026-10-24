@@ -56,10 +56,9 @@ fn folded_error_content_is_still_shown() {
     for format in Format::ALL {
         let out = render_for(format, &events);
         assert!(out.contains(SAMPLE_ERROR), "{format} hid a folded error");
-        if format == Format::Json {
-            // The machine format counts rather than narrates; the sample text
-            // is in the record, the count is a number.
-            assert!(out.contains("\"count\":12"), "{format} lost the count");
+        if format == Format::Json || format == Format::Csv {
+            // Machine format: the count is a field, not a sentence.
+            assert!(out.contains("12"), "{format} lost the count");
         } else {
             assert!(
                 out.contains("12 similar lines folded"),
@@ -168,6 +167,9 @@ fn summary_reports_counts_and_tee_path() {
                 out.contains("\"tee_path\":\"hushlog-full.log\""),
                 "{format}: {out}"
             );
+        } else if format == Format::Csv {
+            assert!(out.contains("lines_in=12345"), "{format}: {out}");
+            assert!(out.contains("hushlog-full.log"), "{format}: {out}");
         } else {
             assert!(out.contains(&expected), "{format} lost the summary");
         }

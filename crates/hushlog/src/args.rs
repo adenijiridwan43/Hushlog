@@ -54,6 +54,10 @@ pub(crate) struct Config {
     pub(crate) summary: bool,
     /// Anonymize sensitive data in the rendered output.
     pub(crate) anonymize: bool,
+    /// A predicate over each classified line; only matching lines are emitted
+    /// as structured records (CSV or JSON). Implies `--format json` unless
+    /// `--format csv` is given; `--format tty|github|gitlab` are rejected.
+    pub(crate) query: Option<String>,
     /// The child command and its arguments, for wrap and PTY mode.
     pub(crate) command: Vec<String>,
 }
@@ -116,6 +120,12 @@ pub(crate) struct Cli {
     /// Upper bound on distinct fingerprints held in memory (LRU capacity)
     #[arg(long, value_name = "N", default_value_t = CollapsePolicy::default().max_tracked)]
     pub(crate) max_tracked: usize,
+
+    /// Only emit lines whose classified fields match this predicate, as CSV or
+    /// JSON records. Implies `--format json` (or `--format csv`); conflicts
+    /// with `--raw`.
+    #[arg(long, value_name = "EXPR", conflicts_with = "raw")]
+    pub(crate) query: Option<String>,
 
     /// Command to run, after `--`
     #[arg(value_name = "CMD")]
@@ -193,12 +203,26 @@ impl Cli {
             bail!("the wrapped command's program name is empty");
         }
 
+        // `--query` emits structured records, so it needs a machine-readable
+        // format. Plain is the default format, so upgrade it to JSON; TTY and
+        // the CI fold formats cannot carry structured records.
+        let format = match self.query {
+            Some(_) => match self.format {
+                Format::Tty | Format::Github | Format::Gitlab => {
+                    bail!("--query requires --format json or csv")
+                }
+                Format::Plain => Format::Json,
+                other => other,
+            },
+            None => self.format,
+        };
+
         Ok(Config {
             mode,
             tee: self.lossless.tee,
             raw: self.lossless.raw,
             explain: self.lossless.explain,
-            format: self.format,
+            format,
             rules: self.rules,
             policy: CollapsePolicy {
                 collapse_errors: self.collapsing.collapse_errors,
@@ -206,6 +230,7 @@ impl Cli {
             },
             summary: !self.lossless.no_summary,
             anonymize: self.lossless.anonymize,
+            query: self.query,
             command: self.command,
         })
     }

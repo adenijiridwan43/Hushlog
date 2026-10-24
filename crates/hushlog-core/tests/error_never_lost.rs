@@ -66,6 +66,7 @@ fn classify(no: u64, level: Level, text: &str) -> Classified {
         line: Line::new(text.to_string(), text.to_string(), Stream::Stdout, no),
         level,
         rule_id: None,
+        opid: None,
         highlight: level == Level::Error,
     }
 }
