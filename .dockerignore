@@ -1,0 +1,13 @@
+# Keep the Docker build context small. The image builds from source inside the
+# container, so the host's build artifacts and VCS data are pure overhead.
+target/
+.git/
+.github/
+# Captured logs and local output must never enter an image layer.
+logs/
+*.hushlog.log
+*.captured.log
+.env
+.env.*
+*.pem
+*.key

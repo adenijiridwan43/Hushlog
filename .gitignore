@@ -3,13 +3,45 @@
 **/*.rs.bk
 *.pdb
 
+# Cargo credentials and local registry config must never be committed.
+# A `cargo publish` token lives in ~/.cargo/credentials.toml by default.
+.cargo/credentials
+.cargo/credentials.toml
+credentials.toml
+
+# Secrets and credentials. Nothing in this list is ever safe to push: a leaked
+# token cannot be un-leaked by deleting the commit.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+secrets.toml
+*.secret
+
 # Hushlog output artifacts
 *.hushlog.log
 hushlog-report.json
 
+# Captured logs are collected ad hoc and can contain host names, tokens, paths
+# and customer data. Only the curated fixtures under tests/fixtures/ are
+# committed; everything else under logs/ stays local.
+/logs/
+*.captured.log
+
 # Local test artifacts
 /tests/fixtures/**/actual/
 /tests/fixtures/**/*.new.snap
+# Insta pending snapshots are reviewed and renamed, never committed as .new.
+*.snap.new
+
+# OpenCode local session state; the checked-in config is opencode.json.
+.opencode/*
+!.opencode/opencode.json
 
 # Editors
 .idea/

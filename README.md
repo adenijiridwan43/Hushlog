@@ -23,6 +23,28 @@ A release pipeline builds static binaries for five targets via
 `.github/workflows/release.yml` on a `v*` tag; `main` runs a dry-run check on
 every push so the configuration is verified before a tag exists.
 
+Once `v0.1.0-alpha.1` is published, the install channels are:
+
+```sh
+# Linux / macOS
+curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.sh | sh
+
+# Windows (PowerShell)
+irm https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.ps1 | iex
+
+# crates.io
+cargo install hushlog
+
+# Homebrew
+brew install adenijiridwan43/tap/hushlog
+
+# Container
+docker run --rm -i ghcr.io/adenijiridwan43/hushlog
+```
+
+See [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md) for the full channel list, the
+one-time secret setup, and the release checklist.
+
 ## Use
 
 ```sh
@@ -90,7 +112,12 @@ Stages communicate only through the traits in
 
 Read [`AGENTS.md`](AGENTS.md) first — it is the contract. The fixtures in
 `tests/fixtures/` are the real specification; see the
-[README there](tests/fixtures/README.md) for what still needs collecting.
+[README there](tests/fixtures/README.md) for what still needs collecting, and
+[`docs/CAPTURING-LOGS.md`](docs/CAPTURING-LOGS.md) for how to turn a real noisy
+process into a fixture.
+
+Releasing is documented in [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md):
+the channel list, the one-time secret setup, and the release checklist.
 
 AI agents wrote much of this code; every change was reviewed before landing,
 and the workspace gate (`cargo clippy -- -D warnings`, `cargo test`) must stay
