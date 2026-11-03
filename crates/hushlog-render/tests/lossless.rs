@@ -51,6 +51,7 @@ fn folded_error_content_is_still_shown() {
         fp: 0x0bad_f00d_dead_beef,
         count: 12,
         sample: classify(SAMPLE_ERROR, 23),
+        first_fold: true,
     }];
 
     for format in Format::ALL {
@@ -92,6 +93,7 @@ fn tty_colours_by_level() {
             fp: 1,
             count: 4,
             sample: classify(SAMPLE_ERROR_PLAIN, 30),
+            first_fold: true,
         }],
     );
     assert!(

@@ -12,6 +12,19 @@ use crate::common::{Sink, fold_note, is_error};
 pub struct TtyRenderer {
     sink: Sink,
     color: bool,
+    /// The fold group whose live counter line is currently on screen, if any.
+    ///
+    /// A group is announced once; later folds of the same group rewrite that
+    /// one line with the new count rather than printing a new one, so a
+    /// repetition storm stays one line on a terminal instead of thousands.
+    live: Option<Live>,
+}
+
+/// The live counter line: which group, how wide it was, and the text on screen.
+#[derive(Debug)]
+struct Live {
+    fp: u64,
+    width: usize,
 }
 
 /// Whether to colour, and how to decide.
@@ -62,6 +75,7 @@ impl TtyRenderer {
         Self {
             sink: Sink::new(out),
             color: color.resolve(),
+            live: None,
         }
     }
 
@@ -102,15 +116,58 @@ impl TtyRenderer {
         }
     }
 
-    /// The accounting for a folded group: the sample when it carries error
-    /// content, then the count of what was folded.
-    fn fold(&mut self, count: u64, sample: &Classified) -> io::Result<()> {
-        if is_error(sample) {
-            let painted = self.paint(&sample.line.raw, sample.level, sample.highlight);
-            self.sink.line(&painted)?;
+    /// Finish a live counter line, if one is on screen, so the next line of
+    /// output starts on a fresh row.
+    fn settle_live(&mut self) -> io::Result<()> {
+        if self.live.take().is_some() {
+            self.sink.newline()?;
         }
-        let dimmed = self.wrap(&fold_note(count), Style::new().dimmed());
-        self.sink.line(&dimmed)
+        Ok(())
+    }
+
+    /// Handle a fold event, keeping at most one live counter line on screen.
+    fn fold_event(
+        &mut self,
+        fp: u64,
+        count: u64,
+        sample: &Classified,
+        first_fold: bool,
+    ) -> io::Result<()> {
+        let note = self.wrap(&fold_note(count), Style::new().dimmed());
+        let width = note.chars().count();
+
+        if first_fold {
+            // Announce the group. Anything already open is settled first.
+            self.settle_live()?;
+            if is_error(sample) {
+                let painted = self.paint(&sample.line.raw, sample.level, sample.highlight);
+                self.sink.line(&painted)?;
+            }
+            // No terminator: this line stays live so later folds can rewrite it.
+            write!(self.sink, "{note}").and_then(|()| self.sink.flush())?;
+            self.live = Some(Live { fp, width });
+            return Ok(());
+        }
+
+        // A later fold of the group currently on screen updates it in place.
+        if self.live.as_ref().is_some_and(|l| l.fp == fp) {
+            let previous = self.live.as_ref().map_or(0, |l| l.width);
+            self.sink.rewrite_line(&note, previous)?;
+            self.sink.flush()?;
+            if let Some(live) = self.live.as_mut() {
+                live.width = width;
+            }
+            return Ok(());
+        }
+
+        // A later fold of a group that is no longer the live one: report it,
+        // but only once, so the count is never lost.
+        if !first_fold {
+            self.settle_live()?;
+            self.sink.line(&note)?;
+            self.live = Some(Live { fp, width });
+        }
+        Ok(())
     }
 }
 
@@ -122,15 +179,22 @@ impl Renderer for TtyRenderer {
     fn render(&mut self, event: &Event) -> io::Result<()> {
         match event {
             Event::Emit(c) => {
+                self.settle_live()?;
                 let painted = self.paint(&c.line.raw, c.level, c.highlight);
                 self.sink.line(&painted)
             }
-            Event::Folded { count, sample, .. } => self.fold(*count, sample),
+            Event::Folded {
+                fp,
+                count,
+                sample,
+                first_fold,
+            } => self.fold_event(*fp, *count, sample, *first_fold),
             // Nothing to draw: the lines inside the block arrive as `Emit`
             // events, already coloured by level. A marker here would be the
             // only thing on the terminal that is not from the log.
             Event::BlockStart(_) | Event::BlockEnd(_) => Ok(()),
             Event::Summary(summary) => {
+                self.settle_live()?;
                 self.sink.line("")?;
                 // A run that produced errors gets attention; a clean run should
                 // not shout.

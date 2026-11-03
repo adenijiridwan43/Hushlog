@@ -44,7 +44,12 @@ impl Collapser for GreedyCollapser {
         let sample = self.seen[&fp].0.clone();
 
         if may_fold {
-            vec![Event::Folded { fp, count, sample }]
+            vec![Event::Folded {
+                fp,
+                count,
+                sample,
+                first_fold: count == 2,
+            }]
         } else {
             vec![Event::Emit(c)]
         }

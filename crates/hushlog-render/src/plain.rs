@@ -43,7 +43,23 @@ impl Renderer for PlainRenderer {
     fn render(&mut self, event: &Event) -> io::Result<()> {
         match event {
             Event::Emit(c) => self.sink.line(&c.line.raw),
-            Event::Folded { count, sample, .. } => write_fold(&mut self.sink, *count, sample),
+            Event::Folded {
+                count,
+                sample,
+                first_fold,
+                ..
+            } => {
+                // Announce a group once, on its first fold. Later repeats only
+                // raise its count, which the end-of-run summary reports exactly;
+                // printing a notice per repeat would reproduce the whole storm
+                // (AGENTS.md section 1, and the fold-note tests in
+                // tests/p3_hardening.rs).
+                if *first_fold {
+                    write_fold(&mut self.sink, *count, sample)
+                } else {
+                    Ok(())
+                }
+            }
             // Block boundaries carry no content of their own -- the lines
             // inside arrive as `Emit` events -- so printing a marker here would
             // only add text to a transcript that has to stay copy-pasteable.

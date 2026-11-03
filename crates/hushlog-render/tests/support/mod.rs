@@ -71,12 +71,14 @@ pub fn sample_events() -> Vec<Event> {
             fp: FP_REQUEST,
             count: 3,
             sample: at(1),
+            first_fold: true,
         },
         Event::Emit(at(4)),
         Event::Folded {
             fp: FP_TOUGH_COOKIE,
             count: 2,
             sample: at(4),
+            first_fold: true,
         },
         // The boxed deprecation notice is a multi-line block.
         Event::BlockStart(BLOCK_DEPRECATION_BOX),

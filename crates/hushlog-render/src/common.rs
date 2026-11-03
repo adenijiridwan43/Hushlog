@@ -34,6 +34,22 @@ impl Sink {
         self.0.write_all(b"\n")
     }
 
+    /// Overwrite the current terminal line with `text`, without a terminator.
+    ///
+    /// The carriage return puts the cursor back at column 0, so the next write
+    /// replaces what was there. Used for the TTY live fold counter: one line
+    /// that grows in place instead of one line per repeat. Older text that is
+    /// longer is padded with spaces so it cannot leave a tail behind.
+    pub(crate) fn rewrite_line(&mut self, text: &str, previous_len: usize) -> io::Result<()> {
+        self.0.write_all(b"\r")?;
+        self.0.write_all(text.as_bytes())?;
+        let written = text.chars().count();
+        for _ in written..previous_len {
+            self.0.write_all(b" ")?;
+        }
+        Ok(())
+    }
+
     pub(crate) fn flush(&mut self) -> io::Result<()> {
         self.0.flush()
     }

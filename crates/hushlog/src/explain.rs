@@ -213,6 +213,7 @@ mod tests {
                 fp: 7,
                 count: 3,
                 sample: classified(Level::Warning, 2, "warning: again"),
+                first_fold: true,
             },
             Event::BlockStart(9),
             Event::BlockEnd(9),

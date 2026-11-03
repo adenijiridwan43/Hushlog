@@ -202,43 +202,55 @@ fn repeated_errors_all_appear_by_default() {
 #[test]
 fn collapse_errors_folds_repeated_errors_when_asked() {
     let times = 10;
+    // With the summary on, so the true folded total is checkable.
     let mut cmd = common::hushlog();
-    cmd.args(["--collapse-errors", "--no-summary"]);
+    cmd.args(["--collapse-errors"]);
     cmd.write_stdin(repeated_errors(times));
     let out = cmd.output().expect("hushlog runs");
     let stdout = String::from_utf8_lossy(&out.stdout);
 
-    // The renderer deliberately re-shows an error sample inside a fold, so the
-    // measure is the group count the run reports, not the number of times the
-    // text appears on screen.
-    assert!(
-        stdout.contains(&format!("{times} similar lines folded")),
-        "the opt-in should collapse the repeats into one counted group:\n{stdout}"
+    // A folded group is announced once, on its first fold, so the note shows
+    // the count at that moment (2: the sample plus its first repeat). The
+    // authoritative total is the summary, which reports all 9 folded lines. A
+    // notice per repeat would print the whole storm back, which is what the
+    // real capture in hushlog-render/tests/p3_hardening.rs caught.
+    let notices = stdout
+        .lines()
+        .filter(|l| l.contains("similar line") && l.contains("folded"))
+        .count();
+    assert_eq!(
+        notices, 1,
+        "a group must be announced exactly once, not once per repeat:\n{stdout}"
     );
     assert!(
-        !stdout.contains(&format!("{} similar lines folded", times + 1)),
-        "the group count must not run past what was actually seen:\n{stdout}"
+        stdout.contains("2 similar lines folded"),
+        "the group's first fold is reported:\n{stdout}"
     );
+
+    let summary = parse_summary(&stdout);
+    assert_eq!(
+        summary.lines_folded,
+        (times - 1) as u64,
+        "the summary must carry the group's exact total:\n{stdout}"
+    );
+    assert_eq!(summary.groups, 1, "{stdout}");
 }
 
 #[test]
 fn collapse_errors_still_reports_what_it_folded() {
-    // Folding is only acceptable because the count survives, in the fold note
-    // and again in the summary.
+    // Folding is only acceptable because the true count survives, in the
+    // end-of-run summary. The single fold note shows the count at the first
+    // fold; the summary shows the final total.
     let mut cmd = common::hushlog();
     cmd.args(["--collapse-errors"]);
     cmd.write_stdin(repeated_errors(4));
     let out = cmd.output().expect("hushlog runs");
     let stdout = String::from_utf8_lossy(&out.stdout);
 
-    assert!(
-        stdout.contains("3 similar lines folded"),
-        "the count of what was folded must be reported:\n{stdout}"
-    );
     assert_eq!(
         parse_summary(&stdout).lines_folded,
         3,
-        "and accounted for in the summary:\n{stdout}"
+        "the count of what was folded must be accounted for:\n{stdout}"
     );
 }
 

@@ -352,7 +352,12 @@ impl FoldingCollapser {
                 self.summary.groups += 1;
             }
             self.summary.lines_folded += 1;
-            vec![Event::Folded { fp, count, sample }]
+            vec![Event::Folded {
+                fp,
+                count,
+                sample,
+                first_fold,
+            }]
         } else {
             // First sighting, or an error line the policy protects: shown in
             // full, no matter how many times it recurs.
@@ -392,7 +397,12 @@ impl FoldingCollapser {
             self.summary.lines_folded += u64::try_from(counted).unwrap_or(u64::MAX);
             return vec![
                 Event::BlockStart(fp),
-                Event::Folded { fp, count, sample },
+                Event::Folded {
+                    fp,
+                    count,
+                    sample,
+                    first_fold,
+                },
                 Event::BlockEnd(fp),
             ];
         }
@@ -791,8 +801,14 @@ mod tests {
                 .collect();
             assert_eq!(kinds, ["start", "folded", "end", "folded"], "{events:?}");
             match &events[1] {
-                Event::Folded { fp, count, sample } => {
+                Event::Folded {
+                    fp,
+                    count,
+                    sample,
+                    first_fold,
+                } => {
                     assert_eq!(*count, 2, "the whole block counts as two occurrences");
+                    assert!(*first_fold, "this is the group's first fold");
                     assert_eq!(sample.line.no, 1);
                     assert_eq!(
                         *fp,

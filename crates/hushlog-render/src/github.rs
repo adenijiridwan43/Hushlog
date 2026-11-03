@@ -40,7 +40,17 @@ impl Renderer for GithubRenderer {
     fn render(&mut self, event: &Event) -> io::Result<()> {
         match event {
             Event::Emit(c) => self.sink.line(&c.line.raw),
-            Event::Folded { count, sample, .. } => {
+            Event::Folded {
+                count,
+                sample,
+                first_fold,
+                ..
+            } => {
+                // One announcement per group: a repeat only raises the count,
+                // which the summary reports. See the plain renderer.
+                if !*first_fold {
+                    return Ok(());
+                }
                 // A collapsed group is still in the log, but it is one click
                 // away from being invisible. Anything with error content is
                 // written first, outside the fold, where it cannot be missed.

@@ -40,7 +40,16 @@ impl Renderer for GitlabRenderer {
     fn render(&mut self, event: &Event) -> io::Result<()> {
         match event {
             Event::Emit(c) => self.sink.line(&c.line.raw),
-            Event::Folded { count, sample, .. } => {
+            Event::Folded {
+                count,
+                sample,
+                first_fold,
+                ..
+            } => {
+                // One announcement per group; see the plain renderer.
+                if !*first_fold {
+                    return Ok(());
+                }
                 // Same rule as the GitHub renderer: error content stays outside
                 // the collapsed section.
                 if is_error(sample) {

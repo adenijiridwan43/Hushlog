@@ -73,7 +73,9 @@ impl Renderer for CsvRenderer {
                 raw: &c.line.raw,
                 plain: &c.line.plain,
             }),
-            Event::Folded { fp, count, sample } => self.emit_row(&CsvRow {
+            Event::Folded {
+                fp, count, sample, ..
+            } => self.emit_row(&CsvRow {
                 typ: "folded",
                 no: &sample.line.no.to_string(),
                 stream: stream_name(sample.line.stream),

@@ -30,6 +30,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **A repetition storm did not get shorter.** The collapse stage counted a
+  repeated group correctly, but every renderer printed one `... N similar lines
+  folded` notice *per repeat*, so a 441-line real capture of one repeated shape
+  came out 441 lines long -- 400 of them notices. A group is now announced once,
+  on its first fold. The count shown is the value at that moment; the end-of-run
+  summary carries the exact total, and `--tee` still holds every byte. On a
+  terminal the one notice stays live and is rewritten in place as the count
+  grows, so a run that never ends (`tail -f`, a dev server) still shows the
+  group the moment it appears. `Event::Folded` gained a `first_fold` field to
+  carry this (AGENTS.md section 4: contract change, human-reviewed).
 - `hushlog-rules` shipped without its rule packs: `include_str!` reached outside
   the crate directory, so `cargo package` omitted them and a published crate
   would have failed to compile for every dependent. The packs now live inside

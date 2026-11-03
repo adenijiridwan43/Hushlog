@@ -208,6 +208,17 @@ pub enum Event {
         count: u64,
         /// The first occurrence, kept verbatim so the group is never lossy.
         sample: Classified,
+        /// Whether this is the first time this group has folded.
+        ///
+        /// A human-facing renderer announces a group **once**, on its first
+        /// fold, rather than once per repeat: a 400-line storm of one shape
+        /// otherwise renders as 400 identical notices, which is the opposite of
+        /// the product's job. The count keeps rising on later events, which a
+        /// TTY renderer uses to update its one live counter line in place, and
+        /// which the end-of-run [`Summary`] reports exactly -- so a run that
+        /// never ends still shows the group as soon as it appears, and a run
+        /// that does end has the true total (`AGENTS.md` section 1).
+        first_fold: bool,
     },
     /// A multi-line block (stack trace, warning paragraph) opened.
     BlockStart(u64),

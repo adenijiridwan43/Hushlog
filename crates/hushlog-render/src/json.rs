@@ -107,7 +107,9 @@ impl Renderer for JsonRenderer {
             }),
             // The sample travels with the record, so a folded error is never
             // merely counted: its text is right there in the record.
-            Event::Folded { fp, count, sample } => Record::Folded(FoldedRec {
+            Event::Folded {
+                fp, count, sample, ..
+            } => Record::Folded(FoldedRec {
                 fp: *fp,
                 count: *count,
                 level: level_name(sample.level),

@@ -45,6 +45,29 @@ The same rule applies to `--raw` passthrough.
 Collapsing an error requires an explicit opt-in flag. This is not a default you
 may tune — see `CollapsePolicy` in `hushlog-core`.
 
+### 1.1.1 A fold is announced once, not once per repeat
+
+A collapsed group prints **one** notice. `FoldingCollapser` emits an
+`Event::Folded` per repeat, each carrying the group's running `count` and a
+`first_fold` flag; a renderer that prints a notice for every event reproduces
+the storm it was supposed to remove. A real 441-line capture of one repeated
+shape came out 441 lines long that way.
+
+The rule:
+
+- announce a group when `first_fold` is true, and stay silent after;
+- the count in that notice is the value at the first fold, which is not the
+  group's final total;
+- the **end-of-run `Summary` carries the exact total**, and that is what makes
+  the notice safe to show only once;
+- on a TTY the single notice may stay live and be rewritten in place as the
+  count grows, so a run that never ends still shows the group immediately;
+- `json` and `csv` are record streams, not display: there a fold counter is
+  data, every event is a record, and nothing is merged.
+
+This holds the lossless principle: the notice says a group exists, the summary
+says exactly how many were folded, and `--tee` holds every byte.
+
 ### 1.2 The invariant property test
 
 `hushlog-core` holds a property test asserting that **every line classified
