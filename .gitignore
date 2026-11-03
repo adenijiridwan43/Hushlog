@@ -39,9 +39,9 @@ hushlog-report.json
 # Insta pending snapshots are reviewed and renamed, never committed as .new.
 *.snap.new
 
-# OpenCode local session state; the checked-in config is opencode.json.
-.opencode/*
-!.opencode/opencode.json
+# OpenCode local state. The whole directory is tool-local and has no place in
+# the repository: it carries session and editor state that varies per machine.
+.opencode/
 
 # Editors
 .idea/

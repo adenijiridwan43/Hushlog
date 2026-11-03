@@ -33,8 +33,9 @@ pub struct FormatCandidate {
 ///
 /// `push` is called once per line. It returns `Some(name)` the first time a
 /// candidate's pattern matches a line, after which the run locks on to that
-/// pack. If no candidate matches within [`MAX_DETECT_LINES`], `push` keeps
-/// returning `None` and the caller falls back to all packs.
+/// pack. If no candidate matches within the detector's line window (`200`
+/// lines), `push` keeps returning `None` and the caller falls back to all
+/// packs.
 #[derive(Debug, Clone)]
 pub struct FormatDetector {
     candidates: Vec<FormatCandidate>,
