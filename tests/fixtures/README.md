@@ -1,6 +1,21 @@
 # Test fixtures
 
-## These three are SYNTHETIC
+## One of them is REAL
+
+`real-relanflow-ratelimit-storm.log` is a real capture, not synthetic: a Node
+backend (tsx + pg + pg-boss) started and then hammered with requests, its output
+redirected verbatim. 441 lines of ANSI-coloured access log, a real Postgres
+`FATAL 08P01` with its stack trace, and ~400 repetitions of six request shapes
+carrying `401`/`429` statuses and per-line timings.
+
+It exists because it caught a bug the synthetic fixtures could not: the collapse
+stage counted 400 lines into 2 groups correctly, but the renderers printed one
+"... N similar lines folded" notice *per repeat*, so the 441-line storm came out
+441 lines long, 400 of them notices. Real repetition at real volume was the only
+thing that exposed it. See the tests in
+`crates/hushlog-render/tests/p3_hardening.rs`.
+
+## The rest are SYNTHETIC
 
 `synthetic-cargo-warnings.log`, `synthetic-retry-storm.log` and
 `synthetic-npm-build.log` were hand-written to bootstrap the snapshot harness.
