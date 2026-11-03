@@ -502,8 +502,14 @@ mod tests {
     fn identical_text_with_different_opids_stays_separate() {
         let mut c = FoldingCollapser::default();
         let op_a = classified(1, Level::Warning, "retrying request");
-        let op_a2 = Classified { opid: Some("op-1".to_string()), ..op_a };
-        let op_b = Classified { opid: Some("op-2".to_string()), ..classified(2, Level::Warning, "retrying request") };
+        let op_a2 = Classified {
+            opid: Some("op-1".to_string()),
+            ..op_a
+        };
+        let op_b = Classified {
+            opid: Some("op-2".to_string()),
+            ..classified(2, Level::Warning, "retrying request")
+        };
 
         let events = c.push(op_a2);
         assert!(matches!(events.as_slice(), [Event::Emit(_)]), "{events:?}");
@@ -512,7 +518,10 @@ mod tests {
         assert!(matches!(events.as_slice(), [Event::Emit(_)]), "{events:?}");
 
         // The same opid folds as usual.
-        let op_a3 = Classified { opid: Some("op-1".to_string()), ..classified(3, Level::Warning, "retrying request") };
+        let op_a3 = Classified {
+            opid: Some("op-1".to_string()),
+            ..classified(3, Level::Warning, "retrying request")
+        };
         let events = c.push(op_a3);
         match events.as_slice() {
             [Event::Folded { count, sample, .. }] => {

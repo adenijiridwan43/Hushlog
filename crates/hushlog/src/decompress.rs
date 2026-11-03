@@ -180,7 +180,9 @@ mod tests {
     #[test]
     fn plain_bytes_pass_through_unchanged() {
         let mut d = Decompressor::new();
-        let out = d.push(b"hello world\n").expect("plain input passes through");
+        let out = d
+            .push(b"hello world\n")
+            .expect("plain input passes through");
         assert_eq!(out, b"hello world\n");
         assert_eq!(d.format, None);
     }
@@ -251,8 +253,9 @@ mod tests {
     #[test]
     fn corrupt_gzip_header_is_an_error() {
         let mut d = Decompressor::new();
-        let err = d.push(b"\x1f\x8bnot really gzip").expect_err("corrupt header must fail");
+        let err = d
+            .push(b"\x1f\x8bnot really gzip")
+            .expect_err("corrupt header must fail");
         assert!(err.to_string().contains("gzip"), "got: {err}");
     }
 }
-

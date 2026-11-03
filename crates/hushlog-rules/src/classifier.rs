@@ -15,9 +15,7 @@ use hushlog_core::{Classified, Classifier, Level, Line, RuleId};
 use regex::RegexSetBuilder;
 
 use crate::error::{Location, RuleError};
-use crate::schema::{
-    BlockMarkers, LevelMap, Matcher, Rule, RulePack, RuleSample,
-};
+use crate::schema::{BlockMarkers, LevelMap, Matcher, Rule, RulePack, RuleSample};
 
 /// Ceiling on rules in one classifier.
 ///
@@ -140,12 +138,10 @@ impl RuleClassifier {
                 // Every declared sample must be recognised by this rule: a pack
                 // that does not match its own samples fails loudly instead of
                 // silently under-matching (AGENTS.md section 1).
-                let re = regex::Regex::new(&pattern).map_err(|e| {
-                    RuleError::Rule {
-                        location: pattern_location(rule).clone(),
-                        id: rule.id_str().to_string(),
-                        message: format!("invalid pattern: {}", first_line(&e.to_string())),
-                    }
+                let re = regex::Regex::new(&pattern).map_err(|e| RuleError::Rule {
+                    location: pattern_location(rule).clone(),
+                    id: rule.id_str().to_string(),
+                    message: format!("invalid pattern: {}", first_line(&e.to_string())),
                 })?;
                 for sample in &rule.sample {
                     if !re.is_match(&sample.line) {
@@ -165,7 +161,9 @@ impl RuleClassifier {
                                 rule.level_field
                                     .as_ref()
                                     .map(|s| s.get_ref().as_str())
-                                    .and_then(|field| caps.name(field).map(|m| m.as_str().to_string()))
+                                    .and_then(|field| {
+                                        caps.name(field).map(|m| m.as_str().to_string())
+                                    })
                             })
                             .and_then(|value| {
                                 rule.level_map
@@ -237,7 +235,6 @@ impl RuleClassifier {
     pub fn rule_name(&self, id: RuleId) -> Option<&str> {
         self.rule(id).map(|r| r.id.as_str())
     }
-
 }
 
 impl Classifier for RuleClassifier {
@@ -369,7 +366,9 @@ fn compile(rule: &Rule) -> String {
 /// Returns [`RuleError`] naming the rule and its source location when the
 /// declared capture group is not present in the pattern.
 fn validate_opid_group(rule: &Rule, pattern: &str) -> Result<(), RuleError> {
-    let Some(group) = &rule.opid else { return Ok(()) };
+    let Some(group) = &rule.opid else {
+        return Ok(());
+    };
     let re = regex::Regex::new(pattern).map_err(|e| RuleError::Rule {
         location: pattern_location(rule).clone(),
         id: rule.id_str().to_string(),

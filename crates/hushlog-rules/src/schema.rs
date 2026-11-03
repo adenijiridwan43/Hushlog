@@ -387,8 +387,7 @@ pub struct RegexPattern(pub String);
 impl<'de> Deserialize<'de> for RegexPattern {
     fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
         let s = String::deserialize(de)?;
-        regex::Regex::new(&s)
-            .map_err(|e| Error::custom(first_line(&e.to_string())))?;
+        regex::Regex::new(&s).map_err(|e| Error::custom(first_line(&e.to_string())))?;
         Ok(RegexPattern(s))
     }
 }
@@ -429,9 +428,7 @@ impl<'de> Deserialize<'de> for LevelMap {
                 // stops at the first match, so severe levels win regardless of
                 // how the pack author ordered the table.
                 pairs.sort_by_key(|(level, _)| *level as u8);
-                Ok(LevelMap {
-                    entries: pairs,
-                })
+                Ok(LevelMap { entries: pairs })
             }
         }
 

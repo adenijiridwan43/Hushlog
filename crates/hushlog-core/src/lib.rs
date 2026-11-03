@@ -115,8 +115,9 @@ impl Level {
             }
             "info" | "system" | "notice" | "note" | "log" | "stats" => Self::Info,
             "warn" | "warning" | "deprecation" => Self::Warning,
-            "err" | "error" | "fail" | "critical" | "severe" | "alert" | "fatal"
-            | "emergency" => Self::Error,
+            "err" | "error" | "fail" | "critical" | "severe" | "alert" | "fatal" | "emergency" => {
+                Self::Error
+            }
             _ => return None,
         })
     }

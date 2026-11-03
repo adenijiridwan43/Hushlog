@@ -72,12 +72,7 @@ impl Anonymizer {
         }
         let h = Self::hash64(value);
         let replacement = match base {
-            "ipv4" => format!(
-                "10.{}.{}.{}",
-                h % 256,
-                (h >> 8) % 256,
-                (h >> 16) % 256
-            ),
+            "ipv4" => format!("10.{}.{}.{}", h % 256, (h >> 8) % 256, (h >> 16) % 256),
             "ipv6" => format!(
                 "2001:db8:{:x}:{:x}::{:x}",
                 h % 65536,
@@ -162,7 +157,11 @@ fn is_http_url(b: &[u8], i: usize) -> bool {
 
 /// Match an HTTP URL and anonymize its host, user info, path, query and fragment.
 fn match_http_url(b: &[u8], i: usize) -> Option<(usize, String)> {
-    let scheme_len = if b.get(i..i + 8) == Some(b"https://") { 8 } else { 7 };
+    let scheme_len = if b.get(i..i + 8) == Some(b"https://") {
+        8
+    } else {
+        7
+    };
     let after_scheme = i + scheme_len;
     let mut end = after_scheme;
     while end < b.len() && !b[end].is_ascii_whitespace() {
@@ -306,7 +305,8 @@ fn is_url_path(b: &[u8], i: usize) -> bool {
     if i > 0 && !b.get(i - 1).is_some_and(u8::is_ascii_whitespace) {
         return false;
     }
-    b.get(i + 1).is_some_and(|c| c.is_ascii_alphanumeric() || *c == b'/')
+    b.get(i + 1)
+        .is_some_and(|c| c.is_ascii_alphanumeric() || *c == b'/')
 }
 
 /// Match a URL path and anonymize path segments.
@@ -528,16 +528,16 @@ mod tests {
             a.anonymize("mail from alice@example.com"),
             b.anonymize("mail from alice@example.com")
         );
-        assert!(a
-            .anonymize("mail from alice@example.com")
-            .contains("@example.invalid"));
+        assert!(
+            a.anonymize("mail from alice@example.com")
+                .contains("@example.invalid")
+        );
     }
 
     #[test]
     fn anonymizes_http_url() {
         let mut a = Anonymizer::new();
-        let result =
-            a.anonymize("GET https://internal.host/api/v1/users?id=5 HTTP/1.1");
+        let result = a.anonymize("GET https://internal.host/api/v1/users?id=5 HTTP/1.1");
         assert!(result.contains("example"));
         assert!(!result.contains("internal.host"));
         assert!(!result.contains("users"));

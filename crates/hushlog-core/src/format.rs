@@ -56,9 +56,10 @@ impl FormatDetector {
         for (name, patterns) in candidates {
             let mut compiled = Vec::with_capacity(patterns.len());
             for pattern in patterns {
-                compiled.push(regex::Regex::new(&pattern).map_err(|e| {
-                    format!("pack {name}: invalid detect pattern: {e}")
-                })?);
+                compiled.push(
+                    regex::Regex::new(&pattern)
+                        .map_err(|e| format!("pack {name}: invalid detect pattern: {e}"))?,
+                );
             }
             packed.push(FormatCandidate {
                 name,
@@ -127,8 +128,9 @@ mod tests {
 
     #[test]
     fn no_match_returns_none() {
-        let mut det = FormatDetector::new(vec![("cargo".to_string(), vec!["^Compiling ".to_string()])])
-        .expect("patterns compile");
+        let mut det =
+            FormatDetector::new(vec![("cargo".to_string(), vec!["^Compiling ".to_string()])])
+                .expect("patterns compile");
 
         for _ in 0..MAX_DETECT_LINES {
             assert_eq!(det.push("random noise line"), None);

@@ -14,8 +14,8 @@ use hushlog_core::{
     Summary,
 };
 use proptest::prelude::{
-    any, prop, prop_assert, prop_assert_eq, prop_assume, proptest, BoxedStrategy, ProptestConfig,
-    Strategy,
+    BoxedStrategy, ProptestConfig, Strategy, any, prop, prop_assert, prop_assert_eq, prop_assume,
+    proptest,
 };
 
 fn line_text() -> BoxedStrategy<String> {

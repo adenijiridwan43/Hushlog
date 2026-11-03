@@ -594,7 +594,8 @@ fn is_stop(b: &[u8], i: usize) -> bool {
 /// normalizer skips the scan entirely and hashes the line verbatim.
 #[inline]
 fn has_stop_byte(b: &[u8]) -> bool {
-    b.iter().any(|&c| c.is_ascii_hexdigit() || matches!(c, b':' | b'/' | b'\\'))
+    b.iter()
+        .any(|&c| c.is_ascii_hexdigit() || matches!(c, b':' | b'/' | b'\\'))
 }
 
 /// Bytes that may appear inside an identifier, including its separators.

@@ -332,13 +332,17 @@ impl<'a> Parser<'a> {
         self.skip_ws();
         let word = self.read_word()?;
         Field::from_word(&word).ok_or_else(|| {
-            self.err(format!("expected a field (level, stream, no, raw, plain, rule_id), found {word:?}"))
+            self.err(format!(
+                "expected a field (level, stream, no, raw, plain, rule_id), found {word:?}"
+            ))
         })
     }
 
     fn parse_op(&mut self) -> Result<Op, QueryError> {
         self.skip_ws();
-        let c = self.peek().ok_or_else(|| self.err("expected a comparison operator"))?;
+        let c = self
+            .peek()
+            .ok_or_else(|| self.err("expected a comparison operator"))?;
         let op = match c {
             '=' => {
                 self.next();
@@ -403,9 +407,10 @@ impl<'a> Parser<'a> {
                 self.next();
                 let s = self.read_string()?;
                 let regex = match op {
-                    Op::RegexMatch | Op::RegexNotMatch => {
-                        Some(regex::Regex::new(&s).map_err(|e| self.err(format!("invalid regex {s:?}: {e}")))?)
-                    }
+                    Op::RegexMatch | Op::RegexNotMatch => Some(
+                        regex::Regex::new(&s)
+                            .map_err(|e| self.err(format!("invalid regex {s:?}: {e}")))?,
+                    ),
                     _ => None,
                 };
                 Ok((Value::Str(s), regex))
@@ -418,9 +423,10 @@ impl<'a> Parser<'a> {
                 let word = self.read_word()?;
                 // A bare word is a string, e.g. `level == error`.
                 let regex = match op {
-                    Op::RegexMatch | Op::RegexNotMatch => {
-                        Some(regex::Regex::new(&word).map_err(|e| self.err(format!("invalid regex {word:?}: {e}")))?)
-                    }
+                    Op::RegexMatch | Op::RegexNotMatch => Some(
+                        regex::Regex::new(&word)
+                            .map_err(|e| self.err(format!("invalid regex {word:?}: {e}")))?,
+                    ),
                     _ => None,
                 };
                 Ok((Value::Str(word), regex))
@@ -455,7 +461,10 @@ impl<'a> Parser<'a> {
             }
         }
         // Word boundary: next char must not be alphanumeric or underscore.
-        if self.peek().is_some_and(|c| c.is_ascii_alphanumeric() || c == '_') {
+        if self
+            .peek()
+            .is_some_and(|c| c.is_ascii_alphanumeric() || c == '_')
+        {
             self.chars = saved;
             self.pos = start;
             return false;
@@ -538,8 +547,8 @@ const fn stream_name(stream: Stream) -> &'static str {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use hushlog_core::RuleId;
     use hushlog_core::Line;
+    use hushlog_core::RuleId;
 
     fn classified(level: Level, text: &str, rule_id: Option<u16>) -> Classified {
         Classified {

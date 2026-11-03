@@ -23,7 +23,7 @@ use std::io;
 use anyhow::Context as _;
 use hushlog_core::{
     Anonymizer, BlockDetector, Classifier, CollapsePolicy, Collapser, Event, FoldingCollapser,
-    FormatDetector, Ingest, Level, Normalizer, Renderer, Summary, Stream,
+    FormatDetector, Ingest, Level, Normalizer, Renderer, Stream, Summary,
 };
 use hushlog_rules::RuleClassifier;
 
@@ -267,8 +267,7 @@ impl Pipeline {
                     .and_then(|detector| detector.push(&line.plain).map(str::to_string));
                 // Close detection when a pack matches or the window expires.
                 let has_match = detected_name.is_some();
-                let window_expired =
-                    self.format_detector.as_ref().is_none_or(|d| !d.is_open());
+                let window_expired = self.format_detector.as_ref().is_none_or(|d| !d.is_open());
                 if let Some(name) = detected_name {
                     self.rebuild_classifier_for(&name)
                         .map_err(io::Error::other)?;

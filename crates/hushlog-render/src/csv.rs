@@ -56,7 +56,8 @@ struct CsvRow<'a> {
 impl Renderer for CsvRenderer {
     fn render(&mut self, event: &Event) -> io::Result<()> {
         if !self.header_written {
-            self.sink.line("type,no,stream,level,rule_id,count,detail,raw,plain")?;
+            self.sink
+                .line("type,no,stream,level,rule_id,count,detail,raw,plain")?;
             self.header_written = true;
         }
 

@@ -7,7 +7,7 @@ mod support;
 
 use hushlog_core::{Classified, Event, Level, Line, Stream};
 use hushlog_render::Format;
-use proptest::prelude::{prop, proptest, BoxedStrategy, ProptestConfig, Strategy};
+use proptest::prelude::{BoxedStrategy, ProptestConfig, Strategy, prop, proptest};
 use serde_json::Value;
 
 use support::render;
@@ -51,10 +51,7 @@ fn assert_valid_ndjson(out: &str, expected_records: usize) {
         serde_json::from_str::<Value>(record)
             .unwrap_or_else(|e| panic!("record {i} ({record:?}) is not valid JSON: {e}"));
     }
-    assert!(
-        lines.next().is_none(),
-        "exactly one JSON record per event"
-    );
+    assert!(lines.next().is_none(), "exactly one JSON record per event");
 }
 
 #[test]
