@@ -13,7 +13,11 @@ name: Publish extra channels
 
 on:
   release:
-    types: [published]
+    # `published` fires for a stable release; `prereleased` fires for a
+    # prerelease like v0.1.0-alpha.1. Both are needed: GitHub does not send
+    # `published` for a prerelease, so listening only for `published` meant this
+    # workflow never ran for the first release at all.
+    types: [published, prereleased]
   # Lets the jobs be dry-run from the Actions tab without cutting a release.
   workflow_dispatch:
     inputs:
