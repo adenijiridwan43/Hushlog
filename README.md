@@ -122,7 +122,7 @@ process into a fixture.
 Releasing is documented in [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md):
 the channel list, the one-time secret setup, and the release checklist.
 
-AI agents wrote much of this code; every change was reviewed before landing,
+Agents wrote part of this code; every change was reviewed before landing,
 and the workspace gate (`cargo clippy -- -D warnings`, `cargo test`) must stay
 green on every push. Design decisions — lossless-by-default, the contracts,
 and the measured performance targets — are human calls recorded in
@@ -130,4 +130,4 @@ and the measured performance targets — are human calls recorded in
 
 ## Licence
 
-MIT OR Apache-2.0
+Apache-2.0
