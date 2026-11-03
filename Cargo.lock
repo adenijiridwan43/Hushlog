@@ -399,7 +399,7 @@ checksum = "e17592d60ebacc7d5e169f4663c5f84f9161cc90328abcfe8456f41e4dfcb284"
 
 [[package]]
 name = "hushlog"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -421,7 +421,7 @@ dependencies = [
 
 [[package]]
 name = "hushlog-core"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 dependencies = [
  "insta",
  "proptest",
@@ -432,7 +432,7 @@ dependencies = [
 
 [[package]]
 name = "hushlog-render"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 dependencies = [
  "anstream 0.6.21",
  "hushlog-core",
@@ -447,7 +447,7 @@ dependencies = [
 
 [[package]]
 name = "hushlog-rules"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 dependencies = [
  "aho-corasick",
  "hushlog-core",

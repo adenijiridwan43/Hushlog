@@ -9,19 +9,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Distribution channels beyond GitHub Releases: a Homebrew formula pushed to
+  `adenijiridwan43/homebrew-tap`, a dependency-ordered crates.io publish, and a
+  `ghcr.io` container image. See [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md).
+- A `Dockerfile` building the static musl binary `FROM scratch`, with a
+  `.dockerignore` so build artifacts and captured logs never enter a layer.
+- [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md): channel list, one-time secret
+  setup, release checklist, Windows notes, troubleshooting.
+- [`docs/CAPTURING-LOGS.md`](docs/CAPTURING-LOGS.md): how to capture a real noisy
+  process as a fixture.
+
+### Fixed
+
+- The `.gitignore` did not cover secrets: `.env` files, `*.pem`/`*.key`,
+  `id_rsa`, `id_ed25519`, `credentials.toml` and `.cargo/credentials*` were all
+  committable. Ad-hoc log captures, insta `*.snap.new` files and OpenCode's local
+  state are ignored too. `.env.example` stays committable as a template.
+
+## [0.1.0-alpha.1] - 2026-11-02
+
+The first release. Binaries for five platforms, a Homebrew formula, crates on
+crates.io, and a container image.
+
+### Added
+
 - Workspace with four crates: `hushlog-core`, `hushlog-rules`, `hushlog-render`,
   `hushlog`.
 - The `hushlog` binary: pipe mode, wrap mode, byte-exact `--tee`, `--raw`,
   `--explain`, `--format`, `--rules`, `--collapse-errors`, `--max-tracked`,
-  `--no-summary`, and opt-in `--pty`.
+  `--no-summary`, `--anonymize`, `--query`, and opt-in `--pty`.
 - Pipeline contracts in `hushlog-core`: `Line`, `Level`, `RuleId`, `Classified`,
   `Classifier`, `Event`, `Collapser`, `Renderer`, `Summary`, `CollapsePolicy`.
 - `Ingest` (framing, `\r` progress-frame collapse, ANSI
   strip-for-match/preserve-for-display), `Normalizer` (volatile-token masking +
-  xxh3 fingerprinting), `FoldingCollapser` (bounded LRU), `BlockDetector`.
+  xxh3 fingerprinting), `FoldingCollapser` (bounded LRU), `BlockDetector`,
+  `FormatDetector`, `Anonymizer`.
 - `hushlog-rules`: TOML rule schema, loader that fails loudly with `file:line`,
-  single-`RegexSet` classifier, built-in cargo/npm/docker/kubectl packs.
-- `hushlog-render`: tty, plain, github (`::group::`), gitlab, json.
+  single-`RegexSet` classifier, and eleven built-in packs: cargo, npm, docker,
+  kubectl, syslog, journald, otel, pino, bunyan, spdlog and Apache error logs.
+- `hushlog-render`: tty, plain, github (`::group::`), gitlab, json, csv.
+- Format auto-detection, ported from lnav's sample-driven format model.
+- Auto-decompression of gzip and bzip2 input on ingest.
 - Publishable crates.io metadata on all four crates, including `repository`
   (without which every publish is rejected).
 - CI: fmt, clippy (`-D warnings`), tests on Linux/macOS/Windows, MSRV 1.85,
@@ -55,14 +83,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Notes
 
-- Nothing has been released yet. There are no tags and no binaries.
-- The rule packs have only ever been tested against **synthetic** logs. See
-  [`tests/fixtures/README.md`](tests/fixtures/README.md) for the real captures
-  still to be collected. Treat the folding rules as unproven.
-- Throughput is ~2% of a bare byte-scan baseline, measured rather than assumed.
-  Masking is 60% of the cost; the hash was never the bottleneck. The original
+- **The first real fixture landed**: `tests/fixtures/real-relanflow-ratelimit-storm.log`,
+  a 441-line capture of a rate-limit storm. It is the reason the fold-notice bug
+  above was found. The remaining packs are still exercised only by synthetic
+  logs; see [`tests/fixtures/README.md`](tests/fixtures/README.md) for the
+  captures still to be collected.
+- Throughput is ~3.8% of a bare byte-scan baseline, measured rather than assumed.
+  Masking dominates the cost; the hash was never the bottleneck. The original
   200 MB/s target was removed as unreachable.
 - Crates are prefixed `hushlog-` because `hush-core` and `hush-cli` are already
   published on crates.io by an unrelated project.
 
-[Unreleased]: https://github.com/adenijiridwan43/Hushlog/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/adenijiridwan43/Hushlog/compare/v0.1.0-alpha.1...HEAD
+[0.1.0-alpha.1]: https://github.com/adenijiridwan43/Hushlog/releases/tag/v0.1.0-alpha.1

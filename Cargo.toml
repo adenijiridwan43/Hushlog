@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
@@ -30,10 +30,10 @@ pedantic = "warn"
 
 
 [workspace.dependencies]
-hushlog-core = { path = "crates/hushlog-core", version = "0.1.0" }
-hushlog-rules = { path = "crates/hushlog-rules", version = "0.1.0" }
-hushlog-render = { path = "crates/hushlog-render", version = "0.1.0" }
-hushlog = { path = "crates/hushlog", version = "0.1.0" }
+hushlog-core = { path = "crates/hushlog-core", version = "0.1.0-alpha.1" }
+hushlog-rules = { path = "crates/hushlog-rules", version = "0.1.0-alpha.1" }
+hushlog-render = { path = "crates/hushlog-render", version = "0.1.0-alpha.1" }
+hushlog = { path = "crates/hushlog", version = "0.1.0-alpha.1" }
 
 anyhow = "1"
 thiserror = "2"

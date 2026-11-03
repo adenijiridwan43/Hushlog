@@ -79,7 +79,7 @@ config is caught before anyone cuts a tag.
 To cut a release:
 
 ```sh
-git tag v0.1.0 && git push origin v0.1.0
+git tag v0.1.0-alpha.1 && git push origin v0.1.0-alpha.1
 ```
 
 ### crates.io — manual, and in dependency order

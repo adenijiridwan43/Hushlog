@@ -10,20 +10,7 @@ See [AGENTS.md](AGENTS.md#1-the-non-negotiable-principle-lossless-by-default).
 
 ## Install
 
-No release yet. Build from source:
-
-```sh
-git clone https://github.com/adenijiridwan43/Hushlog
-cd Hushlog
-cargo build --release
-./target/release/hushlog --help
-```
-
-A release pipeline builds static binaries for five targets via
-`.github/workflows/release.yml` on a `v*` tag; `main` runs a dry-run check on
-every push so the configuration is verified before a tag exists.
-
-Once `v0.1.0-alpha.1` is published, the install channels are:
+`v0.1.0-alpha.1` is the first release. Install with any of:
 
 ```sh
 # Linux / macOS
@@ -41,6 +28,22 @@ brew install adenijiridwan43/tap/hushlog
 # Container
 docker run --rm -i ghcr.io/adenijiridwan43/hushlog
 ```
+
+Or build from source:
+
+```sh
+git clone https://github.com/adenijiridwan43/Hushlog
+cd Hushlog
+cargo build --release
+./target/release/hushlog --help
+```
+
+This is an alpha: the rule packs are still being proven against real logs, and
+the command-line surface may change before 1.0. The release pipeline builds
+static binaries for five targets (Linux x86_64/aarch64 musl, macOS
+x86_64/aarch64, Windows x86_64) via `.github/workflows/release.yml` on a `v*`
+tag; `main` runs a dry-run check on every push so the configuration is verified
+before a tag exists.
 
 See [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md) for the full channel list, the
 one-time secret setup, and the release checklist.
