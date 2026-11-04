@@ -1,12 +1,19 @@
 # hushlog
 
+[![CI](https://github.com/adenijiridwan43/Hushlog/actions/workflows/ci.yml/badge.svg)](https://github.com/adenijiridwan43/Hushlog/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](#licence)
+[![crates.io](https://img.shields.io/crates/v/hushlog.svg)](https://crates.io/crates/hushlog)
+[![docs.rs](https://img.shields.io/docsrs/hushlog)](https://docs.rs/hushlog)
+[![rust](https://img.shields.io/badge/rust-1.85%2B-blue.svg)](https://www.rust-lang.org)
+[![release](https://img.shields.io/github/v/release/adenijiridwan43/Hushlog?include_prereleases&label=release)](https://github.com/adenijiridwan43/Hushlog/releases)
+
 Smart noise filter for terminal and CI logs. Sits in a pipe (`cmd | hushlog`)
 or wraps a command (`hushlog -- cargo build`), highlights what actually failed,
 and collapses repeated warning blocks into counted summaries.
 
 **Lossless by default.** The full log is always preserved, every fold is
 expandable, and error lines are never collapsed without an explicit flag.
-See [AGENTS.md](AGENTS.md#1-the-non-negotiable-principle-lossless-by-default).
+See [AGENTS.md](https://github.com/adenijiridwan43/Hushlog/blob/main/AGENTS.md#1-the-non-negotiable-principle-lossless-by-default).
 
 ## Install
 
@@ -45,8 +52,8 @@ x86_64/aarch64, Windows x86_64) via `.github/workflows/release.yml` on a `v*`
 tag; `main` runs a dry-run check on every push so the configuration is verified
 before a tag exists.
 
-See [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md) for the full channel list, the
-one-time secret setup, and the release checklist.
+See [docs/DISTRIBUTION.md](https://github.com/adenijiridwan43/Hushlog/blob/main/docs/DISTRIBUTION.md)
+for the full channel list, the one-time secret setup, and the release checklist.
 
 ## Use
 
@@ -108,18 +115,22 @@ Four crates, one streaming pipeline, bounded memory:
 | `hushlog` | args, pipe/wrap, PTY, signals | All I/O lives here |
 
 Stages communicate only through the traits in
-[`hushlog-core`](crates/hushlog-core/src/lib.rs). See
-[`AGENTS.md`](AGENTS.md) for the full contracts and the module ownership map.
+[`hushlog-core`](https://github.com/adenijiridwan43/Hushlog/blob/main/crates/hushlog-core/src/lib.rs).
+See [AGENTS.md](https://github.com/adenijiridwan43/Hushlog/blob/main/AGENTS.md)
+for the full contracts and the module ownership map.
 
 ## Contributing
 
-Read [`AGENTS.md`](AGENTS.md) first — it is the contract. The fixtures in
-`tests/fixtures/` are the real specification; see the
-[README there](tests/fixtures/README.md) for what still needs collecting, and
-[`docs/CAPTURING-LOGS.md`](docs/CAPTURING-LOGS.md) for how to turn a real noisy
-process into a fixture.
+Read [AGENTS.md](https://github.com/adenijiridwan43/Hushlog/blob/main/AGENTS.md)
+first — it is the contract. The fixtures in `tests/fixtures/` are the real
+specification; see the
+[README there](https://github.com/adenijiridwan43/Hushlog/blob/main/tests/fixtures/README.md)
+for what still needs collecting, and
+[docs/CAPTURING-LOGS.md](https://github.com/adenijiridwan43/Hushlog/blob/main/docs/CAPTURING-LOGS.md)
+for how to turn a real noisy process into a fixture.
 
-Releasing is documented in [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md):
+Releasing is documented in
+[docs/DISTRIBUTION.md](https://github.com/adenijiridwan43/Hushlog/blob/main/docs/DISTRIBUTION.md):
 the channel list, the one-time secret setup, and the release checklist.
 
 AI agents wrote much of this code; every change was reviewed before landing,
