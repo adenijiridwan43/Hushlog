@@ -52,3 +52,6 @@ hushlog-report.json
 
 # OS
 Thumbs.db
+
+# OpenChamber local screenshots and session data.
+.openchamber/
