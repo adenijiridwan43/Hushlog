@@ -100,7 +100,7 @@ cargo build 2>&1 | ./target/release/hushlog
 
 ## Built to be trusted
 
-- MIT OR Apache-2.0 licensed
+- Apache-2.0 licensed
 - Every change reviewed against the trait contracts in `AGENTS.md`
 - `cargo clippy -- -D warnings` and 254 tests pass on Linux, macOS, Windows
 - Lossless-output invariant property-tested

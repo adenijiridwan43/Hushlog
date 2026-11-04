@@ -1,7 +1,7 @@
 # hushlog
 
 [![CI](https://github.com/adenijiridwan43/Hushlog/actions/workflows/ci.yml/badge.svg)](https://github.com/adenijiridwan43/Hushlog/actions/workflows/ci.yml)
-[![license](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](#licence)
+[![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](#licence)
 [![crates.io](https://img.shields.io/crates/v/hushlog.svg)](https://crates.io/crates/hushlog)
 [![docs.rs](https://img.shields.io/docsrs/hushlog)](https://docs.rs/hushlog)
 [![rust](https://img.shields.io/badge/rust-1.85%2B-blue.svg)](https://www.rust-lang.org)
@@ -133,7 +133,7 @@ Releasing is documented in
 [docs/DISTRIBUTION.md](https://github.com/adenijiridwan43/Hushlog/blob/main/docs/DISTRIBUTION.md):
 the channel list, the one-time secret setup, and the release checklist.
 
-AI agents wrote much of this code; every change was reviewed before landing,
+Agents wrote part of this code; every change was reviewed before landing,
 and the workspace gate (`cargo clippy -- -D warnings`, `cargo test`) must stay
 green on every push. Design decisions — lossless-by-default, the contracts,
 and the measured performance targets — are human calls recorded in
@@ -141,4 +141,4 @@ and the measured performance targets — are human calls recorded in
 
 ## Licence
 
-MIT OR Apache-2.0
+Apache-2.0

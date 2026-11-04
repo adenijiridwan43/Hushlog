@@ -117,5 +117,5 @@ Reference the issue.
 
 ## Licence
 
-By contributing you agree your work is licensed under MIT OR Apache-2.0, at your
+By contributing you agree your work is licensed under Apache-2.0, at your
 option.
