@@ -54,13 +54,13 @@ hushlog: 441 lines -> 41 shown | 1 errors | 2 groups (400 lines folded)
 
 ```sh
 # Linux / macOS
-curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.sh | sh
+curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.1/hushlog-installer.sh | sh
 
 # Windows (PowerShell)
-irm https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.ps1 | iex
+irm https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.1/hushlog-installer.ps1 | iex
 
 # crates.io
-cargo install hushlog
+cargo install hushlog --version 0.1.0-alpha.1
 
 # Homebrew
 brew install adenijiridwan43/tap/hushlog

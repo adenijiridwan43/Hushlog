@@ -13,8 +13,8 @@ machine runs one command and gets a working `hushlog`.**
 
 | Channel | Command a user runs | Set up by | Secret it needs |
 |---|---|---|---|
-| Shell installer | `curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.sh \| sh` | cargo-dist | none |
-| PowerShell installer | `irm https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.ps1 \| iex` | cargo-dist | none |
+| Shell installer | `curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.1/hushlog-installer.sh \| sh` | cargo-dist | none |
+| PowerShell installer | `irm https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.1/hushlog-installer.ps1 \| iex` | cargo-dist | none |
 | Homebrew | `brew install adenijiridwan43/tap/hushlog` | cargo-dist + tap repo | `HOMEBREW_TAP_TOKEN` |
 | crates.io | `cargo install hushlog` | `.github/workflows/publish-extra.yml` | `CARGO_REGISTRY_TOKEN` |
 | Container | `docker run ghcr.io/adenijiridwan43/hushlog` | `.github/workflows/publish-extra.yml` | none (uses `GITHUB_TOKEN`) |
@@ -80,15 +80,15 @@ Run through this once, in order, on the release machine.
 
 ```sh
 # Shell installer (Linux/macOS)
-curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.sh | sh
+curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.1/hushlog-installer.sh | sh
 hushlog --version
 
 # PowerShell (Windows)
-irm https://github.com/adenijiridwan43/Hushlog/releases/latest/download/hushlog-installer.ps1 | iex
+irm https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.1/hushlog-installer.ps1 | iex
 hushlog --version
 
 # crates.io
-cargo install hushlog
+cargo install hushlog --version 0.1.0-alpha.1
 hushlog --version
 
 # Homebrew
