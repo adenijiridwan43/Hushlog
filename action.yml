@@ -1,0 +1,62 @@
+﻿name: 'Hushlog'
+description: 'Filter terminal and CI logs — lossless by default'
+author: 'adenijiridwan43'
+branding:
+  icon: 'filter'
+  color: 'gray-dark'
+
+inputs:
+  log-file:
+    description: 'Path to a log file to filter. If omitted, the action reads from stdin.'
+    required: false
+  format:
+    description: 'Output format: plain, tty, github, gitlab, json, csv'
+    default: 'github'
+    required: false
+  collapse-errors:
+    description: 'Collapse repeated error lines (default: false)'
+    type: boolean
+    default: 'false'
+    required: false
+  version:
+    description: 'hushlog version to install from crates.io'
+    default: '0.1.0-alpha.1'
+    required: false
+
+outputs:
+  filtered-log:
+    description: 'The filtered log output'
+
+runs:
+  using: composite
+  steps:
+    - name: Install Rust toolchain
+      uses: actions/setup-rust@v1
+      with:
+        toolchain: stable
+
+    - name: Install hushlog from crates.io
+      shell: bash
+      run: |
+        cargo install hushlog --version ${{ inputs.version }} --locked
+
+    - name: Filter the log
+      shell: bash
+      id: filter
+      run: |
+        set -euo pipefail
+        ARGS="--format ${{ inputs.format }}"
+        if [ "${{ inputs.collapse-errors }}" = "true" ]; then
+          ARGS="$ARGS --collapse-errors"
+        fi
+        if [ -n "${{ inputs.log-file }}" ]; then
+          hushlog $ARGS < "${{ inputs.log-file }}" > "$RUNNER_TEMP/filtered.log"
+        else
+          cat > "$RUNNER_TEMP/input.log"
+          hushlog $ARGS < "$RUNNER_TEMP/input.log" > "$RUNNER_TEMP/filtered.log"
+        fi
+        EOF_MARKER="hushlog-eof-$$"
+        echo "filtered-log<<${EOF_MARKER}" >> "$GITHUB_OUTPUT"
+        cat "$RUNNER_TEMP/filtered.log" >> "$GITHUB_OUTPUT"
+        echo "${EOF_MARKER}" >> "$GITHUB_OUTPUT"
+        cat "$RUNNER_TEMP/filtered.log"
