@@ -165,7 +165,7 @@ Absolute throughput varies by 3-4x between machines, so the number that matters 
 | baseline: byte scan + split | ~980 | — |
 | Ingest | ~117 | 15% |
 | Normalize (mask + hash) | ~37 | 47% |
-| Classify (74 rules) | ~80 | 22% |
+| Classify (79 rules) | ~80 | 22% |
 | **the real pipeline** | **~15** | — |
 
 The benchmark measures the pipeline the binary **actually** runs — ingest, classify, mask into an owned string, detect blocks, collapse — as cumulative prefixes, so each stage's marginal cost is visible rather than inferred. It also runs the real capture, because a corpus of mostly unique lines measures the per-line cost and a corpus of mostly repeats measures the per-fold cost, and the product needs both.
