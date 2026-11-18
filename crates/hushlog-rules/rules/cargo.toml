@@ -57,8 +57,28 @@ highlight = true
 collapse = true
 
 # --- Test results -----------------------------------------------------------
+#
+# The FAILED forms come first. First match wins, and `cargo.test-result`
+# matches `test result: ` -- which is the prefix of `test result: FAILED.`
+# -- so a general rule declared above them would swallow every failing
+# summary and classify it as ordinary output. A failing suite is a failure.
 
-# `test result: ok. 12 passed; 0 failed;` / `test result: FAILED. 3 passed; 1 failed;`
+# The suite summary: `test result: FAILED. 3 passed; 1 failed;`
+[[rule]]
+id = "cargo.test-failed"
+match = { kind = "regex", pattern = "test result: FAILED\\." }
+level = "error"
+highlight = true
+
+# The per-test line, which names the test that failed: `test foo ... FAILED`.
+# The suite summary says how many failed; this says which.
+[[rule]]
+id = "cargo.test-failure"
+match = { kind = "regex", pattern = "^test .+ \\.\\.\\. FAILED" }
+level = "error"
+highlight = true
+
+# `test result: ok. 12 passed; 0 failed;`
 [[rule]]
 id = "cargo.test-result"
 match = { kind = "regex", pattern = "^test result: " }
@@ -67,11 +87,22 @@ highlight = true
 # Never fold these: a failing test count is the single most important number in
 # a CI log, and the counts differ per suite.
 
+# --- Panics -----------------------------------------------------------------
+#
+# A panic is a failure, and it is the one a reader must never lose. rustc
+# prints the thread name and the location on the same line, and newer
+# toolchains add the thread id in brackets, so the pattern matches the shape
+# rather than one spelling of it:
+#
+#     thread 'main' panicked at src/main.rs:5:9:
+#     thread 'tests::foo' (21528) panicked at src/lib.rs:27:43:
+
 [[rule]]
-id = "cargo.test-failed"
-match = { kind = "regex", pattern = "test result: FAILED\\." }
+id = "cargo.panic"
+match = { kind = "regex", pattern = "^thread '.*'.*panicked at " }
 level = "error"
 highlight = true
+context_lines = 6
 
 # --- Build progress ---------------------------------------------------------
 #

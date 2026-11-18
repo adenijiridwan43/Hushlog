@@ -150,6 +150,56 @@ struct Counts {
     lines_folded: u64,
 }
 
+/// A log whose format is detected part-way through, after lines have already
+/// been read.
+///
+/// The pino pack's detect pattern matches the JSON line in the middle of this
+/// input, so the pipeline locks onto it after the first three lines have
+/// already been classified and pushed. That is the moment the bug this test
+/// pins lived in: rebuilding the collapser to match the detected format threw
+/// away the run's accounting and any block that was open, so the lines before
+/// the switch stopped being counted and the block's contents never reached the
+/// output.
+///
+/// The first three lines are a block on purpose -- an error and its stack
+/// frames -- so the test fails in the way that matters: not with a wrong
+/// count, but with a *lost error line*. `AGENTS.md` section 1.
+#[test]
+fn a_format_detected_mid_stream_does_not_lose_the_lines_before_it() {
+    let input = b"error: something failed\n    at foo.rs:1\n    at bar.rs:2\n\
+                  {\"level\":30,\"pid\":1,\"msg\":\"hi\"}\n\
+                  trailing line\n";
+
+    let mut cmd = common::hushlog();
+    cmd.write_stdin(input.to_vec());
+    let out = cmd.output().expect("hushlog runs");
+    let stdout = String::from_utf8_lossy(&out.stdout).into_owned();
+
+    let summary = parse_summary(&stdout);
+    assert_eq!(
+        summary.lines_in, 5,
+        "every line must be counted, including the ones read before the format \
+         was detected:\n{stdout}"
+    );
+    assert_eq!(
+        summary.lines_in,
+        summary.lines_out + summary.lines_folded,
+        "nothing may be silently dropped: {stdout}"
+    );
+    assert_eq!(
+        summary.errors, 1,
+        "the error line must be an error: {stdout}"
+    );
+
+    // The specific thing that used to vanish: the error and its stack frames.
+    for expected in ["error: something failed", "at foo.rs:1", "at bar.rs:2"] {
+        assert!(
+            stdout.contains(expected),
+            "a line was lost when the format was detected: {expected:?}\n{stdout}"
+        );
+    }
+}
+
 #[test]
 fn no_summary_removes_the_summary_and_nothing_else() {
     let with = {

@@ -1,0 +1,42 @@
+[1m[92m   Compiling[0m fixture-warnings v0.1.0 (C:\Users\usr\AppData\Local\Temp\fx-cargo)
+[1m[93mwarning[0m[1m[97m: use of deprecated function `old_api`: use new_api instead[0m
+  [1m[96m--> [0msrc\main.rs:26:26
+   [1m[96m|[0m
+[1m[96m26[0m [1m[96m|[0m     println!("value {}", old_api() + new_api());
+   [1m[96m|[0m                          [1m[93m^^^^^^^[0m
+   [1m[96m|[0m
+   [1m[96m= [0m[1m[97mnote[0m: `#[warn(deprecated)]` on by default
+
+[1m[93mwarning[0m[1m[97m: unused variable: `unused_variable`[0m
+  [1m[96m--> [0msrc\main.rs:16:9
+   [1m[96m|[0m
+[1m[96m16[0m [1m[96m|[0m     let unused_variable = 7;
+   [1m[96m|[0m         [1m[93m^^^^^^^^^^^^^^^[0m [1m[93mhelp: if this is intentional, prefix it with an underscore: `_unused_variable`[0m
+   [1m[96m|[0m
+   [1m[96m= [0m[1m[97mnote[0m: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+[1m[93mwarning[0m[1m[97m: variable `also_unused` is assigned to, but never used[0m
+  [1m[96m--> [0msrc\main.rs:21:9
+   [1m[96m|[0m
+[1m[96m21[0m [1m[96m|[0m     let mut also_unused = 3;
+   [1m[96m|[0m         [1m[93m^^^^^^^^^^^^^^^[0m
+   [1m[96m|[0m
+   [1m[96m= [0m[1m[97mnote[0m: consider using `_also_unused` instead
+
+[1m[93mwarning[0m[1m[97m: unused variable: `dead_code`[0m
+  [1m[96m--> [0msrc\main.rs:24:9
+   [1m[96m|[0m
+[1m[96m24[0m [1m[96m|[0m     let dead_code = 99;
+   [1m[96m|[0m         [1m[93m^^^^^^^^^[0m [1m[93mhelp: if this is intentional, prefix it with an underscore: `_dead_code`[0m
+
+[1m[93mwarning[0m[1m[97m: value assigned to `also_unused` is never read[0m
+  [1m[96m--> [0msrc\main.rs:22:5
+   [1m[96m|[0m
+[1m[96m22[0m [1m[96m|[0m     also_unused += 1;
+   [1m[96m|[0m     [1m[93m^^^^^^^^^^^^^^^^[0m
+   [1m[96m|[0m
+   [1m[96m= [0m[1m[97mhelp[0m: maybe it is overwritten before being read?
+   [1m[96m= [0m[1m[97mnote[0m: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+[1m[93mwarning[0m: `fixture-warnings` (bin "fixture-warnings") generated 5 warnings (run `cargo fix --bin "fixture-warnings" -p fixture-warnings` to apply 2 suggestions)
+[1m[92m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 0.84s

@@ -97,9 +97,11 @@ impl Normalizer {
     /// This is the hot path. It never allocates -- the masked bytes are fed
     /// straight into `xxh3` -- so the only cost per line is the scan itself.
     ///
-    /// Lines that contain no byte capable of starting a maskable token are
-    /// hashed verbatim: `scan` would find nothing to mask, so skipping it is
-    /// the fast path that keeps the common case cheap.
+    /// A line with nothing to mask is hashed verbatim. The scan still runs to
+    /// find that out, but it is a single pass: an earlier version ran a cheap
+    /// "could this line contain a token at all" pass first and then the scan,
+    /// which was two passes over every byte of every line to save an
+    /// allocation on the rare lines that had nothing to mask.
     ///
     /// ```
     /// use hushlog_core::Normalizer;
@@ -112,12 +114,6 @@ impl Normalizer {
     #[must_use]
     pub fn fingerprint(&self, plain: &str) -> u64 {
         let mut hash = Xxh3::new();
-        if !has_stop_byte(plain.as_bytes()) {
-            // No byte can begin a maskable token, so nothing would change.
-            // Hash the line whole rather than running the scan.
-            hash.update(plain.as_bytes());
-            return hash.digest();
-        }
         let mut sink = |chunk: &str| hash.update(chunk.as_bytes());
         if !scan(plain, &mut sink) {
             // Nothing was masked, so `scan` had nothing to flush. Feed the
@@ -141,17 +137,20 @@ impl Normalizer {
     /// ```
     #[must_use]
     pub fn mask<'a>(&self, plain: &'a str) -> Cow<'a, str> {
-        if !has_stop_byte(plain.as_bytes()) {
-            // No byte can begin a maskable token, so nothing would change.
-            return Cow::Borrowed(plain);
+        // The buffer is allocated on the first chunk the scan produces, and
+        // the scan only produces chunks once it has found a token. A line with
+        // nothing to mask therefore costs no allocation at all.
+        let mut buf: Option<String> = None;
+        {
+            let mut sink = |chunk: &str| {
+                buf.get_or_insert_with(|| String::with_capacity(plain.len()))
+                    .push_str(chunk);
+            };
+            if !scan(plain, &mut sink) {
+                return Cow::Borrowed(plain);
+            }
         }
-        let mut buf = String::new();
-        let mut sink = |chunk: &str| buf.push_str(chunk);
-        if scan(plain, &mut sink) {
-            Cow::Owned(buf)
-        } else {
-            Cow::Borrowed(plain)
-        }
+        Cow::Owned(buf.unwrap_or_default())
     }
 }
 
@@ -309,19 +308,38 @@ fn match_digit_token(b: &[u8], i: usize) -> Option<Token> {
 /// `hex_end` is measured once and reused: it decides the UUID and hash
 /// readings and bounds both, so the common case -- an ordinary word that
 /// happens to contain `a` through `f` -- costs two scans and stops there.
+///
+/// The word is scanned once too, and the slug reading is gated on the scan
+/// rather than attempted and rejected. A slug needs at least two segments, so
+/// the word has to be followed by a separator; checking that first keeps
+/// ordinary words out of the segment analysis entirely, and an ordinary word
+/// is most of what a log contains.
 fn match_alpha_token(b: &[u8], i: usize, floor: usize, hex_end: usize) -> Option<Token> {
     if hex_end - i == 8 && b.get(hex_end) == Some(&b'-') {
         if let Some(end) = match_uuid(b, i) {
             return Some(Token::new(i, end, PH_UUID));
         }
     }
-    match_slug(b, i)
-        .map(|end| Token::new(i, end, PH_ID))
-        .or_else(|| {
-            let is_hash = hex_end - i >= MIN_HASH_LEN && hex_end == alnum_run(b, i);
-            is_hash.then(|| Token::new(i, hex_end, PH_HASH))
-        })
-        .or_else(|| match_path(b, i, floor).map(|end| Token::new(i, end, PH_PATH)))
+
+    // One scan of the word serves both readings below.
+    let alnum_end = alnum_run(b, i);
+
+    // A slug needs at least two segments, so the first one must be followed by
+    // a separator that itself is followed by more word characters.
+    let joined = matches!(b.get(alnum_end), Some(b'-' | b'_'))
+        && b.get(alnum_end + 1).is_some_and(u8::is_ascii_alphanumeric);
+    if joined {
+        if let Some(end) = match_slug(b, i) {
+            return Some(Token::new(i, end, PH_ID));
+        }
+    }
+
+    // A hash is a long hex run that is also the whole of the word.
+    if hex_end - i >= MIN_HASH_LEN && hex_end == alnum_end {
+        return Some(Token::new(i, hex_end, PH_HASH));
+    }
+
+    match_path(b, i, floor).map(|end| Token::new(i, end, PH_PATH))
 }
 
 /// `8-4-4-4-12` hex, in either case.
@@ -574,29 +592,52 @@ fn path_starts_here(b: &[u8], i: usize, floor: usize) -> bool {
 /// hash and `aaaaaaaa` is one too. Any other letter counts only when a `-`
 /// follows, which is what catches `abc-123` without making every letter of
 /// every word a stop.
+///
+/// The table turns the common case into one array read. A log line is mostly
+/// prose, and the old version asked each byte three separate questions
+/// before letting it past; this asks once.
+#[inline]
 fn is_stop(b: &[u8], i: usize) -> bool {
-    let c = b[i];
-    c.is_ascii_hexdigit()
-        || matches!(c, b':' | b'/' | b'\\')
-        || (c.is_ascii_alphabetic() && b.get(i + 1) == Some(&b'-'))
+    match STOP_CLASS[b[i] as usize] {
+        0 => false,
+        1 => true,
+        // A letter that is not a hex digit: it opens a token only when a
+        // hyphen follows, which is the `abc-123` shape.
+        _ => b.get(i + 1) == Some(&b'-'),
+    }
 }
 
-/// Whether any byte in `b` could begin a maskable token.
+/// What a byte can be, as far as token detection is concerned.
 ///
-/// These are the bytes [`is_stop`] can recognise: hex digits (which open
-/// numbers, dates, hashes and UUIDs) and `:`, `/` and `\` (times and paths).
-/// The `alphabetic-followed-by-hyphen` case in [`is_stop`] is deliberately
-/// excluded: a slug like `use-std` or `x-y` has no digit, colon or slash, so
-/// it would skip this check, but `match_slug` would not mask it anyway
-/// (neither segment is volatile), so the fingerprint is unchanged.
-///
-/// A line that returns `false` here cannot contain any maskable token, so the
-/// normalizer skips the scan entirely and hashes the line verbatim.
-#[inline]
-fn has_stop_byte(b: &[u8]) -> bool {
-    b.iter()
-        .any(|&c| c.is_ascii_hexdigit() || matches!(c, b':' | b'/' | b'\\'))
+/// * `0` -- cannot begin a token.
+/// * `1` -- begins a token on its own.
+/// * `2` -- begins a token only when the next byte is a hyphen.
+const fn build_stop_class() -> [u8; 256] {
+    let mut table = [0_u8; 256];
+    // Two counters rather than one: the table is indexed by `usize` and the
+    // byte class is read off a `u8`, and a const context cannot convert
+    // between them without a narrowing cast.
+    let mut i = 0_usize;
+    let mut c = 0_u8;
+    while i < 256 {
+        table[i] = if c.is_ascii_hexdigit() || matches!(c, b':' | b'/' | b'\\') {
+            1
+        } else if c.is_ascii_alphabetic() {
+            2
+        } else {
+            0
+        };
+        if i == 255 {
+            break;
+        }
+        i += 1;
+        c += 1;
+    }
+    table
 }
+
+/// The byte classes [`is_stop`] consults.
+const STOP_CLASS: [u8; 256] = build_stop_class();
 
 /// Bytes that may appear inside an identifier, including its separators.
 const fn is_word_join(c: u8) -> bool {

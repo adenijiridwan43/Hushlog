@@ -68,7 +68,7 @@ pub mod builtin {
     /// match the same line (first match wins). Packs that declare `detect`
     /// patterns are tried first during format detection regardless of this
     /// order.
-    pub const PACKS: [(&str, &str); 11] = [
+    pub const PACKS: [(&str, &str); 12] = [
         ("cargo", include_str!("../rules/cargo.toml")),
         ("npm", include_str!("../rules/npm.toml")),
         ("docker", include_str!("../rules/docker.toml")),
@@ -80,6 +80,7 @@ pub mod builtin {
         ("bunyan", include_str!("../rules/bunyan.toml")),
         ("spdlog", include_str!("../rules/spdlog.toml")),
         ("error_log", include_str!("../rules/error_log.toml")),
+        ("scoped", include_str!("../rules/scoped.toml")),
     ];
 
     /// Parse every built-in pack.

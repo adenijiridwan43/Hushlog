@@ -363,6 +363,63 @@ fn level_field_map_picks_most_severe_match() {
     assert_eq!(got.level, Level::Info);
 }
 
+/// A level map whose patterns are spelled in upper case must still fire.
+///
+/// The OpenTelemetry pack's `severity` field is upper case by definition, and
+/// its level map was written that way. The runtime path folded the captured
+/// value to lower case before matching it against those upper-case patterns,
+/// so the map could never fire and every OpenTelemetry line fell back to the
+/// rule's declared level. The pack's own samples still passed, because the
+/// sample check did not fold case and the runtime path did.
+#[test]
+fn an_upper_case_level_map_still_fires() {
+    let src = r#"
+[[rule]]
+id = "otel.line"
+match = { kind = "regex", pattern = "\"severity\"\\s*:\\s*\"(?<severity>[A-Za-z]+)\"" }
+level_field = "severity"
+level_map = { error = "^(?:FATAL|ERROR)$", warning = "^(?:WARN|WARNING)$", info = "^INFO$" }
+level = "info"
+"#;
+    let mut c = build(src);
+
+    let got = classify(&mut c, r#"{"severity":"ERROR","body":"boom"}"#);
+    assert_eq!(got.level, Level::Error);
+
+    let got = classify(&mut c, r#"{"severity":"WARN","body":"retrying"}"#);
+    assert_eq!(got.level, Level::Warning);
+
+    let got = classify(&mut c, r#"{"severity":"INFO","body":"started"}"#);
+    assert_eq!(got.level, Level::Info);
+}
+
+/// The shipped OpenTelemetry pack must classify its own severities.
+///
+/// This is the pack the bug above shipped in: the rule matched, the level
+/// field was captured, and the level map was silently never consulted.
+#[test]
+fn the_builtin_otel_pack_maps_its_severities() {
+    let mut c = hushlog_rules::builtin::classifier().expect("the built-in packs compile");
+
+    let got = classify(
+        &mut c,
+        r#"{"timestamp_ns":"1700000000000000000","severity":"ERROR","body":"failed","service.name":"api"}"#,
+    );
+    assert_eq!(got.level, Level::Error, "an ERROR severity is an error");
+
+    let got = classify(
+        &mut c,
+        r#"{"timestamp_ns":"1700000000000000000","severity":"WARN","body":"retrying","service.name":"api"}"#,
+    );
+    assert_eq!(got.level, Level::Warning, "a WARN severity is a warning");
+
+    let got = classify(
+        &mut c,
+        r#"{"timestamp_ns":"1700000000000000000","severity":"INFO","body":"started","service.name":"api"}"#,
+    );
+    assert_eq!(got.level, Level::Info, "an INFO severity is an info");
+}
+
 #[test]
 fn sample_line_that_does_not_match_is_rejected() {
     let src = r#"

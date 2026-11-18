@@ -23,6 +23,9 @@ workspace = true
 [dependencies]
 xxhash-rust.workspace = true
 thiserror.workspace = true
+# One automaton over every block marker, so a line is searched once instead of
+# once per marker.
+aho-corasick.workspace = true
 # Pattern block markers declared by rule packs. Substring markers stay the
 # fast path; this is only consulted when they miss.
 regex.workspace = true

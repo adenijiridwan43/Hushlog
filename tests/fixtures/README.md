@@ -1,30 +1,51 @@
 # Test fixtures
 
-## One of them is REAL
+## Which of them are REAL
 
-`real-relanflow-ratelimit-storm.log` is a real capture, not synthetic: a Node
-backend (tsx + pg + pg-boss) started and then hammered with requests, its output
-redirected verbatim. 441 lines of ANSI-coloured access log, a real Postgres
-`FATAL 08P01` with its stack trace, and ~400 repetitions of six request shapes
-carrying `401`/`429` statuses and per-line timings.
+| Fixture | What it is | Real? |
+|---|---|---|
+| `real-relanflow-ratelimit-storm.log` | 441-line capture of a rate-limit storm from a Node backend | **yes** |
+| `cargo-warnings.log` | `cargo build` on a scratch crate with deprecated code | **yes** |
+| `rust-test-panic.log` | `cargo test` with two panics and full stack traces | **yes** |
+| `npm-install.log` | `npm install` with thirteen deprecation warnings | **yes** |
+| `pip-install.log` | `pip install` with build and resolver chatter | **yes** |
+| `out-of-order.log` | lines arriving out of order | **yes** |
+| `truncated-json.log` | a log cut off mid-record | **yes** |
+| `synthetic-cargo-warnings.log` | placeholder | no |
+| `synthetic-npm-build.log` | placeholder | no |
+| `synthetic-retry-storm.log` | placeholder | no |
+| `synthetic-truncated-utf8.log` | binary on purpose | n/a |
 
-It exists because it caught a bug the synthetic fixtures could not: the collapse
+A fixture is real when it is what a tool actually printed, captured verbatim.
+None of them are edited: a line is added or removed whole, never reworded,
+because a reworded line tests the reworded line rather than the tool.
+
+## What each real one has already caught
+
+`real-relanflow-ratelimit-storm.log` is the one that started this. The collapse
 stage counted 400 lines into 2 groups correctly, but the renderers printed one
-"... N similar lines folded" notice *per repeat*, so the 441-line storm came out
-441 lines long, 400 of them notices. Real repetition at real volume was the only
-thing that exposed it. See the tests in
-`crates/hushlog-render/tests/p3_hardening.rs`.
+"... N similar lines folded" notice *per repeat*, so the 441-line storm came
+out 441 lines long, 400 of them notices. Real repetition at real volume was the
+only thing that exposed it.
 
-## The rest are SYNTHETIC
+`rust-test-panic.log` caught the next one. A Rust panic and a failing test
+were both being classified as ordinary output, so the promise in `AGENTS.md`
+section 1 — that an error line is never lost — did not apply to the failures
+that matter most. The panic lines now classify as errors, and so does the
+`test result: FAILED.` summary, which a general rule was swallowing because it
+matched the prefix of it.
+
+`cargo-warnings.log` and `npm-install.log` are the first real captures for
+those two packs. They show that a rustc warning is a warning and an npm
+deprecation notice is a warning — not errors, not noise.
+
+## The synthetic ones are placeholders
 
 `synthetic-cargo-warnings.log`, `synthetic-retry-storm.log` and
 `synthetic-npm-build.log` were hand-written to bootstrap the snapshot harness.
 They are **placeholders, not evidence.** They do not reflect what npm, cargo or
-a Kubernetes scheduler actually emit.
-
-**They get replaced.** See `AGENTS.md` section 5: fixtures are real logs.
-
-## One of them is binary on purpose
+a Kubernetes scheduler actually emit, and they are being replaced one by one
+as real captures land.
 
 `synthetic-truncated-utf8.log` is not valid UTF-8 and cannot be. It is the
 fixture for the `--tee` guarantee in `AGENTS.md` section 1.0: a log containing
@@ -36,20 +57,19 @@ byte for byte.
 Editing it in a text editor will corrupt it. It is `gitattributes`-marked
 `-text` for the same reason the others are.
 
-## What needs to be collected
+## What still needs collecting
 
 Real output from at least these, captured verbatim:
 
-- [ ] `cargo build` with warnings
-- [ ] `npm install` with deprecation output
 - [ ] `docker build`, multi-stage, with repeated buildkit lines
 - [ ] `kubectl logs` with repeated container warnings
 - [ ] **a failing GitHub Actions run** — must contain real errors
 - [ ] Maven/Gradle build with deprecation output
-- [ ] `pip install` with resolver chatter
-- [ ] a Rust test run with a panic and a stack trace (needed for block detection)
+- [ ] a GitHub Actions run with a *real* stack trace, not a local one
+- [ ] `pip install` that actually emits deprecation warnings (current pip does
+      not; the capture has resolver chatter but no `DEPRECATION` lines)
 
-The failing-run fixture is the most important of the eight. Everything else
+The failing-run fixture is the most important of the six. Everything else
 exercises noise; that one exercises the promise in `AGENTS.md` section 1.
 
 ## Naming
@@ -61,6 +81,23 @@ tests/fixtures/cargo-warnings.log
 tests/fixtures/npm-install.log
 tests/fixtures/gh-actions-failure.log
 ```
+
+## How to capture one
+
+See [`docs/CAPTURING-LOGS.md`](../../docs/CAPTURING-LOGS.md) for the full
+procedure. The short version:
+
+```sh
+cargo build --release                 # build hushlog first
+<the command> > capture.log 2>&1       # redirect; do not pipe on Windows
+hushlog --tee check.log < capture.log  # what hushlog made of it
+```
+
+Then read it. If the tool's output is not what hushlog says it is, the rule
+pack is wrong, and the fixture is the evidence.
+
+Scan the capture for secrets before committing it. Trim by removing whole
+lines, never by editing one.
 
 ## Why this matters more than it looks
 

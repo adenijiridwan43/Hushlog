@@ -1,0 +1,21 @@
+Collecting pyyaml==3.12
+  WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /packages/6b/f0/a0250248ea260d55748fff586d89a32afbb22656f4498b08d2636a48d4ec/PyYAML-3.12.zip
+  Downloading PyYAML-3.12.zip (375 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting wheel==0.34.2
+  Downloading wheel-0.34.2-py2.py3-none-any.whl.metadata (2.2 kB)
+Downloading wheel-0.34.2-py2.py3-none-any.whl (26 kB)
+Building wheels for collected packages: pyyaml
+  Building wheel for pyyaml (pyproject.toml): started
+  Building wheel for pyyaml (pyproject.toml): finished with status 'done'
+  Created wheel for pyyaml: filename=pyyaml-3.12-cp314-cp314-win_amd64.whl size=42894 sha256=f5eae1086b555ebc3c580b6820aa8497f1f187bfd639baf7137f09e42d24ea37
+  Stored in directory: C:\Users\usr\AppData\Local\Temp\pip-ephem-wheel-cache-fgv0y0yi\wheels\d1\ce\64\6820aeb7ebb3e7707c958bb64b6fc74af238a4b33d50ae2b5c
+Successfully built pyyaml
+Installing collected packages: pyyaml, wheel
+
+Successfully installed pyyaml-3.12 wheel-0.34.2

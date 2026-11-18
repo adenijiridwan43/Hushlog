@@ -16,6 +16,11 @@ permissions:
   checks: write
   # Same reason: it annotates the offending lines in the diff.
   pull-requests: write
+  # The action files a GitHub issue for anything it flags, so without this it
+  # fails the same way even when the audit itself is clean. That is what turned
+  # the scheduled Audit run red on 2026-11-09: the tree had no vulnerabilities,
+  # but the action could not open the issue it wanted to open.
+  issues: write
 
 jobs:
   deny:

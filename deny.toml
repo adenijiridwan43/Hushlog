@@ -8,18 +8,51 @@ all-features = true
 version = 2
 yanked = "deny"
 
-# Not a vulnerability -- an *unmaintained* crate advisory, which cargo-deny
-# reports alongside real CVEs and counts toward a non-zero exit.
+# Two entries, both for crates that portable-pty pulls in. Neither is a
+# vulnerability: both are *unmaintained* advisories, which cargo-deny reports
+# alongside real CVEs and counts toward a non-zero exit.
 #
 # `serial` is unmaintained since 2017 (RUSTSEC-2017-0008) and there is no safe
 # upgrade. It is pulled in transitively by portable-pty, which hushlog uses only
 # for the opt-in `--pty` flag. With `--pty` off -- the default, per AGENTS.md
 # section 8 -- the code path is unreachable and the crate is never invoked.
 #
-# Reviewed and accepted rather than tolerated by accident. Revisit when
-# portable-pty drops the dependency; this line is the tripwire.
+# `pin-utils` is unmaintained (RUSTSEC-2026-0441) and reaches us the same way:
+# portable-pty 0.8 depends on nix 0.25, whose default feature set enables the
+# optional `pin-utils` dependency. nix 0.28 drops it, but nix 0.28 requires
+# portable-pty 0.9 -- see the note below.
+#
+# WHY THE UPGRADE WAS NOT TAKEN. portable-pty 0.9.0 removes BOTH of these at
+# the source: it drops `serial` for the maintained `serial2`, and its `nix`
+# dependency moves to 0.28, which no longer enables `pin-utils`. The tree
+# loses nine crates and gains two, and `cargo deny check advisories` passes with
+# an empty ignore list.
+#
+# It was measured, and it breaks Windows. portable-pty 0.9.0 adds
+# `PSUEDOCONSOLE_INHERIT_CURSOR` to the flags passed to `CreatePseudoConsole`.
+# That flag makes the pseudoconsole inherit the cursor position from the parent
+# console -- and on a machine with no interactive console to inherit from, the
+# call blocks forever. The symptom is a hung `--pty` run that produces no output
+# at all, and two integration tests that hang for over a thousand seconds
+# before failing.
+#
+# This was isolated to the flag by building portable-pty 0.9.0 from source with
+# that one flag removed and nothing else changed: the PTY run then completes
+# normally. Upstream wezterm still carries the flag on `main` as of 2026-11-16,
+# and 0.9.0 is the newest published version, so there is no upstream release
+# to take instead.
+#
+# A broken opt-in feature on Windows is a worse outcome than two unmaintained
+# crates that the default path never reaches. AGENTS.md section 8 makes Windows
+# a first-class target, and `--pty` is a shipped feature.
+#
+# REVISIT WHEN: portable-pty publishes a release without the flag, or upstream
+# confirms it is safe without an interactive console. At that point, upgrade,
+# delete this list, and check that `cargo deny check advisories` still passes
+# with no entries. The `serial` entry is the tripwire for that.
 ignore = [
     { id = "RUSTSEC-2017-0008", reason = "unmaintained, transitive via portable-pty, only reachable behind opt-in --pty" },
+    { id = "RUSTSEC-2026-0441", reason = "unmaintained, transitive via nix, only reachable behind opt-in --pty; the portable-pty 0.9 upgrade that removes it breaks Windows PTY" },
 ]
 
 [licenses]
@@ -38,21 +71,13 @@ allow = [
 ]
 confidence-threshold = 0.8
 
-# `serial` (RUSTSEC-2017-0008) is unmaintained since 2017 and is reachable only
-# transitively through portable-pty, which is used only behind the opt-in
-# `--pty` flag. The default pipes-first path never touches it, and no drop-in
-# replacement exists. This is the one real supply-chain blemish in the tree and
-# it is recorded here rather than hidden.
-#
-# It is a *vulnerability-class* entry, so it lives under [advisories].ignore
-# below. Verify by deleting that line and running `cargo deny check advisories`.
 exceptions = []
 
 [bans]
-# Nine crates are pulled at two versions each -- almost all of it from
-# portable-pty's nix/serial/winapi chain and from thiserror's macro split.
-# Deduplicating them means patching third-party trees, which is not worth it
-# for a pre-alpha log filter. Warn, and revisit if the tree grows.
+# A few crates are pulled at two versions each -- mostly from portable-pty's
+# winapi/bitflags chain and from thiserror's macro split. Deduplicating them
+# means patching third-party trees, which is not worth it for a pre-alpha log
+# filter. Warn, and revisit if the tree grows.
 #
 # This is a deliberate decision, not an oversight. Do not "fix" it by
 # silencing the warning without a reason.

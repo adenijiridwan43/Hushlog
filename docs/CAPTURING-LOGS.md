@@ -2,7 +2,7 @@
 
 `AGENTS.md` section 5.3: **fixtures are real logs, not invented strings.** The
 whole value of hushlog rests on whether it handles what tools actually print.
-Until a real log has been through the rules, the folding rules are unproven.
+Until a real log has been through the rules.
 
 This document is the procedure for turning a real, noisy process into a fixture
 and hardening the rules against it.
@@ -11,7 +11,6 @@ and hardening the rules against it.
 
 ## 1. The chicken-and-egg question, answered
 
-You asked: *do we build hushlog first, or point it at the project first?*
 
 **Build first. It is one command and takes a couple of minutes.** hushlog is a
 single binary; there is no installer to run and no service to start. The order is:

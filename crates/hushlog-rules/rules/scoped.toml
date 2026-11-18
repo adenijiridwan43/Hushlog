@@ -1,0 +1,111 @@
+# Scoped rule pack
+#
+# Covers the bracketed scope-and-level prefix that application loggers use:
+#
+#   [db:error] Database connection failed: error: unsupported startup parameter
+#   [server:warn] Database not connected. Server starting without DB.
+#   [api:info] listening on port 3001
+#
+# The scope is a subsystem name and the level is one of the usual words, both
+# inside one bracket separated by a colon. That single bracket is what
+# distinguishes this from the Apache error-log shape in `error_log.toml` --
+# that one puts a timestamp in front of the bracket, this one does not.
+#
+# WHY THIS PACK EXISTS. The real capture
+# `real-relanflow-ratelimit-storm.log` opens with a genuine failure:
+#
+#   [db:error] Database connection failed: error: unsupported startup parameter
+#
+# followed by a Postgres FATAL 08P01 and its stack trace. No pack matched it,
+# so hushlog classified it as ordinary output and the summary reported
+# "0 errors" for a log that contains a database failure. That is the promise
+# in AGENTS.md section 1.1 failing in the one place it matters: the line was
+# displayed, but it was not protected, and `--collapse-errors` folded it away.
+#
+# The lesson is the one the other real fixtures taught. A rule pack is only as
+# good as the logs it has seen, and a hand-written fixture cannot surprise
+# anybody.
+#
+# The scope is captured but not interpreted: hushlog has no idea what "db" or
+# "server" means and does not need to. Only the level decides the severity.
+#
+# The level words are the same set the core's `Level::from_token` accepts, so
+# a pack and the library agree on what "critical" means. Matching is
+# case-insensitive, which is why the rules spell it out in their patterns.
+
+name = "scoped"
+description = "Bracketed scope-and-level prefixes, as used by application loggers."
+
+detect = { patterns = [
+    # "[scope:level] message", where the level is one of the words below.
+    # The scope is a plain word: no spaces, no dots, no colon of its own.
+    "(?i)^\\[[A-Za-z0-9_-]+:(?:error|err|fatal|critical|crit|panic|warn|warning|info|log|notice|debug|trace|verbose)\\]",
+] }
+
+# --- Errors -----------------------------------------------------------------
+#
+# These lines are failures. They carry the level in the bracket, so they are
+# matched as errors regardless of what the rest of the line says.
+
+[[rule]]
+id = "scoped.error"
+match = { kind = "regex", pattern = "(?i)^\\[[A-Za-z0-9_-]+:(?<level>error|err|fatal|critical|crit|panic)\\]" }
+level_field = "level"
+level_map = { error = "^(?:error|err|fatal|critical|crit|panic)$" }
+level = "error"
+highlight = true
+# No `collapse`. AGENTS.md section 1.1: errors are never folded without an
+# explicit user opt-in, so this stays false and the loader refuses to set it.
+context_lines = 6
+
+[[rule.sample]]
+line = "[db:error] Database connection failed: error: unsupported startup parameter: statement_timeout"
+level = "error"
+
+[[rule.sample]]
+line = "[api:FATAL] out of memory"
+level = "error"
+
+[[rule.sample]]
+line = "[worker:Error] task crashed"
+level = "error"
+
+# --- Warnings ---------------------------------------------------------------
+
+[[rule]]
+id = "scoped.warning"
+match = { kind = "regex", pattern = "(?i)^\\[[A-Za-z0-9_-]+:(?<level>warn|warning)\\]" }
+level_field = "level"
+level_map = { warning = "^(?:warn|warning)$" }
+level = "warning"
+collapse = true
+context_lines = 4
+
+[[rule.sample]]
+line = "[server:warn] Database not connected. Server starting without DB."
+level = "warning"
+
+# --- Ordinary output --------------------------------------------------------
+#
+# Informational and verbose levels. One rule, because the two are the same
+# kind of thing: output a reader may skip.
+
+[[rule]]
+id = "scoped.info"
+match = { kind = "regex", pattern = "(?i)^\\[[A-Za-z0-9_-]+:(?<level>info|log|notice|debug|trace|verbose)\\]" }
+level_field = "level"
+level_map = { info = "^(?:info|log|notice)$", trace = "^(?:debug|trace|verbose)$" }
+level = "info"
+collapse = true
+
+[[rule.sample]]
+line = "[api:info] listening on port 3001"
+level = "info"
+
+[[rule.sample]]
+line = "[worker:debug] heartbeat"
+level = "trace"
+
+[[rule.sample]]
+line = "[db:NOTICE] retention job finished"
+level = "info"

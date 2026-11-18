@@ -18,9 +18,122 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   setup, release checklist, Windows notes, troubleshooting.
 - [`docs/CAPTURING-LOGS.md`](docs/CAPTURING-LOGS.md): how to capture a real noisy
   process as a fixture.
+- [`docs/AGENT-INTERFACE.md`](docs/AGENT-INTERFACE.md): the query grammar, the
+  two levers an agent has, and the measured savings on the real captures.
+- **Four real fixtures**, captured verbatim from the tools themselves:
+  `cargo-warnings.log` (a `cargo build` with warnings), `rust-test-panic.log`
+  (a `cargo test` with two panics and full stack traces), `npm-install.log`
+  (an `npm install` with thirteen deprecation warnings) and `pip-install.log`
+  (a `pip install` with resolver chatter). The synthetic placeholders they
+  replace are still there; the real ones are what the rules are now proved
+  against.
+- `--anonymize` is documented in the README's flags table, with a section on
+  what it redacts and the guarantee that the `--tee` file is never anonymized.
+- **A `scoped` rule pack**, covering the bracketed scope-and-level prefix that
+  application loggers use -- `[db:error] Database connection failed`,
+  `[server:warn] ...`. It is the twelfth built-in pack, and it exists because
+  the real rate-limit-storm capture contains a genuine Postgres `FATAL 08P01`
+  that no pack matched, so hushlog reported "0 errors" for a log with a
+  database failure in it.
+- A README section listing the twelve built-in rule packs and what each covers.
+- A README performance section, so a reader can judge whether hushlog suits
+  their log volume before installing it.
+- A README opening built on the real capture: 441 lines in, 43 out.
+
+### Changed
+
+- **The pipeline is about a third faster end to end.** The benchmark measured a
+  proxy pipeline that the binary never ran, so the cost of the real one was
+  invisible. Measuring the real shape -- ingest, classify, mask into an owned
+  string, detect blocks, collapse -- found three things:
+
+  - The block detector ran **twenty-one separate substring searches on every
+    line**: eight start markers, six continuation markers, five end markers and
+    two URL probes, whether or not a block was even open. They are now one
+    Aho-Corasick pass over the line, which the workspace already depended on
+    and did not use.
+  - The classifier **compiled a regular expression from scratch on every
+    matching line** -- once for the rule's own pattern to read its capture
+    groups, and again for each entry of its level map. A rule with a level
+    field cost up to five compilations per line, which was most of what
+    classification cost. Patterns are compiled once, at load time. This also
+    makes the classifier honest about the promise on `RegexPattern`: it never
+    touches `regex::Regex::new` on the hot path.
+  - The normalizer scanned every line **twice** -- once to ask whether it
+    could contain a token, once to mask it -- and read the word around every
+    `a` through `f` twice, because ordinary prose is full of them. It now
+    scans once, and reads each word once.
+
+  Measured by running the old and new binaries alternately on the same input,
+  so machine drift cannot favour either: **11.5 MB/s -> 15.3 MB/s** on the
+  real capture. Output is byte-identical in all four text formats.
+- `stage_bench` measures the pipeline the binary actually runs, as cumulative
+  prefixes, and runs the real capture as well as the synthetic corpus: the
+  synthetic one is mostly unique lines and measures the per-line cost, the
+  real one is mostly repeats and measures the per-fold cost. It prints a
+  `RATIO real_pipeline_mbps=` line for the CI regression guard.
+- Level maps are matched case-insensitively, whichever way the pattern is
+  spelled.
+- `AGENTS.md` section 7 now describes the pipeline the binary actually runs,
+  and records that a benchmark measuring a proxy is worse than no benchmark.
 
 ### Fixed
 
+- **Lines were lost when a log's format was detected part-way through.** The
+  pipeline rebuilds its rule set when format detection locks onto a pack, and
+  it used to rebuild the *collapser* as well. That threw away the run's
+  accounting, its fold groups, and any multi-line block that was open at the
+  time: the lines already read stopped being counted, and the contents of an
+  open block never reached the output at all. A five-line log whose fourth
+  line triggered detection came out as two lines, having silently dropped an
+  error and its two stack frames. The collapser is no longer rebuilt. It is
+  the only change needed, because the block detector's markers do not depend
+  on the order of the rules they come from -- the literal markers are matched
+  by one automaton over the whole set, and the pattern markers by "does any
+  match" -- so reordering the rules yields the same detector, and that
+  detector already carried every pack's markers.
+- **A log line naming its own severity was not treated as one.** The
+  `[db:error] Database connection failed: ...` shape -- a bracketed scope and
+  level, as used by many application loggers -- matched no rule, so a real
+  database failure was classified as ordinary output and the summary reported
+  "0 errors" for a log that contains one. A new `scoped` rule pack covers it,
+  and the real capture it came from now counts its Postgres `FATAL 08P01` as
+  the error it is.
+- **`--anonymize` corrupted every multi-byte character.** It worked on bytes
+  and pushed each one as a separate character, so `café` came out as
+  `cafâ‚¬Â©`. Text that was not ASCII was mangled in the one place that was
+  supposed to be protecting it. It now works on characters.
+- **`--anonymize` never redacted IPv4 addresses, IPv6 addresses or UUIDs.**
+  The fakes for all three existed in the code and nothing ever reached them:
+  there was no matcher for any of them. All three are redacted now. The IPv6
+  matcher is deliberately strict -- it wants either the compressed `::` form
+  or all eight groups -- because `09:14:02` is two colon-separated hex groups,
+  and mistaking a timestamp for an address would rewrite every time in the log.
+- **`--anonymize` left the original email local part in place.**
+  `alice@example.com` came out as `aliceotter@example.invalid` -- half the
+  real address, wearing a fake one. The whole address is replaced now.
+- **`--anonymize` doubled the slash after a URL's host.**
+  `https://host/api` came out as `https://example.invalid//seg...`.
+- **A Rust panic and a failing test were classified as ordinary output.** The
+  cargo pack had no rule for either, so the promise in `AGENTS.md` section 1 --
+  that an error line is never lost -- did not apply to the failures that
+  matter most. `thread '...' panicked at` is now an error, `test ... FAILED` is
+  now an error, and `test result: FAILED.` is now an error.
+- **A failing test suite summary was classified as ordinary output.** The rule
+  that matched `test result: FAILED.` was declared *after* the rule that
+  matched `test result: `, and first match wins -- so the general rule
+  swallowed every failing summary. The order is fixed.
+- **A level map could never fire for a rule whose level field is upper case.**
+  The runtime path folded the captured value to lower case before matching it
+  against the map, so a map written in upper case never matched and the rule
+  silently fell back to its declared level. The OpenTelemetry pack shipped
+  this way: its `severity` field is upper case by definition, so every
+  OpenTelemetry line was classified `info` whatever its severity. The pack's
+  own samples still passed, because the sample check did not fold case and
+  the runtime path did -- which is why nothing caught it. Level maps are now
+  matched case-insensitively, and the sample check and the runtime path agree.
+- A level map with an invalid pattern failed silently at runtime and now
+  fails at load time, naming the rule and its file.
 - The `.gitignore` did not cover secrets: `.env` files, `*.pem`/`*.key`,
   `id_rsa`, `id_ed25519`, `credentials.toml` and `.cargo/credentials*` were all
   committable. Ad-hoc log captures, insta `*.snap.new` files and OpenCode's local

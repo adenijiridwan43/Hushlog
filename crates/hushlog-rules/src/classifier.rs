@@ -15,7 +15,7 @@ use hushlog_core::{Classified, Classifier, Level, Line, RuleId};
 use regex::RegexSetBuilder;
 
 use crate::error::{Location, RuleError};
-use crate::schema::{BlockMarkers, LevelMap, Matcher, Rule, RulePack, RuleSample};
+use crate::schema::{BlockMarkers, LevelMap, Matcher, Rule, RuleLevel, RulePack, RuleSample};
 
 /// Ceiling on rules in one classifier.
 ///
@@ -74,6 +74,21 @@ pub struct CompiledRule {
 pub struct RuleClassifier {
     set: regex::RegexSet,
     rules: Vec<CompiledRule>,
+    /// Each rule's own pattern, compiled once at load time.
+    ///
+    /// Reading a named capture group means re-running the rule's pattern
+    /// against the line. It used to be compiled from scratch on every
+    /// matching line, and the level map compiled its patterns again on top:
+    /// up to five regex compilations per line, on exactly the lines that
+    /// needed a level field. That was most of what classification cost, and
+    /// it contradicted the promise on [`RegexPattern`] that the classifier
+    /// never touches `regex::Regex::new` on the hot path.
+    ///
+    /// Kept parallel to `rules` rather than inside [`CompiledRule`] so that
+    /// `CompiledRule` keeps its derives and its public shape.
+    regexes: Vec<regex::Regex>,
+    /// Each rule's level map, compiled once at load time, parallel to `rules`.
+    level_maps: Vec<Option<Vec<(RuleLevel, regex::Regex)>>>,
 }
 
 impl RuleClassifier {
@@ -103,6 +118,8 @@ impl RuleClassifier {
 
         let mut patterns: Vec<String> = Vec::with_capacity(total);
         let mut rules: Vec<CompiledRule> = Vec::with_capacity(total);
+        let mut regexes: Vec<regex::Regex> = Vec::with_capacity(total);
+        let mut level_maps: Vec<Option<Vec<(RuleLevel, regex::Regex)>>> = Vec::with_capacity(total);
         let mut seen: HashSet<&str> = HashSet::with_capacity(total);
 
         for pack in packs {
@@ -125,6 +142,12 @@ impl RuleClassifier {
                 if rule.opid.is_some() {
                     validate_opid_group(rule, &pattern)?;
                 }
+
+                // The level map's patterns are compiled here, so a bad one
+                // fails at load time rather than silently matching nothing at
+                // runtime -- and so the classifier does not compile them again
+                // on every line the rule matches.
+                let level_map = compile_level_map(rule)?;
 
                 let id = rule.id_str();
                 if !seen.insert(id) {
@@ -165,11 +188,7 @@ impl RuleClassifier {
                                         caps.name(field).map(|m| m.as_str().to_string())
                                     })
                             })
-                            .and_then(|value| {
-                                rule.level_map
-                                    .as_ref()
-                                    .and_then(|map| level_for_map(map, &value))
-                            })
+                            .and_then(|value| level_from_map(level_map.as_ref(), &value))
                             .unwrap_or(rule.level.into());
                         if derived != Level::from(expected) {
                             return Err(RuleError::Rule {
@@ -188,6 +207,8 @@ impl RuleClassifier {
                     rule,
                     pattern.clone(),
                 ));
+                regexes.push(re);
+                level_maps.push(level_map);
                 patterns.push(pattern);
             }
         }
@@ -203,7 +224,12 @@ impl RuleClassifier {
                 message: format!("could not build rule set: {}", first_line(&e.to_string())),
             })?;
 
-        Ok(Self { set, rules })
+        Ok(Self {
+            set,
+            rules,
+            regexes,
+            level_maps,
+        })
     }
 
     /// Compile a single pack.
@@ -251,16 +277,20 @@ impl Classifier for RuleClassifier {
         match self.set.matches(&line.plain).iter().next() {
             Some(index) => {
                 let index = index_of(index);
-                let rule = &self.rules[usize::from(index)];
+                let slot = usize::from(index);
+                let rule = &self.rules[slot];
+                // The rule's own pattern and its level map, compiled once at
+                // load time. See `RuleClassifier::regexes`.
+                let pattern = &self.regexes[slot];
                 let level = rule
                     .level_field
                     .as_deref()
-                    .and_then(|field| rule.capture_value(&line.plain, field))
-                    .and_then(|value| rule.level_for(&value));
+                    .and_then(|field| capture_from(pattern, &line.plain, field))
+                    .and_then(|value| level_from_map(self.level_maps[slot].as_ref(), &value));
                 let opid = rule
                     .opid
                     .as_deref()
-                    .and_then(|field| rule.capture_value(&line.plain, field));
+                    .and_then(|field| capture_from(pattern, &line.plain, field));
                 Classified {
                     level: level.unwrap_or(rule.level),
                     rule_id: Some(RuleId(index)),
@@ -290,6 +320,70 @@ impl Classifier for RuleClassifier {
 /// quietly reassigning the wrong rule.
 fn index_of(index: usize) -> u16 {
     u16::try_from(index).expect("rule count is bounded by MAX_RULES before indexing")
+}
+
+/// Read a named capture group out of a line, using an already-compiled rule.
+///
+/// The rule's pattern was compiled at load time, so this is a match, not a
+/// compilation.
+fn capture_from(pattern: &regex::Regex, line: &str, group: &str) -> Option<String> {
+    pattern
+        .captures(line)?
+        .name(group)
+        .map(|m| m.as_str().to_string())
+}
+
+/// Compile a rule's level map, failing loudly on a bad pattern.
+///
+/// The map's patterns used to be compiled on the hot path, once per line the
+/// rule matched, so a broken one failed silently at runtime: the rule fell
+/// back to its declared level and nobody was told. Now it fails at load time,
+/// naming the rule and its file.
+fn compile_level_map(rule: &Rule) -> Result<Option<Vec<(RuleLevel, regex::Regex)>>, RuleError> {
+    let Some(map) = &rule.level_map else {
+        return Ok(None);
+    };
+    let mut out = Vec::with_capacity(map.entries.len());
+    for (level, pattern) in &map.entries {
+        let re = case_insensitive(&pattern.0).map_err(|e| RuleError::Rule {
+            location: rule.location().clone(),
+            id: rule.id_str().to_string(),
+            message: format!(
+                "level_map pattern `{}` is not a valid regex: {e}",
+                pattern.0
+            ),
+        })?;
+        out.push((*level, re));
+    }
+    Ok(Some(out))
+}
+
+/// Compile a level-map pattern so that it matches any spelling of the level.
+///
+/// Level names are case-insensitive everywhere else in hushlog: the schema
+/// accepts `ERROR` and `error` alike, and [`Level::from_token`] folds the
+/// aliases. A level map that only matched one spelling was a trap, and it had
+/// already caught one -- the OpenTelemetry pack, whose `severity` field is
+/// uppercase by definition, so its level map could never fire. The rule fell
+/// back to its declared level for every line, and the pack's own samples
+/// still passed, because the sample check did not fold case and the runtime
+/// path did.
+///
+/// Folding case in the pattern rather than in the value keeps both paths
+/// agreeing, and keeps a pack author's pattern readable.
+fn case_insensitive(pattern: &str) -> Result<regex::Regex, regex::Error> {
+    regex::Regex::new(&format!("(?i){pattern}"))
+}
+
+/// The level a compiled level map assigns to a value.
+///
+/// Mirrors [`CompiledRule::level_for`], but over patterns that were compiled
+/// once rather than on every line.
+fn level_from_map(map: Option<&Vec<(RuleLevel, regex::Regex)>>, value: &str) -> Option<Level> {
+    let map = map?;
+    let value = value.to_ascii_lowercase();
+    map.iter()
+        .find_map(|(level, re)| re.is_match(&value).then_some(Level::from(*level)))
 }
 
 impl CompiledRule {
@@ -332,6 +426,9 @@ impl CompiledRule {
     ///
     /// Matching is case-insensitive: `ERROR`, `Error` and `error` all match the
     /// `error` pattern, mirroring lnav's level table.
+    ///
+    /// This compiles the map's patterns on demand. The classifier itself uses
+    /// the copy it compiled at load time.
     #[must_use]
     pub fn level_for(&self, value: &str) -> Option<Level> {
         let value = value.to_ascii_lowercase();
@@ -340,7 +437,7 @@ impl CompiledRule {
             .entries
             .iter()
             .find_map(|(level, pattern)| {
-                regex::Regex::new(&pattern.0)
+                case_insensitive(&pattern.0)
                     .ok()?
                     .is_match(&value)
                     .then_some(Level::from(*level))
@@ -422,11 +519,16 @@ fn escape_for_error(line: &str) -> String {
 
 /// Test `value` against a level map's entries, most-severe first, returning the
 /// first level whose pattern matches. `None` when nothing matches.
+///
+/// The classifier uses [`level_from_map`] instead, over patterns compiled once
+/// at load time. This stays for callers holding a raw [`LevelMap`].
+#[allow(dead_code)]
 fn level_for_map(map: &LevelMap, value: &str) -> Option<Level> {
+    let value = value.to_ascii_lowercase();
     map.entries.iter().find_map(|(level, pattern)| {
-        regex::Regex::new(&pattern.0)
+        case_insensitive(&pattern.0)
             .ok()?
-            .is_match(value)
+            .is_match(&value)
             .then_some(Level::from(*level))
     })
 }

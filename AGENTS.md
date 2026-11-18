@@ -177,36 +177,50 @@ rust-version = "1.85"
 
 ## 7. Performance targets
 
-**Revised 2026-10-12 against measurement, not aspiration.** The original
+**Revised 2026-11-13 against measurement, not aspiration.** The original
 target of 200 MB/s was written before anyone ran the pipeline. It is not
 reachable and has been removed rather than quietly lowered.
+
+**The benchmark must measure the pipeline the binary actually runs.** It used
+to measure a proxy — ingest, fingerprint, classify — that the binary never
+ran: the binary masks into an owned `String`, detects blocks and collapses.
+The proxy was several times faster than the real thing, so the cost of the
+real thing was invisible and three separate hot spots went unnoticed for
+months. `stage_bench` now measures the real shape as cumulative prefixes, on
+the synthetic corpus *and* on the real capture, because the synthetic corpus
+is mostly unique lines (per-line cost) and the real one is mostly repeats
+(per-fold cost). A benchmark that only has one of the two measures half the
+product.
 
 Measured on a 64 MB synthetic CI corpus, release build, via
 `cargo run --release --example stage_bench`:
 
-| Stage | MB/s | Share of end-to-end |
+| Stage | MB/s | Share of end-to-end time |
 |---|---|---|
-| baseline: byte scan + split | ~1300 | — |
-| Ingest | ~140 | 17% |
-| Normalize (mask + hash) | ~38 | **60%** |
-| Classify (66 rules) | ~88 | 23% |
-| **end to end** | **~25** | |
+| baseline: byte scan + split | ~980 | — |
+| Ingest | ~117 | 15% |
+| Normalize (mask + hash) | ~37 | **47%** |
+| Classify (74 rules) | ~80 | 22% |
+| **the real pipeline** | **~15** | |
 
 ### The ratio is the target, not the absolute number
 
 Absolute MB/s varies by 3-4x between machines — a bare byte scan runs at
-~1300 MB/s on a slow box and several GB/s on CI hardware. A CI job asserting an
+~980 MB/s on a slow box and several GB/s on CI hardware. A CI job asserting an
 absolute throughput would flake constantly and teach everyone to ignore it.
+It also varies by a factor of two on a busy machine, so **measurements taken
+at different times are not comparable.** Run the old and new builds
+alternately, or the drift will be mistaken for the change.
 
 What does not vary is the **ratio** of end-to-end to the same machine's bare
-byte scan. Currently ~2%.
+byte scan. Currently ~1.5%.
 
 **So the rule is: end-to-end throughput must retain at least 1% of this
 machine's byte-scan baseline.** `stage_bench` prints both numbers, so this is
 measurable anywhere. Halving it is a regression; double it is a win.
 
-Absolute numbers for context: a 100 MB CI log filters in ~4 s, which feels
-instant. Throughput has never been the thing users complain about.
+Absolute numbers for context: a 100 MB CI log filters in a few seconds, which
+feels instant. Throughput has never been the thing users complain about.
 
 ### The other two targets stand
 
@@ -217,10 +231,22 @@ instant. Throughput has never been the thing users complain about.
 ### If you touch the hot path
 
 Run `stage_bench` before and after and report both numbers. The normalizer is
-where the time goes: profiling (`normalize_bench`) showed xxh3 at ~2000 MB/s
+still where the time goes: profiling (`normalize_bench`) showed xxh3 at ~2000 MB/s
 against masking at ~35 MB/s. **The hash was never the problem.** Masking is
-60% of end-to-end, and a fast path skipping lines with no digits, colons or
-slashes is the obvious next win.
+roughly half of end-to-end, and a fast path skipping lines with no digits,
+colons or slashes is still the obvious next win.
+
+Two rules learned the hard way in the 2026-11-13 pass, both about measuring
+the wrong thing:
+
+- **Compile a pattern once, never per line.** The classifier used to compile
+  a regular expression from scratch for every matching line, and the level
+  map compiled its patterns again on top — up to five compilations per line.
+  The schema already promised this would not happen; the code did not
+  honour it.
+- **Search a line once, not once per pattern.** The block detector ran
+  twenty-one separate substring searches over every line. One Aho-Corasick
+  pass replaced them.
 
 ## 8. Windows
 

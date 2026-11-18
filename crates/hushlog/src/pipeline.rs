@@ -368,6 +368,20 @@ impl Pipeline {
     /// Rebuild the classifier so the detected pack's rules are tried first,
     /// followed by every other pack's rules in their original order. Called
     /// once, when format detection locks on to a pack.
+    ///
+    /// The collapser is deliberately NOT rebuilt here. This used to replace it
+    /// wholesale, which threw away the run's accounting, its fold groups, and
+    /// any block that was open at the time. The lines that had already come in
+    /// stopped being counted, and the contents of an open block never reached
+    /// the output at all. `AGENTS.md` section 1 does not allow that.
+    ///
+    /// Nothing is lost by leaving the collapser alone. The block detector is
+    /// built from the classifier's rules, and the detector's markers do not
+    /// depend on the order of those rules: the literal markers are matched by
+    /// one automaton over the whole set, and the pattern markers by "does any
+    /// match". Reordering the rules therefore yields the same detector, and
+    /// that detector already carries every pack's markers -- so the detected
+    /// pack's markers were in effect from the first line either way.
     fn rebuild_classifier_for(&mut self, name: &str) -> anyhow::Result<()> {
         let mut ordered: Vec<hushlog_rules::RulePack> = self
             .packs
@@ -384,12 +398,6 @@ impl Pipeline {
         self.classifier = RuleClassifier::new(&ordered)
             .map_err(|e| anyhow::Error::msg(e.to_string()))
             .context(format!("rebuilding rule set for detected format {name}"))?;
-
-        // Rebuild the block detector against the new rule order, so block
-        // markers from the detected pack take effect.
-        let policy = self.collapser.policy();
-        let detector = block_detector_or_warn(&self.classifier);
-        self.collapser = FoldingCollapser::with_policy_and_detector(policy, detector);
 
         if let Some(explain) = self.explain.as_mut() {
             explain.note(&format!("format detected: {name}"))?;

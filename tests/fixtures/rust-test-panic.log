@@ -1,0 +1,66 @@
+[1m[92m    Finished[0m `test` profile [unoptimized + debuginfo] target(s) in 0.02s
+[1m[92m     Running[0m unittests src\lib.rs (target\debug\deps\fixture_panic-6d4772608e033b88.exe)
+
+running 3 tests
+test tests::parses_a_number ... ok
+test tests::panics_on_a_bad_input ... FAILED
+test tests::rejects_a_word ... FAILED
+
+failures:
+
+---- tests::panics_on_a_bad_input stdout ----
+
+thread 'tests::panics_on_a_bad_input' (21528) panicked at src\lib.rs:27:43:
+this input is always bad: "cannot parse \"not a number\" as a number: invalid digit found in string"
+stack backtrace:
+   0: std::panicking::panic_handler
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:679
+   1: core::panicking::panic_fmt
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:80
+   2: core::result::unwrap_failed
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\result.rs:1871
+   3: enum2$<core::result::Result<u32,alloc::string::String> >::expect<u32,alloc::string::String>
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\result.rs:1184
+   4: fixture_panic::tests::panics_on_a_bad_input
+             at .\src\lib.rs:27
+   5: fixture_panic::tests::panics_on_a_bad_input::closure$0
+             at .\src\lib.rs:26
+   6: core::ops::function::FnOnce::call_once<fixture_panic::tests::panics_on_a_bad_input::closure_env$0,tuple$<> >
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\function.rs:250
+   7: core::ops::function::FnOnce::call_once
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\function.rs:250
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+---- tests::rejects_a_word stdout ----
+
+thread 'tests::rejects_a_word' (38884) panicked at src\lib.rs:22:9:
+assertion `left == right` failed
+  left: Err("cannot parse \"twenty-one\" as a number: invalid digit found in string")
+ right: Err("cannot parse \"twenty-one\" as a number")
+stack backtrace:
+   0: std::panicking::panic_handler
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\std\src\panicking.rs:679
+   1: core::panicking::panic_fmt
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:80
+   2: core::panicking::assert_failed_inner
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:452
+   3: core::panicking::assert_failed<enum2$<core::result::Result<u32,alloc::string::String> >,enum2$<core::result::Result<u32,alloc::string::String> > >
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\panicking.rs:407
+   4: fixture_panic::tests::rejects_a_word
+             at .\src\lib.rs:22
+   5: fixture_panic::tests::rejects_a_word::closure$0
+             at .\src\lib.rs:21
+   6: core::ops::function::FnOnce::call_once<fixture_panic::tests::rejects_a_word::closure_env$0,tuple$<> >
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\function.rs:250
+   7: core::ops::function::FnOnce::call_once
+             at /rustc/b940084d7eb6a299eb4bfeb8e34901bc051e7ac4/library\core\src\ops\function.rs:250
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+
+
+failures:
+    tests::panics_on_a_bad_input
+    tests::rejects_a_word
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+[1m[91merror[0m: test failed, to rerun pass `--lib`

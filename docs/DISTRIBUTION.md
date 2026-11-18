@@ -27,60 +27,8 @@ is published.
 
 ---
 
-## 2. One-time setup
 
-### 2.1 crates.io token
-
-1. Sign in at <https://crates.io> with GitHub.
-2. Visit <https://crates.io/settings/tokens> → **New Token**.
-3. Name it `hushlog-github-actions`, scope **publish-update** (not
-   `publish-new`; the crates already exist after the first release, so
-   update scope is what re-publishing needs — use **publish-new** for the very
-   first publish of each crate).
-4. In the GitHub repo: **Settings → Secrets and variables → Actions → New
-   repository secret** → name `CARGO_REGISTRY_TOKEN`, value the token.
-
-The first release needs the token to have **publish-new** for all four crates.
-After that, rotate it to **publish-update**.
-
-> The crates must be published in this order, which `publish-extra.yml` handles:
-> `hushlog-core` → `hushlog-rules` and `hushlog-render` → `hushlog`. crates.io
-> rejects a crate whose dependencies are not yet live.
-
-### 2.2 Homebrew tap
-
-1. Create a **public** repository named exactly `homebrew-tap` under your
-   account: **github.com/new** → owner `adenijiridwan43`, name `homebrew-tap`,
-   public, initialise with a README.
-2. The repository must contain a `Formula/` directory. Create it with a
-   placeholder file so the first push has somewhere to land:
-   `Formula/.gitkeep`.
-3. Create a token that can write to that tap:
-   - **Fine-grained token** (recommended): <https://github.com/settings/tokens?type=beta>
-     → **Generate new token** → repository access: only `homebrew-tap` →
-     permissions: **Contents: Read and write**.
-   - **Classic token**: <https://github.com/settings/tokens> → scope `repo`.
-4. In the **hushlog** repo: **Settings → Secrets and variables → Actions → New
-   repository secret** → name `HOMEBREW_TAP_TOKEN`, value that token.
-
-The tap name is declared in `Cargo.toml`:
-```toml
-[workspace.metadata.dist]
-tap = "adenijiridwan43/homebrew-tap"
-```
-If the tap repository does not exist, the `publish-homebrew-formula` job fails
-loudly — it does not silently skip. The other channels still ship.
-
-### 2.3 Container registry
-
-Nothing to do. `publish-docker` uses the workflow's own `GITHUB_TOKEN` with
-`packages: write`, and pushes to `ghcr.io/adenijiridwan43/hushlog`. After the
-first release, set the package's visibility to public under
-**Profile → Packages → hushlog → Package settings**.
-
----
-
-## 3. What a release does
+## 2. What a release does
 
 Pushing a tag matching `v*` starts `release.yml`:
 
@@ -111,7 +59,7 @@ whole chain can be smoke-tested before the first stable tag.
 
 ---
 
-## 4. Release checklist
+## 3. Release checklist
 
 Run through this once, in order, on the release machine.
 
@@ -119,7 +67,7 @@ Run through this once, in order, on the release machine.
 - [ ] `cargo clippy --workspace --all-targets -- -D warnings` is clean
 - [ ] `cargo test --workspace --all-targets` is green
 - [ ] `dist plan` exits 0 (the generated `release.yml` is not stale)
-- [ ] `cargo package -p hushlog-rules --list` still shows all 11 rule packs
+- [ ] `cargo package -p hushlog-rules --list` still shows all 12 rule packs
 - [ ] `CHANGELOG.md` has an entry for the version, moved out of `[Unreleased]`
 - [ ] The workspace `version` in `Cargo.toml` is the version being tagged
 - [ ] `README.md` install section matches reality
