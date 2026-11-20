@@ -551,13 +551,14 @@ The cost is real: you now own a fork of `nix`'s manifest, and you have to
 repeat it whenever `nix` is updated. That is a fair trade for a crate that
 is unreachable, and a bad trade for one that is not.
 
-**This is the route hushlog has not taken yet.** It was found and verified
-while writing this article, after Option A had already been rejected. It is
-recorded here because it is the answer that removes the advisory outright
-*without* breaking Windows — at the price of maintaining a vendored manifest.
-Whether to take it is a judgement call about the project's appetite for
-carrying a patch, and it belongs to the next conversation, not to this
-article.
+**This is the route hushlog took on 2026-11-19.** It was found and verified
+while writing this article, after Option A had already been rejected. The
+vendored copy lives in `vendor/nix` (see its `PATCH-README.md`), `deny.toml`
+documents the decision, and the external review's suggestion — a headless
+Windows PTY smoke test with a hard timeout, added to
+`crates/hushlog/tests/pty_mode.rs` — guards the class of regression. The
+alternative left standing is the accepted-with-reason acceptance of the
+`serial` advisory.
 
 ### Option C: accept it, and write down why
 

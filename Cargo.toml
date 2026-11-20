@@ -86,3 +86,8 @@ install-path = "CARGO_HOME"
 install-updater = false
 
 [workspace.metadata.dist.dependencies]
+
+[patch.crates-io]
+# Vendored `nix` 0.25.1 (see vendor/nix/PATCH-README.md): hushlog patch -
+# delete `"aio"` from `default`; it pulled in the unmaintained `pin-utils`.
+nix = { path = "vendor/nix" }

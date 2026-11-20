@@ -125,3 +125,57 @@ fn pty_mode_needs_a_command_to_run() {
     assert!(!out.status.success());
     assert!(String::from_utf8_lossy(&out.stderr).contains("pty"));
 }
+
+/// The external review that motivated the vendored-`nix` patch (Option B)
+/// asked for: "a headless Windows PTY smoke test with a hard timeout ... a
+/// no-output hang can quietly consume CI time."
+///
+/// This spawns a real child through `--pty` in the headless session and
+/// trips a hard deadline: if hushlog does not exit within it, the test
+/// fails with a message that says the smoke test caught a hang. The
+/// companion output assertion fires only on success — the known
+/// headless-CI `ConPTY` limitation (the child sometimes emits only init
+/// escapes and exits 1) is already exempt in the other PTY tests, and this
+/// test's tripwire is the hang, not the limitation.
+#[test]
+#[cfg(windows)]
+fn windows_pty_smoke_exits_within_the_deadline() {
+    use std::process::{Command, Stdio};
+    use std::time::{Duration, Instant};
+
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_hushlog"));
+    cmd.args([
+        "--pty",
+        "--no-summary",
+        "--",
+        "cmd",
+        "/c",
+        "echo smoke-marker",
+    ]);
+    cmd.stdout(Stdio::piped());
+    cmd.stderr(Stdio::piped());
+    let mut child = cmd.spawn().expect("spawn hushlog --pty");
+
+    let deadline = Instant::now() + Duration::from_secs(15);
+    loop {
+        if let Some(status) = child.try_wait().expect("try_wait on hushlog") {
+            let out = child.wait_with_output().expect("wait_with_output");
+            if status.success() {
+                assert!(
+                    String::from_utf8_lossy(&out.stdout).contains("smoke-marker"),
+                    "a successful pty run must capture the child's output:\n{:?}",
+                    out.stdout
+                );
+            }
+            break;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "hushlog --pty hung in a headless Windows session: no exit \
+             within the deadline. The ConPTY smoke test exists to catch \
+             exactly this regression early, instead of a no-output hang \
+             quietly consuming CI time."
+        );
+        std::thread::sleep(Duration::from_millis(200));
+    }
+}

@@ -150,7 +150,10 @@ fn a_failing_github_actions_run_survives_filtering() {
         "the cargo-deny error line from a real CI run must not be dropped"
     );
     assert!(
-        output_contains(GITHUB_ACTIONS_FAILURE, "Resource not accessible by integration"),
+        output_contains(
+            GITHUB_ACTIONS_FAILURE,
+            "Resource not accessible by integration"
+        ),
         "the audit-check error line from a real CI run must not be dropped"
     );
 }

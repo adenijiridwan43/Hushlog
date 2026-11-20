@@ -8,28 +8,32 @@ all-features = true
 version = 2
 yanked = "deny"
 
-# Two entries, both for crates that portable-pty pulls in. Neither is a
-# vulnerability: both are *unmaintained* advisories, which cargo-deny reports
-# alongside real CVEs and counts toward a non-zero exit.
+# One entry remains. Neither is a vulnerability: it is an *unmaintained*
+# advisory, which cargo-deny reports alongside real CVEs and counts toward a
+# non-zero exit.
 #
 # `serial` is unmaintained since 2017 (RUSTSEC-2017-0008) and there is no safe
 # upgrade. It is pulled in transitively by portable-pty, which hushlog uses only
 # for the opt-in `--pty` flag. With `--pty` off -- the default, per AGENTS.md
 # section 8 -- the code path is unreachable and the crate is never invoked.
 #
-# `pin-utils` is unmaintained (RUSTSEC-2026-0441) and reaches us the same way:
-# portable-pty 0.8 depends on nix 0.25, whose default feature set enables the
-# optional `pin-utils` dependency. nix 0.28 drops it, but nix 0.28 requires
-# portable-pty 0.9 -- see the note below.
+# `pin-utils` is gone from the tree (RUSTSEC-2026-0441). It reached us through
+# portable-pty 0.8 -> nix 0.25, whose `default` feature list enables the
+# optional `pin-utils` dependency; see the Windows note below for why the
+# portable-pty 0.9 upgrade that also drops it was rejected. On 2026-11-19 the
+# vendored-`nix` patch in vendor/nix was taken: it deletes `"aio"` from `nix`
+# 0.25.1's `default` feature list, and `aio = ["pin-utils"]` then never turns
+# the optional dep on. Nothing in this project enables `aio`, and hushlog never
+# calls `nix`'s AIO wrappers, so removing the feature removed dead code rather
+# than functionality.
 #
-# WHY THE UPGRADE WAS NOT TAKEN. portable-pty 0.9.0 removes BOTH of these at
-# the source: it drops `serial` for the maintained `serial2`, and its `nix`
-# dependency moves to 0.28, which no longer enables `pin-utils`. The tree
-# loses nine crates and gains two, and `cargo deny check advisories` passes with
-# an empty ignore list.
+# WHICH WAY OUT: vendoring `nix` (option B). When the advisory still existed,
+# the alternative was the portable-pty 0.9 upgrade (option A) -- measured, and
+# rejected because it breaks Windows (below). The vendored patch is the third
+# way: it removes the advisory without the trade-off.
 #
-# It was measured, and it breaks Windows. portable-pty 0.9.0 adds
-# `PSUEDOCONSOLE_INHERIT_CURSOR` to the flags passed to `CreatePseudoConsole`.
+# WHY THE UPGRADE IS STILL REJECTED. portable-pty 0.9.0 adds
+# PSUEDOCONSOLE_INHERIT_CURSOR to the flags passed to CreatePseudoConsole.
 # That flag makes the pseudoconsole inherit the cursor position from the parent
 # console -- and on a machine with no interactive console to inherit from, the
 # call blocks forever. The symptom is a hung `--pty` run that produces no output
@@ -38,21 +42,28 @@ yanked = "deny"
 #
 # This was isolated to the flag by building portable-pty 0.9.0 from source with
 # that one flag removed and nothing else changed: the PTY run then completes
-# normally. Upstream wezterm still carries the flag on `main` as of 2026-11-16,
-# and 0.9.0 is the newest published version, so there is no upstream release
-# to take instead.
+# normally. Upstream main still carries the flag (commit 9d834586, "add
+# PSUEDOCONSOLE_INHERIT_CURSOR as a flag", February 2024), and 0.9.0 is the
+# newest published version -- so there is no upstream release to take instead.
 #
-# A broken opt-in feature on Windows is a worse outcome than two unmaintained
-# crates that the default path never reaches. AGENTS.md section 8 makes Windows
-# a first-class target, and `--pty` is a shipped feature.
+# A broken opt-in feature on Windows is a worse outcome than the
+# unmaintained-crate situation we had before 2026-11-19. AGENTS.md section 8
+# makes Windows a first-class target, and `--pty` is a shipped feature.
 #
-# REVISIT WHEN: portable-pty publishes a release without the flag, or upstream
-# confirms it is safe without an interactive console. At that point, upgrade,
-# delete this list, and check that `cargo deny check advisories` still passes
-# with no entries. The `serial` entry is the tripwire for that.
+# WHAT GUARDS THIS CLASS OF REGRESSION NOW. The external review that motivated
+# the patch asked for: a headless Windows PTY smoke test with a hard timeout
+# ("a no-output hang can quietly consume CI time"). That was added:
+# `windows_pty_smoke_exits_within_the_deadline` in
+# crates/hushlog/tests/pty_mode.rs (2026-11-18) trips a 15-second deadline on
+# `hushlog --pty -- cmd /c "echo smoke-marker"` in a headless Windows session,
+# so a reopening of the door fails CI fast instead of absorbing runner time.
+#
+# REVISIT WHEN: portable-pty publishes a release without the flag (or upstream
+# confirms it is safe without an interactive console). At that point upgrade:
+# drop the vendored patch, replace `serial` with `serial2`, and run
+# `cargo deny check advisories` expecting it to pass with NO entries.
 ignore = [
     { id = "RUSTSEC-2017-0008", reason = "unmaintained, transitive via portable-pty, only reachable behind opt-in --pty" },
-    { id = "RUSTSEC-2026-0441", reason = "unmaintained, transitive via nix, only reachable behind opt-in --pty; the portable-pty 0.9 upgrade that removes it breaks Windows PTY" },
 ]
 
 [licenses]
