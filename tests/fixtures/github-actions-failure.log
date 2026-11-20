@@ -1,0 +1,1159 @@
+﻿cargo-deny (licences + bans)	UNKNOWN STEP	∩╗┐2026-11-16T12:43:24.6462736Z Current runner version: '2.338.2'
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6485822Z ##[group]Runner Image Provisioner
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6486700Z Hosted Compute Agent
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6487298Z Version: 20261103.629
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6487821Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6488464Z Build Date: 2026-11-03T17:26:59Z
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6489063Z Worker ID: {53c455a6-573d-44fc-bf1a-8749baba113e}
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6489641Z Region: westus3
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6490133Z Cloud: Azure
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6490575Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6491693Z ##[group]Operating System
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6492310Z Ubuntu
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6492743Z 26.04.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6493249Z LTS
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6493677Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6494117Z ##[group]Runner Image
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6494700Z Image: ubuntu-26.04
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6495202Z Version: 20261111.196.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6496286Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6497605Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261111.196
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6498470Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6499529Z ##[group]GITHUB_TOKEN Permissions
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6501403Z Checks: write
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6501895Z Contents: read
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6502451Z Metadata: read
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6502925Z PullRequests: write
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6503403Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6505268Z Secret source: Actions
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6506003Z Cache mode: write
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6507024Z Prepare workflow directory
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6791357Z Prepare all required actions
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.6833024Z Getting action download info
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:24.9747295Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:25.0864317Z Download action repository 'EmbarkStudios/cargo-deny-action@v2' (SHA:3c6349835b2b7b196a839186cb8b78e02f7b5f25)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:25.4646071Z Complete job name: cargo-deny (licences + bans)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:25.5153672Z ##[group]Build container for action use: '/home/runner/work/_actions/EmbarkStudios/cargo-deny-action/v2/Dockerfile'.
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:25.5850368Z ##[command]/usr/bin/docker build -t af18c8:ea1c421b1304495392c2391977b48cd4 -f "/home/runner/work/_actions/EmbarkStudios/cargo-deny-action/v2/Dockerfile" "/home/runner/work/_actions/EmbarkStudios/cargo-deny-action/v2"
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.0932804Z #0 building with "default" instance using docker driver
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.0933825Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.0934395Z #1 [internal] load build definition from Dockerfile
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.0935565Z #1 transferring dockerfile: 508B 0.0s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.0936732Z #1 DONE 0.0s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.0937182Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.0938597Z #2 [internal] load metadata for docker.io/library/rust:1.85.0-alpine3.20@sha256:f0cef6c65992995b1c7816cb667de95799852e3fbed9d06f95855cbc512a0fd0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.2802741Z #2 ...
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.2803311Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.2804156Z #3 [auth] library/rust:pull token for registry-1.docker.io
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.2804978Z #3 DONE 0.0s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.4302314Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.4303127Z #2 [internal] load metadata for docker.io/library/rust:1.85.0-alpine3.20@sha256:f0cef6c65992995b1c7816cb667de95799852e3fbed9d06f95855cbc512a0fd0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.7390575Z #2 DONE 0.8s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9389073Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9392419Z #4 [internal] load .dockerignore
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9393276Z #4 transferring context: 2B done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9395786Z #4 DONE 0.0s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9396134Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9396813Z #5 [internal] load build context
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9397479Z #5 transferring context: 1.12kB done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9398060Z #5 DONE 0.0s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9398471Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9399404Z #6 [1/3] FROM docker.io/library/rust:1.85.0-alpine3.20@sha256:f0cef6c65992995b1c7816cb667de95799852e3fbed9d06f95855cbc512a0fd0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9400822Z #6 resolve docker.io/library/rust:1.85.0-alpine3.20@sha256:f0cef6c65992995b1c7816cb667de95799852e3fbed9d06f95855cbc512a0fd0 0.0s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:30.9422920Z #6 sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28 27.26MB / 239.16MB 0.2s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.0964315Z #6 sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28 56.62MB / 239.16MB 0.3s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.0969195Z #6 sha256:0a9a5dfd008f05ebc27e4790db0709a29e527690c21bcbcd01481eaeb6bb49dc 3.63MB / 3.63MB 0.2s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.0976634Z #6 sha256:d0430b4a2b30329b0c06034d1df61c2f3533c436834a54b76def8756d804d888 0B / 55.32MB 0.2s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.0977937Z #6 extracting sha256:0a9a5dfd008f05ebc27e4790db0709a29e527690c21bcbcd01481eaeb6bb49dc
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.2411186Z #6 sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28 95.42MB / 239.16MB 0.5s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.3920850Z #6 sha256:d0430b4a2b30329b0c06034d1df61c2f3533c436834a54b76def8756d804d888 20.97MB / 55.32MB 0.3s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.3921655Z #6 extracting sha256:0a9a5dfd008f05ebc27e4790db0709a29e527690c21bcbcd01481eaeb6bb49dc 0.2s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.3922488Z #6 sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28 160.43MB / 239.16MB 0.6s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.3923332Z #6 sha256:d0430b4a2b30329b0c06034d1df61c2f3533c436834a54b76def8756d804d888 55.32MB / 55.32MB 0.5s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.5113152Z #6 sha256:d0430b4a2b30329b0c06034d1df61c2f3533c436834a54b76def8756d804d888 55.32MB / 55.32MB 0.7s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.6914382Z #6 sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28 239.16MB / 239.16MB 0.9s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:31.6915344Z #6 extracting sha256:d0430b4a2b30329b0c06034d1df61c2f3533c436834a54b76def8756d804d888
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:32.9862074Z #6 sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28 239.16MB / 239.16MB 2.0s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:32.9867315Z #6 extracting sha256:d0430b4a2b30329b0c06034d1df61c2f3533c436834a54b76def8756d804d888 1.3s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:32.9887900Z #6 extracting sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.0975660Z #6 extracting sha256:8fda7dd06f6e434e3727cd86155430a51568846533e3824548334e20f1078e28 2.3s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.0976272Z #6 DONE 4.3s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.2448949Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.2451195Z #7 [2/3] RUN set -eux;     apk update;     apk add bash curl git tar openssh;     curl --silent -L https://github.com/EmbarkStudios/cargo-deny/releases/download/0.20.2/cargo-deny-0.20.2-x86_64-unknown-linux-musl.tar.gz | tar -xzv -C /usr/bin --strip-components=1;
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.2453247Z #7 0.146 + apk update
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.3999162Z #7 0.151 fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/main/x86_64/APKINDEX.tar.gz
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.5020965Z #7 0.404 fetch https://dl-cdn.alpinelinux.org/alpine/v3.20/community/x86_64/APKINDEX.tar.gz
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.9067577Z #7 0.808 v3.20.10-123-g162aaa7b431 [https://dl-cdn.alpinelinux.org/alpine/v3.20/main]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.9068407Z #7 0.808 v3.20.10-120-gef6cf7f0ba5 [https://dl-cdn.alpinelinux.org/alpine/v3.20/community]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:35.9069111Z #7 0.808 OK: 24183 distinct packages available
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.1208300Z #7 0.872 + apk add bash curl git tar openssh
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.2241932Z #7 1.126 (1/26) Installing ncurses-terminfo-base (6.4_p20240420-r2)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.3280103Z #7 1.193 (2/26) Installing libncursesw (6.4_p20240420-r2)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.3280511Z #7 1.217 (3/26) Installing readline (8.2.10-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.3280911Z #7 1.230 (4/26) Installing bash (5.2.26-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4351905Z #7 1.254 Executing bash-5.2.26-r0.post-install
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4352452Z #7 1.257 (5/26) Installing brotli-libs (1.1.0-r2)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4352756Z #7 1.272 (6/26) Installing c-ares (1.33.1-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4353080Z #7 1.281 (7/26) Installing libunistring (1.2-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4353433Z #7 1.296 (8/26) Installing libidn2 (2.3.7-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4353806Z #7 1.306 (9/26) Installing nghttp2-libs (1.62.1-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4354583Z #7 1.316 (10/26) Installing libpsl (0.21.5-r1)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4354900Z #7 1.325 (11/26) Installing libcurl (8.14.1-r2)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.4355157Z #7 1.337 (12/26) Installing curl (8.14.1-r2)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.5448694Z #7 1.348 (13/26) Installing libexpat (2.8.1-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.5449168Z #7 1.357 (14/26) Installing pcre2 (10.43-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.5449504Z #7 1.371 (15/26) Installing git (2.45.4-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.5449940Z #7 1.425 (16/26) Installing git-init-template (2.45.4-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.5450354Z #7 1.434 (17/26) Installing openssh-keygen (9.7_p1-r6)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.5450751Z #7 1.447 (18/26) Installing libedit (20240517.3.1-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6554993Z #7 1.457 (19/26) Installing openssh-client-common (9.7_p1-r6)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6555530Z #7 1.478 (20/26) Installing openssh-client-default (9.7_p1-r6)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6556193Z #7 1.491 (21/26) Installing openssh-sftp-server (9.7_p1-r6)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6556847Z #7 1.501 (22/26) Installing openssh-server-common (9.7_p1-r6)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6557400Z #7 1.510 (23/26) Installing openssh-server (9.7_p1-r6)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6557847Z #7 1.525 (24/26) Installing openssh (9.7_p1-r6)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6558278Z #7 1.536 (25/26) Installing libacl (2.3.2-r0)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6558730Z #7 1.545 (26/26) Installing tar (1.35-r2)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.6559120Z #7 1.557 Executing busybox-1.36.1-r29.trigger
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.8897865Z #7 1.563 OK: 167 MiB in 53 packages
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.8898446Z #7 1.641 + curl --silent -L https://github.com/EmbarkStudios/cargo-deny/releases/download/0.20.2/cargo-deny-0.20.2-x86_64-unknown-linux-musl.tar.gz
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.8898997Z #7 1.641 + tar -xzv -C /usr/bin '--strip-components=1'
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:36.9363682Z #7 1.838 cargo-deny-0.20.2-x86_64-unknown-linux-musl/README.md
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:37.1804840Z #7 1.838 cargo-deny-0.20.2-x86_64-unknown-linux-musl/LICENSE-APACHE
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:37.1805419Z #7 1.838 cargo-deny-0.20.2-x86_64-unknown-linux-musl/cargo-deny
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:37.1806232Z #7 1.932 cargo-deny-0.20.2-x86_64-unknown-linux-musl/LICENSE-MIT
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:42.0358643Z #7 DONE 6.9s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:42.2187515Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:42.2187996Z #8 [3/3] COPY entrypoint.sh /entrypoint.sh
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:42.2188386Z #8 DONE 0.0s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:42.2188537Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:42.2188640Z #9 exporting to image
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:42.2188886Z #9 exporting layers
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.1389825Z #9 exporting layers 1.1s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3116155Z #9 exporting manifest sha256:052fc6b88f2ed919c83c745add3d009874c517c7d68582b6fc8ed1222b9d9ab3 done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3118093Z #9 exporting config sha256:51afe652c05d2d05b5b24261cc43314ee7d5fda0a2fb78223918417c5c6393db done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3119037Z #9 exporting attestation manifest sha256:7e566a1f042f0835037d70a7b7b0613f68725e944451eaa71683dc5cfcbdb7b6 done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3119878Z #9 exporting manifest list sha256:b398e1780d8b010ac39c96487f59fac36aaa6b52f57d8c03a3d46a745d87d081 done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3121639Z #9 naming to docker.io/library/af18c8:ea1c421b1304495392c2391977b48cd4 done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3122283Z #9 unpacking to docker.io/library/af18c8:ea1c421b1304495392c2391977b48cd4
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3370811Z #9 unpacking to docker.io/library/af18c8:ea1c421b1304495392c2391977b48cd4 0.2s done
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.3802967Z #9 DONE 1.3s
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4265138Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4519011Z ##[group]Run actions/checkout@v4
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4519445Z with:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4519647Z   repository: adenijiridwan43/Hushlog
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4521656Z   token: ***
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4521834Z   ssh-strict: true
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4522009Z   ssh-user: git
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4522194Z   persist-credentials: true
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4522396Z   clean: true
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4522584Z   sparse-checkout-cone-mode: true
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4522798Z   fetch-depth: 1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4522976Z   fetch-tags: false
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4523152Z   show-progress: true
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4523335Z   lfs: false
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4523805Z   submodules: false
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4524213Z   set-safe-directory: true
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4524433Z   allow-unsafe-pr-checkout: false
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.4524937Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6580253Z Syncing repository: adenijiridwan43/Hushlog
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6581841Z ##[group]Getting Git version info
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6582390Z Working directory is '/home/runner/work/Hushlog/Hushlog'
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6583038Z [command]/usr/bin/git version
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6583707Z git version 2.56.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6595488Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6607948Z Temporarily overriding HOME='/home/runner/work/_temp/c597fcfa-93cd-40cf-9fbf-f387673cf9a6' before making global git config changes
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6609015Z Adding repository directory to the temporary git global config as a safe directory
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6611920Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hushlog/Hushlog
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6663702Z Deleting the contents of '/home/runner/work/Hushlog/Hushlog'
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6666877Z ##[group]Initializing the repository
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6671006Z [command]/usr/bin/git init /home/runner/work/Hushlog/Hushlog
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6748501Z hint: Using 'master' as the name for the initial branch. This default branch name
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6749444Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6750121Z hint: to use in all of your new repositories, which will suppress this warning,
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6750648Z hint: call:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6750942Z hint:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6751387Z hint: 	git config --global init.defaultBranch <name>
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6751888Z hint:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6752349Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6753128Z hint: 'development'. The just-created branch can be renamed via this command:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6753705Z hint:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6753993Z hint: 	git branch -m <name>
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6754324Z hint:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6754778Z hint: Disable this message with "git config set advice.defaultBranchName false"
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6755840Z Initialized empty Git repository in /home/runner/work/Hushlog/Hushlog/.git/
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6764627Z [command]/usr/bin/git remote add origin https://github.com/adenijiridwan43/Hushlog
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6812035Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6812588Z ##[group]Disabling automatic garbage collection
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6814867Z [command]/usr/bin/git config --local gc.auto 0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6844484Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6844984Z ##[group]Setting up auth
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6850505Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.6880089Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7257392Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7290334Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7538414Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7567712Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7802311Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7837913Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7838410Z ##[group]Fetching the repository
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:43.7845771Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b11743d6db6bcd6444528fa3563b2191242d535a:refs/remotes/origin/main
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.3960434Z From https://github.com/adenijiridwan43/Hushlog
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.3961287Z  * [new ref]         b11743d6db6bcd6444528fa3563b2191242d535a -> origin/main
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.3964118Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.3964791Z ##[group]Determining the checkout info
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.3967116Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.3972664Z [command]/usr/bin/git sparse-checkout disable
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4032984Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4063199Z ##[group]Checking out the ref
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4068916Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4214835Z Switched to a new branch 'main'
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4220601Z branch 'main' set up to track 'origin/main'.
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4224502Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4273378Z [command]/usr/bin/git log -1 --format=%H
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4299174Z b11743d6db6bcd6444528fa3563b2191242d535a
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4587175Z ##[group]Run EmbarkStudios/cargo-deny-action@v2
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4587448Z with:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4587614Z   command: check
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4587805Z   arguments: --all-features
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4588013Z   manifest-path: ./Cargo.toml
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4588217Z   log-level: warn
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4588393Z   use-git-cli: false
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4588570Z ##[endgroup]
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.4685572Z ##[command]/usr/bin/docker run --name af18c8ea1c421b1304495392c2391977b48cd4_338beb --label af18c8 --workdir /github/workspace --rm -e "INPUT_COMMAND" -e "INPUT_ARGUMENTS" -e "INPUT_COMMAND-ARGUMENTS" -e "INPUT_MANIFEST-PATH" -e "INPUT_LOG-LEVEL" -e "INPUT_RUST-VERSION" -e "INPUT_CREDENTIALS" -e "INPUT_SSH-KEY" -e "INPUT_SSH-KNOWN-HOSTS" -e "INPUT_USE-GIT-CLI" -e "HOME" -e "GITHUB_JOB" -e "GITHUB_REF" -e "GITHUB_SHA" -e "GITHUB_REPOSITORY" -e "GITHUB_REPOSITORY_OWNER" -e "GITHUB_REPOSITORY_OWNER_ID" -e "GITHUB_RUN_ID" -e "GITHUB_RUN_NUMBER" -e "GITHUB_RETENTION_DAYS" -e "GITHUB_RUN_ATTEMPT" -e "GITHUB_ACTOR_ID" -e "GITHUB_ACTOR" -e "GITHUB_WORKFLOW" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -e "GITHUB_EVENT_NAME" -e "GITHUB_SERVER_URL" -e "GITHUB_API_URL" -e "GITHUB_GRAPHQL_URL" -e "GITHUB_REF_NAME" -e "GITHUB_REF_PROTECTED" -e "GITHUB_REF_TYPE" -e "GITHUB_WORKFLOW_REF" -e "GITHUB_WORKFLOW_SHA" -e "GITHUB_REPOSITORY_ID" -e "GITHUB_TRIGGERING_ACTOR" -e "GITHUB_WORKSPACE" -e "GITHUB_ACTION" -e "GITHUB_EVENT_PATH" -e "GITHUB_ACTION_REPOSITORY" -e "GITHUB_ACTION_REF" -e "GITHUB_PATH" -e "GITHUB_ENV" -e "GITHUB_STEP_SUMMARY" -e "GITHUB_STATE" -e "GITHUB_OUTPUT" -e "GITHUB_ARTIFACTS" -e "GITHUB_ARTIFACTS_LIST" -e "RUNNER_OS" -e "RUNNER_ARCH" -e "RUNNER_NAME" -e "RUNNER_ENVIRONMENT" -e "RUNNER_TOOL_CACHE" -e "RUNNER_TEMP" -e "RUNNER_WORKSPACE" -e "ACTIONS_RUNTIME_URL" -e "ACTIONS_RUNTIME_TOKEN" -e "ACTIONS_CACHE_URL" -e "ACTIONS_RESULTS_URL" -e "ACTIONS_CACHE_MODE" -e "ACTIONS_ORCHESTRATION_ID" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp":"/github/runner_temp" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" -v "/home/runner/work/Hushlog/Hushlog":"/github/workspace" af18c8:ea1c421b1304495392c2391977b48cd4  "" "" "" "" "--log-level" "warn" "--manifest-path" "./Cargo.toml" "--all-features" "check" ""
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8458798Z Default host: x86_64-unknown-linux-musl
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8459285Z rustup home:  /usr/local/rustup
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8459500Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8975151Z installed toolchains
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8975476Z --------------------
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8975800Z 1.85.0-x86_64-unknown-linux-musl (active, default)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8976083Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8976180Z active toolchain
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8976555Z ----------------
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8976817Z name: 1.85.0-x86_64-unknown-linux-musl
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8977232Z active because: it's the default toolchain
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8977948Z installed targets:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:44.8978213Z   x86_64-unknown-linux-musl
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0519335Z ^[[0m^[[1m^[[38;5;11mwarning[duplicate]^[[0m^[[1m: found 2 duplicate entries for crate 'anstream'^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0525838Z   ^[[0m^[[36mΓöîΓöÇ^[[0m /github/workspace/Cargo.lock:3:1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0530909Z   ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0535445Z ^[[0m^[[36m3^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò¡^[[0m ^[[0m^[[33manstream 0.6.21 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0568823Z ^[[0m^[[36m4^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓöé^[[0m ^[[0m^[[33manstream 1.0.0 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0575214Z   ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò░^[[0m^[[0m^[[33mΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ lock entries^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0579654Z   ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0582734Z   ^[[0m^[[36mΓö£^[[0m anstream v0.6.21
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0585409Z     ΓööΓöÇΓöÇ hushlog-render v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0586503Z         ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0587152Z   ^[[0m^[[36mΓö£^[[0m anstream v1.0.0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0587741Z     ΓööΓöÇΓöÇ clap_builder v4.6.7
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0589740Z         ΓööΓöÇΓöÇ clap v4.6.7
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0590259Z             ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0590554Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0590975Z ^[[0m^[[1m^[[38;5;11mwarning[duplicate]^[[0m^[[1m: found 2 duplicate entries for crate 'anstyle-parse'^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0591579Z   ^[[0m^[[36mΓöîΓöÇ^[[0m /github/workspace/Cargo.lock:6:1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0591979Z   ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0592609Z ^[[0m^[[36m6^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò¡^[[0m ^[[0m^[[33manstyle-parse 0.2.7 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0593428Z ^[[0m^[[36m7^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓöé^[[0m ^[[0m^[[33manstyle-parse 1.0.0 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0594234Z   ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò░^[[0m^[[0m^[[33mΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ lock entries^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0594783Z   ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0595130Z   ^[[0m^[[36mΓö£^[[0m anstyle-parse v0.2.7
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0595528Z     ΓööΓöÇΓöÇ anstream v0.6.21
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0595888Z         ΓööΓöÇΓöÇ hushlog-render v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0596271Z             ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0596922Z   ^[[0m^[[36mΓö£^[[0m anstyle-parse v1.0.0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0597354Z     ΓööΓöÇΓöÇ anstream v1.0.0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0597717Z         ΓööΓöÇΓöÇ clap_builder v4.6.7
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0598110Z             ΓööΓöÇΓöÇ clap v4.6.7
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0598479Z                 ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0598729Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0599090Z ^[[0m^[[1m^[[38;5;11mwarning[duplicate]^[[0m^[[1m: found 2 duplicate entries for crate 'syn'^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0599758Z     ^[[0m^[[36mΓöîΓöÇ^[[0m /github/workspace/Cargo.lock:104:1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0600142Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0600841Z ^[[0m^[[36m104^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò¡^[[0m ^[[0m^[[33msyn 2.0.119 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0601640Z ^[[0m^[[36m105^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓöé^[[0m ^[[0m^[[33msyn 3.0.9 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0602241Z     ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò░^[[0m^[[0m^[[33mΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ lock entries^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0602659Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0602856Z     ^[[0m^[[36mΓö£^[[0m syn v2.0.119
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0603079Z       ΓööΓöÇΓöÇ thiserror-impl v1.0.69
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0603326Z           ΓööΓöÇΓöÇ thiserror v1.0.69
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0603565Z               ΓööΓöÇΓöÇ filedescriptor v0.8.3
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0603834Z                   ΓööΓöÇΓöÇ portable-pty v0.8.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0604121Z                       ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0604395Z     ^[[0m^[[36mΓö£^[[0m syn v3.0.9
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0604619Z       Γö£ΓöÇΓöÇ clap_derive v4.6.7
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0604839Z       Γöé   ΓööΓöÇΓöÇ clap v4.6.7
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0605335Z       Γöé       ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0605596Z       Γö£ΓöÇΓöÇ serde_derive v1.0.229
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0605842Z       Γöé   ΓööΓöÇΓöÇ serde v1.0.229
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0606108Z       Γöé       Γö£ΓöÇΓöÇ hushlog-render v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0606593Z       Γöé       Γöé   ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0607024Z       Γöé       ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0607380Z       Γöé           ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0607632Z       ΓööΓöÇΓöÇ thiserror-impl v2.0.21
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0607859Z           ΓööΓöÇΓöÇ thiserror v2.0.21
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0608130Z               Γö£ΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0608414Z               Γö£ΓöÇΓöÇ hushlog-core v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0608709Z               Γöé   Γö£ΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0608989Z               Γöé   Γö£ΓöÇΓöÇ hushlog-render v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0609280Z               Γöé   ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0609739Z               Γö£ΓöÇΓöÇ hushlog-render v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0610038Z               ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0610203Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0610453Z ^[[0m^[[1m^[[38;5;11mwarning[duplicate]^[[0m^[[1m: found 2 duplicate entries for crate 'thiserror'^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0610865Z     ^[[0m^[[36mΓöîΓöÇ^[[0m /github/workspace/Cargo.lock:109:1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0611140Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0611646Z ^[[0m^[[36m109^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò¡^[[0m ^[[0m^[[33mthiserror 1.0.69 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0612330Z ^[[0m^[[36m110^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓöé^[[0m ^[[0m^[[33mthiserror 2.0.21 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0613102Z     ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò░^[[0m^[[0m^[[33mΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ lock entries^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0613625Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0613844Z     ^[[0m^[[36mΓö£^[[0m thiserror v1.0.69
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0614092Z       ΓööΓöÇΓöÇ filedescriptor v0.8.3
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0614361Z           ΓööΓöÇΓöÇ portable-pty v0.8.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0614611Z               ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0614855Z     ^[[0m^[[36mΓö£^[[0m thiserror v2.0.21
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0615088Z       Γö£ΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0615325Z       Γö£ΓöÇΓöÇ hushlog-core v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0615590Z       Γöé   Γö£ΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0615888Z       Γöé   Γö£ΓöÇΓöÇ hushlog-render v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0616164Z       Γöé   Γöé   ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0616613Z       Γöé   ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0616905Z       Γöé       ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0617176Z       Γö£ΓöÇΓöÇ hushlog-render v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0617436Z       ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0617581Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0617858Z ^[[0m^[[1m^[[38;5;11mwarning[duplicate]^[[0m^[[1m: found 2 duplicate entries for crate 'thiserror-impl'^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0618310Z     ^[[0m^[[36mΓöîΓöÇ^[[0m /github/workspace/Cargo.lock:111:1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0618566Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0619043Z ^[[0m^[[36m111^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò¡^[[0m ^[[0m^[[33mthiserror-impl 1.0.69 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0619787Z ^[[0m^[[36m112^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓöé^[[0m ^[[0m^[[33mthiserror-impl 2.0.21 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0620613Z     ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò░^[[0m^[[0m^[[33mΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ lock entries^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0621155Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0621367Z     ^[[0m^[[36mΓö£^[[0m thiserror-impl v1.0.69
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0621614Z       ΓööΓöÇΓöÇ thiserror v1.0.69
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0621868Z           ΓööΓöÇΓöÇ filedescriptor v0.8.3
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0622125Z               ΓööΓöÇΓöÇ portable-pty v0.8.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0622516Z                   ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0622928Z     ^[[0m^[[36mΓö£^[[0m thiserror-impl v2.0.21
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0623170Z       ΓööΓöÇΓöÇ thiserror v2.0.21
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0623393Z           Γö£ΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0623640Z           Γö£ΓöÇΓöÇ hushlog-core v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0623919Z           Γöé   Γö£ΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0624185Z           Γöé   Γö£ΓöÇΓöÇ hushlog-render v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0624471Z           Γöé   Γöé   ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0624739Z           Γöé   ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0625008Z           Γöé       ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0625275Z           Γö£ΓöÇΓöÇ hushlog-render v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0625569Z           ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1 (*)
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0625716Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0625955Z ^[[0m^[[1m^[[38;5;11mwarning[duplicate]^[[0m^[[1m: found 2 duplicate entries for crate 'winnow'^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0626515Z     ^[[0m^[[36mΓöîΓöÇ^[[0m /github/workspace/Cargo.lock:127:1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0626831Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0627279Z ^[[0m^[[36m127^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò¡^[[0m ^[[0m^[[33mwinnow 0.7.15 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0627922Z ^[[0m^[[36m128^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓöé^[[0m ^[[0m^[[33mwinnow 1.0.4 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0628628Z     ^[[0m^[[36mΓöé^[[0m ^[[0m^[[33mΓò░^[[0m^[[0m^[[33mΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ lock entries^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0629120Z     ^[[0m^[[36mΓöé^[[0m  
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0629332Z     ^[[0m^[[36mΓö£^[[0m winnow v0.7.15
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0629563Z       ΓööΓöÇΓöÇ toml v0.9.12+spec-1.1.0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0629831Z           ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0630089Z               ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0630333Z     ^[[0m^[[36mΓö£^[[0m winnow v1.0.4
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0630570Z       ΓööΓöÇΓöÇ toml_parser v1.1.5+spec-1.1.0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0630839Z           ΓööΓöÇΓöÇ toml v0.9.12+spec-1.1.0
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0631088Z               ΓööΓöÇΓöÇ hushlog-rules v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0631348Z                   ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.0631496Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1458412Z ^[[0m^[[1m^[[38;5;9merror[unmaintained]^[[0m^[[1m: `pin-utils` is unmaintained^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1459165Z    ^[[0m^[[36mΓöîΓöÇ^[[0m /github/workspace/Cargo.lock:67:1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1459498Z    ^[[0m^[[36mΓöé^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1460008Z ^[[0m^[[36m67^[[0m ^[[0m^[[36mΓöé^[[0m ^[[0m^[[31mpin-utils 0.1.1 registry+https://github.com/rust-lang/crates.io-index^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1460989Z    ^[[0m^[[36mΓöé^[[0m ^[[0m^[[31mΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü^[[0m ^[[0m^[[31munmaintained advisory detected^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1461708Z    ^[[0m^[[36mΓöé^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1461952Z    ^[[0m^[[36mΓö£^[[0m ID: RUSTSEC-2026-0441
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1462360Z    ^[[0m^[[36mΓö£^[[0m Advisory: https://rustsec.org/advisories/RUSTSEC-2026-0441
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1462987Z    ^[[0m^[[36mΓö£^[[0m The [upstream repository] was archived on October 1, 2026, after the
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1463731Z      release of version 0.1.1.
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1463963Z      
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1470130Z      For local pinning, replace `pin_mut!` with [`core::pin::pin!`], available
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1470629Z      since Rust 1.68. For pin projection, replace `unsafe_pinned!` and
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1471076Z      `unsafe_unpinned!` with [`pin-project`] or [`pin-project-lite`].
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1471411Z      
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1471698Z      [upstream repository]: https://github.com/rust-lang/pin-utils
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1472179Z      [`core::pin::pin!`]: https://doc.rust-lang.org/core/pin/macro.pin.html
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1472623Z      [`pin-project`]: https://crates.io/crates/pin-project
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1473019Z      [`pin-project-lite`]: https://crates.io/crates/pin-project-lite
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1473814Z    ^[[0m^[[36mΓö£^[[0m Announcement: https://github.com/rust-lang/team/pull/2787
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1474317Z    ^[[0m^[[36mΓö£^[[0m Solution: No safe upgrade is available!
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1474679Z    ^[[0m^[[36mΓö£^[[0m pin-utils v0.1.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1474965Z      ΓööΓöÇΓöÇ nix v0.25.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1475242Z          ΓööΓöÇΓöÇ portable-pty v0.8.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1475535Z              ΓööΓöÇΓöÇ hushlog v0.1.0-alpha.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1475723Z 
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:47.1550360Z advisories ^[[31mFAILED^[[0m, bans ^[[32mok^[[0m, licenses ^[[32mok^[[0m, sources ^[[32mok^[[0m
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.6615984Z Post job cleanup.
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7357390Z [command]/usr/bin/git version
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7384142Z git version 2.56.1
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7416771Z Temporarily overriding HOME='/home/runner/work/_temp/d184577b-e56e-4d7a-903d-e36d27bf3aff' before making global git config changes
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7418039Z Adding repository directory to the temporary git global config as a safe directory
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7421748Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hushlog/Hushlog
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7467713Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7503568Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7800447Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7829167Z http.https://github.com/.extraheader
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7844990Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.7886158Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.8163204Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.8193931Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.8566910Z Cleaning up orphan processes
+cargo-deny (licences + bans)	UNKNOWN STEP	2026-11-16T12:43:50.8946678Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+cargo-audit (vulnerabilities)	UNKNOWN STEP	∩╗┐2026-11-16T12:43:24.5448083Z Current runner version: '2.338.2'
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5467170Z ##[group]Runner Image Provisioner
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5467735Z Hosted Compute Agent
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5468123Z Version: 20261103.629
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5468785Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5469233Z Build Date: 2026-11-03T17:26:59Z
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5469723Z Worker ID: {6ff58daf-e833-4e21-9fe9-b8ecab65a149}
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5470185Z Region: westus3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5470516Z Cloud: Azure
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5470909Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5471777Z ##[group]Operating System
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5472188Z Ubuntu
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5472521Z 26.04.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5472888Z LTS
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5473254Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5473589Z ##[group]Runner Image
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5473999Z Image: ubuntu-26.04
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5474388Z Version: 20261111.196.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5475189Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5476098Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261111.196
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5476696Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5477576Z ##[group]GITHUB_TOKEN Permissions
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5479204Z Checks: write
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5479578Z Contents: read
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5479924Z Metadata: read
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5480303Z PullRequests: write
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5480709Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5482116Z Secret source: Actions
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5482739Z Cache mode: write
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5483171Z Prepare workflow directory
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5702895Z Prepare all required actions
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.5736268Z Getting action download info
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.8656794Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:24.9553809Z Download action repository 'rustsec/audit-check@v2' (SHA:69366f33c96575abad1ee0dba8212993eecbe998)
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5180630Z Complete job name: cargo-audit (vulnerabilities)
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5763595Z ##[group]Run actions/checkout@v4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5764090Z with:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5764377Z   repository: adenijiridwan43/Hushlog
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5766808Z   token: ***
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5767079Z   ssh-strict: true
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5767362Z   ssh-user: git
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5767651Z   persist-credentials: true
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5767966Z   clean: true
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5768392Z   sparse-checkout-cone-mode: true
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5768721Z   fetch-depth: 1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5769016Z   fetch-tags: false
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5769306Z   show-progress: true
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5769596Z   lfs: false
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5769873Z   submodules: false
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5770173Z   set-safe-directory: true
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5770498Z   allow-unsafe-pr-checkout: false
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.5770916Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8082263Z Syncing repository: adenijiridwan43/Hushlog
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8083575Z ##[group]Getting Git version info
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8084370Z Working directory is '/home/runner/work/Hushlog/Hushlog'
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8085395Z [command]/usr/bin/git version
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8091825Z git version 2.56.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8103902Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8114198Z Temporarily overriding HOME='/home/runner/work/_temp/75d11ffd-63f5-4f12-80ab-d640bad5dedd' before making global git config changes
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8117396Z Adding repository directory to the temporary git global config as a safe directory
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8118106Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hushlog/Hushlog
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8177042Z Deleting the contents of '/home/runner/work/Hushlog/Hushlog'
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8179974Z ##[group]Initializing the repository
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8183138Z [command]/usr/bin/git init /home/runner/work/Hushlog/Hushlog
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8301955Z hint: Using 'master' as the name for the initial branch. This default branch name
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8303478Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8304449Z hint: to use in all of your new repositories, which will suppress this warning,
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8305241Z hint: call:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8305645Z hint:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8306172Z hint: 	git config --global init.defaultBranch <name>
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8306800Z hint:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8307384Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8308472Z hint: 'development'. The just-created branch can be renamed via this command:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8309261Z hint:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8309680Z hint: 	git branch -m <name>
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8310160Z hint:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8310804Z hint: Disable this message with "git config set advice.defaultBranchName false"
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8313106Z Initialized empty Git repository in /home/runner/work/Hushlog/Hushlog/.git/
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8322845Z [command]/usr/bin/git remote add origin https://github.com/adenijiridwan43/Hushlog
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8373277Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8374213Z ##[group]Disabling automatic garbage collection
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8376276Z [command]/usr/bin/git config --local gc.auto 0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8407666Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8408619Z ##[group]Setting up auth
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8413379Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8443624Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8867707Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.8898061Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.9131484Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.9161431Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.9389958Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.9425069Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.9425678Z ##[group]Fetching the repository
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:25.9432240Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b11743d6db6bcd6444528fa3563b2191242d535a:refs/remotes/origin/main
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5225573Z From https://github.com/adenijiridwan43/Hushlog
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5227440Z  * [new ref]         b11743d6db6bcd6444528fa3563b2191242d535a -> origin/main
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5230814Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5231932Z ##[group]Determining the checkout info
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5233197Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5246451Z [command]/usr/bin/git sparse-checkout disable
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5284720Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5314857Z ##[group]Checking out the ref
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5317628Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5425319Z Switched to a new branch 'main'
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5430221Z branch 'main' set up to track 'origin/main'.
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5435463Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5474095Z [command]/usr/bin/git log -1 --format=%H
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5495219Z b11743d6db6bcd6444528fa3563b2191242d535a
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5729089Z ##[group]Run rustsec/audit-check@v2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5729885Z with:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5736535Z   token: ***
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5737156Z   working-directory: .
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.5737836Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.6743521Z cargo-audit is not installed, installing it now
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.6747045Z ##[group]Installing "cargo-audit = latest"
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:26.6750280Z [command]/home/runner/.cargo/bin/cargo install cargo-audit
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:27.3768760Z     Updating crates.io index
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:27.5059097Z  Downloading crates ...
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:27.5833582Z   Downloaded cargo-audit v0.23.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:27.6564118Z   Installing cargo-audit v0.23.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:27.8998904Z     Updating crates.io index
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.2930181Z      Locking 360 packages to highest compatible versions
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3153753Z       Adding object v0.40.0 (available: v0.41.0)
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3443633Z  Downloading crates ...
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3621849Z   Downloaded adler2 v2.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3633130Z   Downloaded idna_adapter v1.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3641227Z   Downloaded is_terminal_polyfill v1.70.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3649152Z   Downloaded itoa v1.0.19
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3687622Z   Downloaded jiff-static v0.2.46
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3695371Z   Downloaded jobserver v0.1.35
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3713450Z   Downloaded ipnet v2.12.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3768728Z   Downloaded topological-sort v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3783576Z   Downloaded icu_locale_core v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3847757Z   Downloaded icu_normalizer_data v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3867669Z   Downloaded icu_provider v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3892506Z   Downloaded powerfmt v0.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3904106Z   Downloaded rand_pcg v0.10.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3914814Z   Downloaded time-core v0.1.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3923764Z   Downloaded zerofrom-derive v0.1.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3932931Z   Downloaded anstyle-query v1.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3942663Z   Downloaded cfg-if v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3951967Z   Downloaded clap_lex v1.1.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3961260Z   Downloaded colorchoice v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.3968146Z   Downloaded indexmap v2.14.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4004452Z   Downloaded icu_collections v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4055041Z   Downloaded rustc-demangle v0.1.28
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4079505Z   Downloaded utf8_iter v1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4086680Z   Downloaded multiversion_no_op v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4088505Z   Downloaded synstructure v0.14.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4099851Z   Downloaded thread_local v1.1.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4110539Z   Downloaded toml_datetime v1.1.3+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4123414Z   Downloaded toml_writer v1.2.0+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4159705Z   Downloaded quote v1.0.47
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4161239Z   Downloaded thiserror-impl v2.0.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4175936Z   Downloaded tower-layer v0.3.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4199461Z   Downloaded walkdir v2.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4200186Z   Downloaded zmij v1.0.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4217946Z   Downloaded core_detect v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4233316Z   Downloaded matchers v0.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4242277Z   Downloaded simd-adler32 v0.3.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4259171Z   Downloaded time-macros v0.2.32
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4281903Z   Downloaded toml v1.2.1+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4321056Z   Downloaded anstream v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4339371Z   Downloaded camino v1.2.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4354556Z   Downloaded crossbeam-utils v0.8.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4379843Z   Downloaded nonempty v0.12.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4395145Z   Downloaded num-conv v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4398602Z   Downloaded tracing-core v0.1.36
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4423774Z   Downloaded crc32fast v1.5.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4447227Z   Downloaded log v0.4.35
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4471732Z   Downloaded rustc-stable-hash v0.1.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4488007Z   Downloaded cfg_aliases v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4496695Z   Downloaded gix-chunk v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4506817Z   Downloaded atomic-waker v1.1.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4517639Z   Downloaded percent-encoding v2.3.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4525232Z   Downloaded slab v0.4.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4537630Z   Downloaded strsim v0.11.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4550325Z   Downloaded icu_properties v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4585287Z   Downloaded untrusted v0.9.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4600714Z   Downloaded serde_core v1.0.229
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4637146Z   Downloaded zerovec-derive v0.11.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4652283Z   Downloaded anstyle-parse v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4667233Z   Downloaded autocfg v1.5.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4684457Z   Downloaded lazy_static v1.5.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4698209Z   Downloaded openssl-probe v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4708516Z   Downloaded tower-service v0.3.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4714865Z   Downloaded pkg-config v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4726464Z   Downloaded quitters v0.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4731921Z   Downloaded clru v0.6.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4740769Z   Downloaded cmake v0.1.58
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4750084Z   Downloaded crossbeam v0.8.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4758537Z   Downloaded io-close v0.3.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4765700Z   Downloaded same-file v1.0.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4775211Z   Downloaded subtle v2.6.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4783417Z   Downloaded jiff-core v0.1.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4809296Z   Downloaded lock_api v0.4.14
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4818011Z   Downloaded rustls-native-certs v0.8.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4827157Z   Downloaded serde_spanned v1.1.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4835561Z   Downloaded lru-slab v0.1.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4841376Z   Downloaded rustc-hash v2.1.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4850470Z   Downloaded try-lock v0.2.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4856457Z   Downloaded unicode-bom v2.0.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4865504Z   Downloaded utf8parse v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4872720Z   Downloaded want v0.3.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4878497Z   Downloaded auditable-extract v0.3.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4883690Z   Downloaded potential_utf v0.1.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4891313Z   Downloaded scopeguard v1.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4899460Z   Downloaded sync_wrapper v1.0.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4904853Z   Downloaded memmap2 v0.9.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4917675Z   Downloaded auditable-serde v0.9.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4923199Z   Downloaded display-error-chain v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4930731Z   Downloaded futures-task v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4938696Z   Downloaded hash32 v0.3.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4948439Z   Downloaded rand_core v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4959541Z   Downloaded serde_derive v1.0.229
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4981008Z   Downloaded stable_deref_trait v1.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4986527Z   Downloaded gix-macros v0.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.4994287Z   Downloaded gix-quote v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5001491Z   Downloaded gix-negotiate v0.38.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5009282Z   Downloaded parking_lot v0.12.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5026493Z   Downloaded pin-project-lite v0.2.17
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5067454Z   Downloaded yoke-derive v0.8.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5075439Z   Downloaded aho-corasick v1.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5112734Z   Downloaded cpufeatures v0.3.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5122761Z   Downloaded mime v0.3.18
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5133177Z   Downloaded rustls-pki-types v1.16.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5150918Z   Downloaded rustversion v1.0.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5170364Z   Downloaded compression-core v0.4.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5177339Z   Downloaded gix-bitmap v0.6.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5183633Z   Downloaded shlex v2.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5192481Z   Downloaded simdutf8 v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5208401Z   Downloaded utf_types v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5216449Z   Downloaded auditable-info v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5223283Z   Downloaded binfarce v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5235616Z   Downloaded deranged v0.5.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5245708Z   Downloaded either v1.19.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5256400Z   Downloaded gix-prompt v0.19.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5265972Z   Downloaded gix-trace v0.3.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5281808Z   Downloaded http-body-util v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5295648Z   Downloaded nu-ansi-term v0.50.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5312416Z   Downloaded platforms v4.3.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5326503Z   Downloaded serde v1.0.229
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5352070Z   Downloaded uluru v3.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5357470Z   Downloaded zerofrom v0.1.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5364563Z   Downloaded dunce v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5374233Z   Downloaded foldhash v0.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5380562Z   Downloaded gix-tempfile v26.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5390510Z   Downloaded termcolor v1.4.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5400101Z   Downloaded equivalent v1.0.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5407053Z   Downloaded form_urlencoded v1.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5412947Z   Downloaded tracing-log v0.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5422666Z   Downloaded crossbeam-deque v0.8.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5433424Z   Downloaded litemap v0.8.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5449976Z   Downloaded smallvec v1.16.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5459901Z   Downloaded thiserror v2.0.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5505868Z   Downloaded once_cell v1.21.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5523700Z   Downloaded parking_lot_core v0.9.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5601643Z   Downloaded semver v1.0.28
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5609207Z   Downloaded writeable v0.6.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5609605Z   Downloaded allocator-api2 v0.2.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5609871Z   Downloaded anstyle v1.0.14
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5610117Z   Downloaded bitflags v2.13.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5632035Z   Downloaded clap_derive v4.6.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5647473Z   Downloaded defmt v0.3.101
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5652776Z   Downloaded gix-date v0.18.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5664443Z   Downloaded smol_str v0.3.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5676172Z   Downloaded defmt-parser v1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5683939Z   Downloaded gix-hashtable v0.18.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5690376Z   Downloaded gix-traverse v0.64.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5702778Z   Downloaded tinystr v0.8.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5717705Z   Downloaded crossbeam-queue v0.3.14
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5726911Z   Downloaded faster-hex v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5739124Z   Downloaded gix-attributes v0.37.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5751618Z   Downloaded gix-pathspec v0.22.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5762055Z   Downloaded toml-span v0.7.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5773321Z   Downloaded defmt v1.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5808377Z   Downloaded gix-commitgraph v0.42.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5820026Z   Downloaded gix-glob v0.29.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5829829Z   Downloaded gix-path v0.14.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5842505Z   Downloaded gix-url v0.40.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5852480Z   Downloaded gix-utils v0.5.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5864808Z   Downloaded hyper-rustls v0.27.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5875015Z   Downloaded icu_properties_data v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5955879Z   Downloaded proc-macro2 v1.0.107
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.5976673Z   Downloaded sha1dc v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6076010Z   Downloaded tempfile v3.27.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6094180Z   Downloaded tokio-rustls v0.26.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6105631Z   Downloaded twox-hash v2.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6121850Z   Downloaded zeroize v1.9.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6132611Z   Downloaded bitflags v1.3.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6155456Z   Downloaded cargo-lock v11.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6178011Z   Downloaded filetime v0.2.29
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6189592Z   Downloaded futures-channel v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6202583Z   Downloaded gix-credentials v0.42.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6214924Z   Downloaded heck v0.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6223887Z   Downloaded quinn-udp v0.5.16
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6236090Z   Downloaded rustls-platform-verifier v0.7.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6263996Z   Downloaded sharded-slab v0.1.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6287213Z   Downloaded compression-codecs v0.4.47
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6319293Z   Downloaded dashmap v6.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6336724Z   Downloaded errno v0.3.15
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6347306Z   Downloaded gix-dir v0.32.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6358105Z   Downloaded gix-hash v0.28.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6369129Z   Downloaded home v0.5.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6375783Z   Downloaded http-body v1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6382969Z   Downloaded toml_parser v1.1.5+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6399211Z   Downloaded unicode-ident v1.0.27
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6418771Z   Downloaded arrayvec v0.7.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6433285Z   Downloaded gix-refspec v0.47.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6445147Z   Downloaded chacha20 v0.10.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6461529Z   Downloaded defmt-macros v1.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6486718Z   Downloaded fixedbitset v0.5.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6500415Z   Downloaded gix-config-value v0.21.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6509313Z   Downloaded gix-revision v0.52.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6521784Z   Downloaded gix-submodule v0.36.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6530933Z   Downloaded tinyvec v1.13.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6555328Z   Downloaded gix-command v0.12.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6563542Z   Downloaded gix-sec v0.16.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6571603Z   Downloaded socket2 v0.6.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6584435Z   Downloaded time v0.3.55
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6688944Z   Downloaded yoke v0.8.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6701718Z   Downloaded crossbeam-epoch v0.9.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6718863Z   Downloaded httparse v1.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6736672Z   Downloaded byteorder v1.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6748076Z   Downloaded clap v4.6.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6855087Z   Downloaded getrandom v0.4.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6881773Z   Downloaded gix-config v0.62.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6915545Z   Downloaded gix-lock v26.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6924020Z   Downloaded gix-zlib v0.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6933065Z   Downloaded memchr v2.8.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6971916Z   Downloaded rand v0.10.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.6998629Z   Downloaded url v2.5.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7017246Z   Downloaded borsh v1.8.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7068581Z   Downloaded crossbeam-channel v0.5.17
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7097110Z   Downloaded gix-diff v0.70.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7117237Z   Downloaded arc-swap v1.9.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7146083Z   Downloaded gix-ref v0.69.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7178364Z   Downloaded heapless v0.8.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7205168Z   Downloaded aws-lc-rs v1.19.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7282998Z   Downloaded base64 v0.22.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7309924Z   Downloaded base64 v0.23.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7337460Z   Downloaded bytes v1.12.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7362607Z   Downloaded gix-worktree-stream v0.39.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7372385Z   Downloaded miniz_oxide v0.9.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7389922Z   Downloaded quinn v0.11.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7413072Z   Downloaded zerotrie v0.2.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7448841Z   Downloaded gix-revwalk v0.38.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7458995Z   Downloaded tower v0.5.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7525881Z   Downloaded wasmparser v0.255.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7585696Z   Downloaded async-compression v0.4.52
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7638966Z   Downloaded cvss v3.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7694354Z   Downloaded displaydoc v0.2.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7709144Z   Downloaded futures-io v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7715122Z   Downloaded futures-sink v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7721160Z   Downloaded gix-filter v0.36.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7741692Z   Downloaded gix-note v0.3.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7749048Z   Downloaded gix-transport v0.62.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7776606Z   Downloaded rustls-webpki v0.103.17
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7803096Z   Downloaded zerovec v0.11.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7845700Z   Downloaded cc v1.11.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7875804Z   Downloaded fnv v1.0.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7882173Z   Downloaded gix-imara-diff v0.3.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7895953Z   Downloaded gix-worktree-state v0.37.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7905946Z   Downloaded rayon-core v1.13.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7932638Z   Downloaded tame-index v0.26.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7962898Z   Downloaded unicode-normalization v0.1.26
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7989096Z   Downloaded futures-core v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.7998587Z   Downloaded gix-actor v0.44.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8007394Z   Downloaded gix-error v0.5.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8022663Z   Downloaded gix-ignore v0.24.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8029857Z   Downloaded gix-protocol v0.68.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8050840Z   Downloaded gix-shallow v0.15.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8057591Z   Downloaded gix-validate v0.13.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8065813Z   Downloaded gix-worktree v0.59.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8079853Z   Downloaded http v1.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8106403Z   Downloaded hyper-util v0.1.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8152158Z   Downloaded find-msvc-tools v0.1.15
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8164362Z   Downloaded fs_extra v1.3.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8176064Z   Downloaded hashbrown v0.17.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8215282Z   Downloaded tokio-util v0.7.20
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8272637Z   Downloaded tower-http v0.6.11
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8339848Z   Downloaded winnow v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8408831Z   Downloaded hashbrown v0.16.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8445167Z   Downloaded zlib-rs v0.6.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8483937Z   Downloaded bstr v1.13.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8541292Z   Downloaded clap_builder v4.6.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8586833Z   Downloaded gix-packetline v0.24.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8599987Z   Downloaded hyper v1.12.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8649425Z   Downloaded tracing-subscriber v0.3.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8707659Z   Downloaded wasmparser v0.207.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8752046Z   Downloaded fastrand v2.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8762145Z   Downloaded mio v1.2.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8805272Z   Downloaded foldhash v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8813774Z   Downloaded fs-err v3.3.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8827456Z   Downloaded gix-parallel v0.50.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8836873Z   Downloaded getrandom v0.2.17
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8857379Z   Downloaded gix-discover v0.57.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8868629Z   Downloaded dua-core v4.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8879903Z   Downloaded prodash v31.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8907517Z   Downloaded rustsec v0.34.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8943619Z   Downloaded gix-fs v0.24.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.8955825Z   Downloaded gix v0.90.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9078000Z   Downloaded tracing v0.1.44
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9192051Z   Downloaded idna v1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9217737Z   Downloaded gix-index v0.58.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9243840Z   Downloaded gix-odb v0.87.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9267116Z   Downloaded gix-object v0.66.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9291765Z   Downloaded gix-status v0.37.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9305800Z   Downloaded flate2 v1.1.11
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9342553Z   Downloaded rayon v1.12.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9409546Z   Downloaded reqwest v0.13.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9447270Z   Downloaded serde_json v1.0.154
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9499510Z   Downloaded regex v1.13.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9537128Z   Downloaded tokio v1.54.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9873519Z   Downloaded gix-pack v0.77.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9921912Z   Downloaded hashbrown v0.14.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:28.9957608Z   Downloaded futures-util v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0055007Z   Downloaded h2 v0.4.20
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0103859Z   Downloaded hashbrown v0.15.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0140349Z   Downloaded quinn-proto v0.11.19
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0191522Z   Downloaded syn v3.0.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0271012Z   Downloaded syn v2.0.119
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0350626Z   Downloaded regex-syntax v0.8.11
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0401459Z   Downloaded rustls v0.23.46
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0490212Z   Downloaded object v0.40.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0587148Z   Downloaded icu_normalizer v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0665877Z   Downloaded rustix v1.1.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0880482Z   Downloaded jiff v0.2.46
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.0999271Z   Downloaded encoding_rs v0.8.44
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.1075199Z   Downloaded regex-automata v0.4.18
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.1181712Z   Downloaded libc v0.2.191
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.1529598Z   Downloaded petgraph v0.8.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.1683323Z   Downloaded ring v0.17.14
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.1988122Z   Downloaded linux-raw-sys v0.12.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.2457754Z   Downloaded aws-lc-sys v0.47.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.5570750Z    Compiling libc v0.2.191
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.5571058Z    Compiling memchr v2.8.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.5571277Z    Compiling cfg-if v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:29.5571498Z    Compiling smallvec v1.16.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:31.1692578Z    Compiling regex-syntax v0.8.11
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:32.2332591Z    Compiling aho-corasick v1.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:32.7831201Z    Compiling bytes v1.12.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:33.3619537Z    Compiling regex-automata v0.4.18
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:34.2459599Z    Compiling scopeguard v1.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:34.2909487Z    Compiling parking_lot_core v0.9.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:34.4029514Z    Compiling once_cell v1.21.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:34.5410109Z    Compiling stable_deref_trait v1.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:34.8099571Z    Compiling lock_api v0.4.14
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:34.9699499Z    Compiling getrandom v0.4.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:35.0894321Z    Compiling parking_lot v0.12.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:35.7489417Z    Compiling bitflags v2.13.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:36.0009321Z    Compiling bstr v1.13.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:36.3579471Z    Compiling proc-macro2 v1.0.107
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:36.5012559Z    Compiling gix-error v0.5.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:36.8915566Z    Compiling tinyvec v1.13.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:37.1099360Z    Compiling fastrand v2.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:37.2147922Z    Compiling unicode-ident v1.0.27
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:37.2795491Z    Compiling quote v1.0.47
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:37.3102550Z    Compiling crossbeam-utils v0.8.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:37.4417612Z    Compiling unicode-normalization v0.1.26
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:37.8039496Z    Compiling prodash v31.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:38.1472410Z    Compiling gix-utils v0.5.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:38.4469401Z    Compiling itoa v1.0.19
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:38.6299576Z    Compiling gix-trace v0.3.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:38.6829463Z    Compiling syn v3.0.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:39.0909385Z    Compiling gix-validate v0.13.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:39.4659547Z    Compiling foldhash v0.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:39.5705381Z    Compiling equivalent v1.0.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:39.6274997Z    Compiling allocator-api2 v0.2.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:39.7462430Z    Compiling gix-path v0.14.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:39.9204748Z    Compiling autocfg v1.5.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:40.1909519Z    Compiling hashbrown v0.17.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:40.6135261Z    Compiling crossbeam-channel v0.5.17
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:40.7919303Z    Compiling heapless v0.8.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:40.9079429Z    Compiling byteorder v1.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:41.0329419Z    Compiling hash32 v0.3.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:41.1379869Z    Compiling faster-hex v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:41.1969681Z    Compiling rustix v1.1.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:41.3084893Z    Compiling same-file v1.0.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:41.3860036Z    Compiling walkdir v2.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:41.8860003Z    Compiling gix-parallel v0.50.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:41.9939450Z    Compiling linux-raw-sys v0.12.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:42.0499463Z    Compiling gix-fs v0.24.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:42.4159473Z    Compiling gix-quote v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:42.7359575Z    Compiling jiff-core v0.1.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:42.8419512Z    Compiling sha1dc v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:44.2433072Z    Compiling jiff v0.2.46
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:44.2689490Z    Compiling gix-hash v0.28.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:44.7149560Z    Compiling serde_core v1.0.229
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:44.8379474Z    Compiling hashbrown v0.14.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:45.0149339Z    Compiling tempfile v3.27.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:45.3369493Z    Compiling dashmap v6.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:45.6556545Z    Compiling gix-command v0.12.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:45.7719283Z    Compiling synstructure v0.14.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:46.1229412Z    Compiling gix-tempfile v26.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:46.3469469Z    Compiling zerofrom-derive v0.1.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:46.7619506Z    Compiling yoke-derive v0.8.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:47.0901359Z    Compiling gix-date v0.18.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:47.3288448Z    Compiling zerofrom v0.1.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:47.3959307Z    Compiling gix-actor v0.44.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:47.8364551Z    Compiling gix-hashtable v0.18.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:47.9415604Z    Compiling gix-object v0.66.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:48.6849442Z    Compiling yoke v0.8.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:48.8030087Z    Compiling memmap2 v0.9.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:48.8642012Z    Compiling pin-project-lite v0.2.17
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:48.9092854Z    Compiling jobserver v0.1.35
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:49.0370150Z    Compiling zerovec-derive v0.11.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:49.1219648Z    Compiling shlex v2.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:49.2176325Z    Compiling find-msvc-tools v0.1.15
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:49.3429189Z    Compiling cc v1.11.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:49.6769451Z    Compiling zerovec v0.11.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:50.1293984Z    Compiling displaydoc v0.2.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:50.5052088Z    Compiling cmake v0.1.58
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:50.7100127Z    Compiling dunce v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:50.7511406Z    Compiling rustversion v1.0.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:50.7656330Z    Compiling fs_extra v1.3.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:50.9009364Z    Compiling crossbeam-epoch v0.9.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:50.9276176Z    Compiling pkg-config v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:51.0060610Z    Compiling futures-core v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:51.1199345Z    Compiling gix-chunk v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:51.2319441Z    Compiling aws-lc-sys v0.47.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:51.3545924Z    Compiling socket2 v0.6.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:51.7509526Z    Compiling mio v1.2.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:51.9870535Z    Compiling crossbeam-deque v0.8.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.0269450Z    Compiling fnv v1.0.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.0936510Z    Compiling tokio v1.54.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.4889673Z    Compiling tinystr v0.8.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.5749355Z    Compiling litemap v0.8.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.6049447Z    Compiling futures-sink v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.6822300Z    Compiling serde v1.0.229
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.7179469Z    Compiling nonempty v0.12.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.8164067Z    Compiling utf_types v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.8240462Z    Compiling percent-encoding v2.3.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.9759472Z    Compiling writeable v0.6.4
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:52.9822075Z    Compiling utf8_iter v1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:53.1082516Z    Compiling icu_locale_core v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:53.3042095Z    Compiling zerotrie v0.2.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:53.5959594Z    Compiling potential_utf v0.1.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:53.6880458Z    Compiling gix-lock v26.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:53.9629225Z    Compiling serde_derive v1.0.229
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:55.3299386Z    Compiling icu_properties_data v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:55.4149356Z    Compiling zeroize v1.9.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:55.5269121Z    Compiling crc32fast v1.5.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:55.6316474Z    Compiling icu_normalizer_data v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:55.7114870Z    Compiling aws-lc-rs v1.19.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:55.9010160Z    Compiling icu_provider v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:56.3006168Z    Compiling icu_collections v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:56.3912354Z    Compiling gix-commitgraph v0.42.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:56.8289649Z    Compiling gix-glob v0.29.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:57.1849686Z    Compiling http v1.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:57.3579587Z    Compiling tracing-core v0.1.36
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:58.0349360Z    Compiling unicode-bom v2.0.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:58.1379481Z    Compiling slab v0.4.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:58.2579273Z    Compiling gix-revwalk v0.38.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:58.6729381Z    Compiling rustls-pki-types v1.16.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:58.8539428Z    Compiling encoding_rs v0.8.44
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:58.9436574Z    Compiling indexmap v2.14.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:59.3409491Z    Compiling gix-config-value v0.21.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:59.5899563Z    Compiling adler2 v2.0.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:43:59.6811061Z    Compiling simd-adler32 v0.3.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:00.0021739Z    Compiling miniz_oxide v0.9.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:00.3249358Z    Compiling icu_normalizer v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:00.3339401Z    Compiling icu_properties v2.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.1871941Z    Compiling http-body v1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.2579518Z    Compiling tracing v0.1.44
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.2679386Z    Compiling tokio-util v0.7.20
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.4701191Z    Compiling multiversion_no_op v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.5602193Z    Compiling futures-io v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.6518518Z    Compiling untrusted v0.9.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.6679486Z    Compiling simdutf8 v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.7229973Z    Compiling rustls v0.23.46
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.8049999Z    Compiling httparse v1.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.8122410Z    Compiling futures-task v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:01.8921411Z    Compiling core_detect v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:02.0039441Z    Compiling futures-util v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:02.1879969Z    Compiling idna_adapter v1.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:02.2711298Z    Compiling gix-attributes v0.37.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.1730984Z    Compiling gix-sec v0.16.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.2589365Z    Compiling atomic-waker v1.1.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.3219548Z    Compiling try-lock v0.2.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.3811355Z    Compiling tower-service v0.3.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.4025868Z    Compiling subtle v2.6.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.4262680Z    Compiling want v0.3.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.4909463Z    Compiling h2 v0.4.20
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:04.5399332Z    Compiling idna v1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.0749473Z    Compiling flate2 v1.1.11
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.1731720Z    Compiling form_urlencoded v1.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.3269296Z    Compiling futures-channel v0.3.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.4659450Z    Compiling crossbeam-queue v0.3.14
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.4879582Z    Compiling log v0.4.35
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.5790980Z    Compiling compression-core v0.4.34
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.6326467Z    Compiling crossbeam v0.8.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.6632349Z    Compiling compression-codecs v0.4.47
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.6805738Z    Compiling url v2.5.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:06.8809500Z    Compiling hyper v1.12.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:08.6984637Z    Compiling gix-traverse v0.64.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:09.5049783Z    Compiling gix-ref v0.69.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:09.7207408Z    Compiling sync_wrapper v1.0.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:09.7412242Z    Compiling gix-packetline v0.24.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:09.7762138Z    Compiling gix-bitmap v0.6.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:09.9880661Z    Compiling filetime v0.2.29
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:09.9961321Z    Compiling base64 v0.23.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:10.1181849Z    Compiling ipnet v2.12.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:10.5081211Z    Compiling openssl-probe v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:10.6549610Z    Compiling tower-layer v0.3.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:10.7809409Z    Compiling tower v0.5.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:11.0429517Z    Compiling rustls-native-certs v0.8.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:11.1999622Z    Compiling hyper-util v0.1.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:11.7119418Z    Compiling gix-index v0.58.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:13.0719438Z    Compiling async-compression v0.4.52
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:13.3879521Z    Compiling dua-core v4.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:13.8509278Z    Compiling http-body-util v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:14.0509577Z    Compiling gix-ignore v0.24.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:14.3549527Z    Compiling zmij v1.0.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:14.4951567Z    Compiling gix-worktree v0.59.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:15.1809714Z    Compiling tower-http v0.6.11
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:15.7412202Z    Compiling gix-pathspec v0.22.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:15.9169435Z    Compiling gix-url v0.40.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:16.1519455Z    Compiling semver v1.0.28
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:16.6260066Z    Compiling serde_json v1.0.154
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:16.7182873Z    Compiling mime v0.3.18
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:17.3100897Z    Compiling gix-filter v0.36.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:17.5129673Z    Compiling gix-prompt v0.19.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:17.6139737Z    Compiling hashbrown v0.16.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:17.8986795Z    Compiling rayon-core v1.13.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:17.9829929Z    Compiling zlib-rs v0.6.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:18.1880030Z    Compiling arrayvec v0.7.8
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:18.3369498Z    Compiling uluru v3.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:18.4064199Z    Compiling clru v0.6.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:18.5939474Z    Compiling gix-credentials v0.42.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:20.9469486Z    Compiling gix-zlib v0.4.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:21.1939973Z    Compiling gix-discover v0.57.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:21.6809584Z    Compiling gix-refspec v0.47.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:21.9995486Z    Compiling gix-imara-diff v0.3.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:22.3189320Z    Compiling syn v2.0.119
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:22.8511427Z    Compiling base64 v0.22.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.0079305Z    Compiling thiserror v2.0.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.1599693Z    Compiling winnow v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.2089444Z    Compiling camino v1.2.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.4707055Z    Compiling utf8parse v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.4819374Z    Compiling foldhash v0.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.5221589Z    Compiling anstyle-parse v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.6099454Z    Compiling hashbrown v0.15.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:23.7599785Z    Compiling toml_parser v1.1.5+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:24.2589390Z    Compiling gix-diff v0.70.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:24.7789496Z    Compiling gix-dir v0.32.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:24.9758898Z    Compiling gix-macros v0.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:25.2915076Z    Compiling gix-pack v0.77.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:27.0619339Z    Compiling gix-config v0.62.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:27.2329606Z    Compiling gix-negotiate v0.38.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:28.0270082Z    Compiling gix-shallow v0.15.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:28.5639450Z    Compiling arc-swap v1.9.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:28.7529233Z    Compiling serde_spanned v1.1.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:28.8289515Z    Compiling toml_datetime v1.1.3+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:28.8609359Z    Compiling thiserror-impl v2.0.21
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:29.1518463Z    Compiling fs-err v3.3.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:29.2319529Z    Compiling wasmparser v0.207.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:29.6351055Z    Compiling io-close v0.3.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:29.7309448Z    Compiling fixedbitset v0.5.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:30.0709608Z    Compiling anstyle-query v1.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:30.1199571Z    Compiling either v1.19.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:30.2559592Z    Compiling is_terminal_polyfill v1.70.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:30.3042197Z    Compiling colorchoice v1.0.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:30.4200778Z    Compiling anstyle v1.0.14
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:30.6959483Z    Compiling topological-sort v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:30.7879234Z    Compiling binfarce v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:32.1779413Z    Compiling toml_writer v1.2.0+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:32.3200009Z    Compiling toml v1.2.1+spec-1.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:32.3499843Z    Compiling auditable-extract v0.3.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:32.4705244Z    Compiling auditable-serde v0.9.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:33.3909961Z    Compiling anstream v1.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:33.7239446Z    Compiling rayon v1.12.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:35.0949481Z    Compiling petgraph v0.8.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:35.6099553Z    Compiling gix-worktree-state v0.37.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:35.9918975Z    Compiling gix-odb v0.87.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:36.2281170Z    Compiling gix-submodule v0.36.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:37.2319527Z    Compiling gix-status v0.37.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:37.9729533Z    Compiling gix-revision v0.52.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:38.6070786Z    Compiling smol_str v0.3.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:38.8419350Z    Compiling deranged v0.5.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:39.8709403Z    Compiling regex v1.13.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:39.9999515Z    Compiling toml-span v0.7.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:40.6895124Z    Compiling num-conv v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:40.7819483Z    Compiling clap_lex v1.1.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:40.9177444Z    Compiling rustc-stable-hash v0.1.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:40.9920662Z    Compiling heck v0.5.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.0386253Z    Compiling twox-hash v2.1.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.0981826Z    Compiling powerfmt v0.2.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.1181653Z    Compiling strsim v0.11.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.2049433Z    Compiling time-core v0.1.9
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.3269076Z    Compiling lazy_static v1.5.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.3749491Z    Compiling sharded-slab v0.1.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.7387678Z    Compiling time v0.3.55
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:41.7959450Z    Compiling clap_builder v4.6.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:42.5779455Z    Compiling clap_derive v4.6.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:43.6775270Z    Compiling quitters v0.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:44.1739480Z    Compiling cargo-lock v11.1.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:44.9649412Z    Compiling auditable-info v0.10.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:45.6759218Z    Compiling tracing-log v0.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:45.8849466Z    Compiling platforms v4.3.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:46.2109495Z    Compiling cvss v3.0.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:48.0761456Z    Compiling rustls-webpki v0.103.17
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:48.4189431Z    Compiling matchers v0.2.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:48.4569300Z    Compiling wasmparser v0.255.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:48.4889377Z    Compiling thread_local v1.1.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:50.0081971Z    Compiling nu-ansi-term v0.50.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:50.0221469Z    Compiling home v0.5.12
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:50.1019473Z    Compiling object v0.40.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:50.3499423Z    Compiling tracing-subscriber v0.3.23
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:52.1671635Z    Compiling tokio-rustls v0.26.6
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:52.3559252Z    Compiling hyper-rustls v0.27.10
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:52.5830825Z    Compiling rustls-platform-verifier v0.7.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:52.9135173Z    Compiling reqwest v0.13.5
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:54.6949765Z    Compiling gix-transport v0.62.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:55.1689237Z    Compiling tame-index v0.26.3
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:44:59.2489914Z    Compiling gix-protocol v0.68.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:01.8149428Z    Compiling gix v0.90.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:04.7910361Z    Compiling clap v4.6.7
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:04.8359698Z    Compiling rustc-demangle v0.1.28
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:05.5979469Z    Compiling display-error-chain v0.2.2
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:05.6719265Z    Compiling termcolor v1.4.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:06.9289249Z    Compiling rustsec v0.34.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:10.5040000Z    Compiling cargo-audit v0.23.0
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:27.3368898Z     Finished `release` profile [optimized] target(s) in 2m 00s
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:27.4109248Z   Installing /home/runner/.cargo/bin/cargo-audit
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:27.4151003Z    Installed package `cargo-audit v0.23.0` (executable `cargo-audit`)
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:27.8917257Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:27.8917734Z ##[group]Calling cargo-audit (JSON output)
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:27.8919036Z [command]/home/runner/.cargo/bin/cargo audit --json --file ./Cargo.lock
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:30.6576674Z {"database":{"advisory-count":1509,"last-commit":"02e2517f457a359fc6d3440ea4560c8ea188fee8","last-updated":"2026-11-15T10:59:21+01:00"},"lockfile":{"dependency-count":138},"settings":{"target_arch":[],"target_os":[],"severity":null,"ignore":[],"informational_warnings":["unmaintained","unsound","notice"]},"vulnerabilities":{"found":false,"count":0,"list":[]},"warnings":{"unmaintained":[{"kind":"unmaintained","package":{"name":"pin-utils","version":"0.1.1","source":"registry+https://github.com/rust-lang/crates.io-index","checksum":"13bee6c73da26345c729282832b60b0363cf3dd9f4bfd81d8551b7a1c889a113","replace":null},"advisory":{"id":"RUSTSEC-2026-0441","package":"pin-utils","title":"`pin-utils` is unmaintained","description":"The [upstream repository] was archived on October 1, 2026, after the\nrelease of version 0.1.1.\n\nFor local pinning, replace `pin_mut!` with [`core::pin::pin!`], available\nsince Rust 1.68. For pin projection, replace `unsafe_pinned!` and\n`unsafe_unpinned!` with [`pin-project`] or [`pin-project-lite`].\n\n[upstream repository]: https://github.com/rust-lang/pin-utils\n[`core::pin::pin!`]: https://doc.rust-lang.org/core/pin/macro.pin.html\n[`pin-project`]: https://crates.io/crates/pin-project\n[`pin-project-lite`]: https://crates.io/crates/pin-project-lite","date":"2026-10-01","aliases":[],"related":[],"collection":"crates","categories":[],"keywords":[],"cvss":null,"informational":"unmaintained","references":["https://github.com/rustsec/advisory-db/issues/3314"],"source":null,"url":"https://github.com/rust-lang/team/pull/2787","withdrawn":null,"license":"CC0-1.0","expect-deleted":false},"affected":null,"versions":{"patched":[],"unaffected":[]}},{"kind":"unmaintained","package":{"name":"serial","version":"0.4.0","source":"registry+https://github.com/rust-lang/crates.io-index","checksum":"a1237a96570fc377c13baa1b88c7589ab66edced652e43ffb17088f003db3e86","dependencies":[{"name":"serial-core","version":"0.4.0","source":"registry+https://github.com/rust-lang/crates.io-index"},{"name":"serial-unix","version":"0.4.0","source":"registry+https://github.com/rust-lang/crates.io-index"},{"name":"serial-windows","version":"0.4.0","source":"registry+https://github.com/rust-lang/crates.io-index"}],"replace":null},"advisory":{"id":"RUSTSEC-2017-0008","package":"serial","title":"`serial` crate is unmaintained","description":"The [`serial`](https://crates.io/crates/serial) crate is no longer maintained.\n\nLast release was on 2017-07-02.\n\n## Possible alternatives\n\nConsider using an alternative, for instance the blocking librarys:\n\n- [serial2](https://crates.io/crates/serial2)\n- [serialport](https://crates.io/crates/serialport)\n\nor async alternatives:\n\n- [mio-serial](https://crates.io/crates/mio-serial)\n- [tokio-serial](https://crates.io/crates/tokio-serial)","date":"2017-07-02","aliases":[],"related":[],"collection":"crates","categories":[],"keywords":[],"cvss":null,"informational":"unmaintained","references":[],"source":null,"url":"https://github.com/dcuddeback/serial-rs/issues/71","withdrawn":null,"license":"CC0-1.0","expect-deleted":false},"affected":null,"versions":{"patched":[],"unaffected":[]}}],"unsound":[{"kind":"unsound","package":{"name":"rustix","version":"1.1.5","source":"registry+https://github.com/rust-lang/crates.io-index","checksum":"891efababe418670775f199f0d233d84843c227a0949a883ce15b37c78d6629d","dependencies":[{"name":"bitflags","version":"2.13.2","source":"registry+https://github.com/rust-lang/crates.io-index"},{"name":"errno","version":"0.3.14","source":"registry+https://github.com/rust-lang/crates.io-index"},{"name":"libc","version":"0.2.190","source":"registry+https://github.com/rust-lang/crates.io-index"},{"name":"linux-raw-sys","version":"0.12.1","source":"registry+https://github.com/rust-lang/crates.io-index"},{"name":"windows-sys","version":"0.61.2","source":"registry+https://github.com/rust-lang/crates.io-index"}],"replace":null},"advisory":{"id":"RUSTSEC-2026-0486","package":"rustix","title":"xattr functions mark unwritten bytes as initialized when given a zero-length buffer","description":"The extended-attribute functions in `rustix::fs` (`getxattr`, `lgetxattr`, `fgetxattr`, `listxattr`, `llistxattr` and `flistxattr`) write into a `Buffer` and then mark as many bytes initialized as the system call reported. When the buffer has zero length, the operating system treats the call as a size query: it writes nothing and returns the size of the attribute value or of the name list. rustix still marked that many bytes as initialized.\n\nPassing a `Vec` whose length equals its capacity through `spare_capacity` gives such a zero-length buffer, and rustix then set the vector's length past its capacity over memory that was never written. This is undefined behavior reachable from safe code. With an empty `&mut [MaybeUninit<u8>]` the call panics instead.\n\nFrom 1.1.6 these functions return an empty result for a zero-length buffer, and new `getxattr_query`, `lgetxattr_query`, `fgetxattr_query`, `listxattr_query`, `llistxattr_query` and `flistxattr_query` functions return the size. The 0.38 series did not have the `Buffer` API and is not affected.","date":"2026-10-27","aliases":["GHSA-jh2m-fhpj-3vr7"],"related":[],"collection":"crates","categories":[],"keywords":["xattr","uninitialized-memory"],"cvss":null,"informational":"unsound","references":[],"source":null,"url":"https://github.com/bytecodealliance/rustix/commit/8e6aaa6713d2bb64b1fdd8c472e3a32a10a76d70","withdrawn":null,"license":"CC0-1.0","expect-deleted":false},"affected":{"arch":[],"os":[],"functions":{"rustix::fs::fgetxattr":[">=1.0.0, <1.1.6"],"rustix::fs::flistxattr":[">=1.0.0, <1.1.6"],"rustix::fs::getxattr":[">=1.0.0, <1.1.6"],"rustix::fs::lgetxattr":[">=1.0.0, <1.1.6"],"rustix::fs::listxattr":[">=1.0.0, <1.1.6"],"rustix::fs::llistxattr":[">=1.0.0, <1.1.6"]}},"versions":{"patched":[">=1.1.6"],"unaffected":["<1.0.0"]}}]}}
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:30.6595136Z 
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:30.6595540Z ##[endgroup]
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:30.6596987Z No vulnerabilities were found
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:30.6615459Z ##[warning]3 warnings found!
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.2279568Z [@octokit/request] "POST https://api.github.com/repos/adenijiridwan43/Hushlog/issues" is deprecated. It is scheduled to be removed on Fri, 10 Mar 2028 00:00:00 GMT. See https://docs.github.com/en/rest/about-the-rest-api/api-versions
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.2290884Z ##[error]Resource not accessible by integration - https://docs.github.com/rest/issues/issues#create-an-issue
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.2482648Z Post job cleanup.
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3059499Z [command]/usr/bin/git version
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3097710Z git version 2.56.1
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3121462Z Temporarily overriding HOME='/home/runner/work/_temp/97cb00d4-7d65-4187-9541-7a6a2db09f0b' before making global git config changes
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3122157Z Adding repository directory to the temporary git global config as a safe directory
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3124575Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Hushlog/Hushlog
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3158796Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3188718Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3439017Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3463121Z http.https://github.com/.extraheader
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3475342Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3528853Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3767757Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.3802653Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.4183973Z Cleaning up orphan processes
+cargo-audit (vulnerabilities)	UNKNOWN STEP	2026-11-16T12:45:31.4427296Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, rustsec/audit-check@v2. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

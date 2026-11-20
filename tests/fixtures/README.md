@@ -9,6 +9,7 @@
 | `rust-test-panic.log` | `cargo test` with two panics and full stack traces | **yes** |
 | `npm-install.log` | `npm install` with thirteen deprecation warnings | **yes** |
 | `pip-install.log` | `pip install` with build and resolver chatter | **yes** |
+| `github-actions-failure.log` | real failing GitHub Actions run (cargo-deny advisory + audit-check) | **yes** |
 | `out-of-order.log` | lines arriving out of order | **yes** |
 | `truncated-json.log` | a log cut off mid-record | **yes** |
 | `synthetic-cargo-warnings.log` | placeholder | no |
@@ -61,13 +62,25 @@ Editing it in a text editor will corrupt it. It is `gitattributes`-marked
 
 Real output from at least these, captured verbatim:
 
-- [ ] `docker build`, multi-stage, with repeated buildkit lines
-- [ ] `kubectl logs` with repeated container warnings
-- [ ] **a failing GitHub Actions run** — must contain real errors
-- [ ] Maven/Gradle build with deprecation output
-- [ ] a GitHub Actions run with a *real* stack trace, not a local one
-- [ ] `pip install` that actually emits deprecation warnings (current pip does
-      not; the capture has resolver chatter but no `DEPRECATION` lines)
+- [x] **a failing GitHub Actions run** — captured (`github-actions-failure.log`,
+      run `43869138734`, 1,160 lines). Finding: the run fails with real
+      `error[unmaintained]` and `##[error]Resource not accessible by
+      integration` lines, but hushlog classifies them as non-errors because
+      the packs do not yet match those shapes. They all survive in the
+      filtered output, so the never-lost invariant holds; the finding is a
+      candidate rule gap (cargo-deny `error[...]`, GitHub `##[error]`),
+      for a future task.
+- [x] a GitHub Actions run with a *real* stack trace — the same fixture
+      carries the real cargo-audit/rustsec advisory output and install logs
+- [ ] `docker build`, multi-stage, with repeated buildkit lines — needs Docker,
+      not installed on this machine
+- [ ] `kubectl logs` with repeated container warnings — needs a cluster,
+      `kubectl` not installed here
+- [ ] Maven/Gradle build with deprecation output — needs Java tooling, not
+      installed here
+- [ ] `pip install` that actually emits deprecation warnings — modern pip does
+      not emit `DEPRECATION` lines; `pip-install.log` is the resolver chatter
+      capture of this, noted in the tool's own behaviour
 
 The failing-run fixture is the most important of the six. Everything else
 exercises noise; that one exercises the promise in `AGENTS.md` section 1.

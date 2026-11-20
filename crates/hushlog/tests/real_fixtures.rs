@@ -28,6 +28,8 @@ const RUST_TEST_PANIC: &str = "rust-test-panic.log";
 const NPM_INSTALL: &str = "npm-install.log";
 /// A real `pip install` with resolver chatter.
 const PIP_INSTALL: &str = "pip-install.log";
+/// A real failing GitHub Actions run (cargo-deny advisory + audit-check).
+const GITHUB_ACTIONS_FAILURE: &str = "github-actions-failure.log";
 
 /// The level hushlog gives the first line matching `needle`.
 ///
@@ -139,6 +141,21 @@ fn a_panic_survives_filtering() {
 }
 
 #[test]
+fn a_failing_github_actions_run_survives_filtering() {
+    // A real failing CI run. The error-shaped lines must survive filtering
+    // even while the packs do not yet classify them as errors: the invariant
+    // is that nothing is dropped, not that classification is complete.
+    assert!(
+        output_contains(GITHUB_ACTIONS_FAILURE, "error[unmaintained]"),
+        "the cargo-deny error line from a real CI run must not be dropped"
+    );
+    assert!(
+        output_contains(GITHUB_ACTIONS_FAILURE, "Resource not accessible by integration"),
+        "the audit-check error line from a real CI run must not be dropped"
+    );
+}
+
+#[test]
 fn a_cargo_warning_is_a_warning() {
     assert_eq!(
         level_of(CARGO_WARNINGS, "use of deprecated function"),
@@ -160,7 +177,13 @@ fn an_npm_deprecation_is_a_warning() {
 fn the_real_fixtures_all_load() {
     // A fixture that is empty, or that hushlog cannot read, would make every
     // other test in this file vacuous.
-    for name in [CARGO_WARNINGS, RUST_TEST_PANIC, NPM_INSTALL, PIP_INSTALL] {
+    for name in [
+        CARGO_WARNINGS,
+        RUST_TEST_PANIC,
+        NPM_INSTALL,
+        PIP_INSTALL,
+        GITHUB_ACTIONS_FAILURE,
+    ] {
         let bytes = common::fixture_bytes(name);
         assert!(
             bytes.len() > 100,
