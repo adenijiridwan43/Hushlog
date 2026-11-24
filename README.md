@@ -43,19 +43,19 @@ hushlog: 441 lines -> 41 shown | 1 errors | 2 groups (400 lines folded)
 
 ## Install
 
-The current release is `v0.1.0-alpha.2`. This is an alpha: the tool works, the rule packs are still being proven against real logs, and the command line may change before 1.0.
+The current release is `v0.1.0-alpha.3`. This is an alpha: the tool works, the rule packs are still being proven against real logs, and the command line may change before 1.0.
 
 Pick whichever suits your machine:
 
 ```sh
 # Linux / macOS
-curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.2/hushlog-installer.sh | sh
+curl -LsSf https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.3/hushlog-installer.sh | sh
 
 # Windows (PowerShell)
-irm https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.2/hushlog-installer.ps1 | iex
+irm https://github.com/adenijiridwan43/Hushlog/releases/download/v0.1.0-alpha.3/hushlog-installer.ps1 | iex
 
 # crates.io
-cargo install hushlog --version 0.1.0-alpha.2
+cargo install hushlog --version 0.1.0-alpha.3
 
 # Homebrew
 brew install adenijiridwan43/tap/hushlog

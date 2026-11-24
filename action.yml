@@ -20,7 +20,7 @@ inputs:
     required: false
   version:
     description: 'hushlog version to install from crates.io'
-    default: '0.1.0-alpha.2'
+    default: '0.1.0-alpha.3'
     required: false
 
 outputs:

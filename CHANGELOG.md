@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-alpha.3] - 2026-11-24
+
+### Fixed
+
+- macOS builds compile again with current Rust. The vendored `nix` patch now
+  accommodates dead-code lints that became errors under `#![deny(unused)]`;
+  the allowances are limited to load-bearing FFI vectors and socket-option
+  adapters that only exist on Linux and FreeBSD.
+- The release workflow is regenerated with cargo-dist 0.34.0, which maps Apple
+  Silicon builds to the supported `macos-15` runner instead of the retired
+  `macos-14-arm64-us-default` label.
+
 ## [0.1.0-alpha.2] - 2026-11-24
 
 ### Added
@@ -218,6 +230,7 @@ crates.io, and a container image.
 - Crates are prefixed `hushlog-` because `hush-core` and `hush-cli` are already
   published on crates.io by an unrelated project.
 
-[Unreleased]: https://github.com/adenijiridwan43/Hushlog/compare/v0.1.0-alpha.2...HEAD
+[Unreleased]: https://github.com/adenijiridwan43/Hushlog/compare/v0.1.0-alpha.3...HEAD
+[0.1.0-alpha.3]: https://github.com/adenijiridwan43/Hushlog/releases/tag/v0.1.0-alpha.3
 [0.1.0-alpha.2]: https://github.com/adenijiridwan43/Hushlog/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/adenijiridwan43/Hushlog/releases/tag/v0.1.0-alpha.1
