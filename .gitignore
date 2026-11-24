@@ -36,6 +36,7 @@ hushlog-report.json
 # Local test artifacts
 /tests/fixtures/**/actual/
 /tests/fixtures/**/*.new.snap
+/docs/ARTICLE-pin-utils.md
 # Insta pending snapshots are reviewed and renamed, never committed as .new.
 *.snap.new
 

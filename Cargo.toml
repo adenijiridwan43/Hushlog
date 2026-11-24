@@ -3,14 +3,13 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "0.1.0-alpha.1"
+version = "0.1.0-alpha.2"
 edition = "2024"
 rust-version = "1.85"
 license = "Apache-2.0"
 description = "Smart noise filter for terminal and CI logs"
 readme = "README.md"
 repository = "https://github.com/adenijiridwan43/Hushlog"
-homepage = "https://github.com/adenijiridwan43/Hushlog"
 documentation = "https://docs.rs/hushlog"
 # crates.io rejects a publish without `repository` or `homepage`, and it caps
 # keywords at 5. These are the five that describe the tool rather than the
@@ -30,10 +29,10 @@ pedantic = "warn"
 
 
 [workspace.dependencies]
-hushlog-core = { path = "crates/hushlog-core", version = "0.1.0-alpha.1" }
-hushlog-rules = { path = "crates/hushlog-rules", version = "0.1.0-alpha.1" }
-hushlog-render = { path = "crates/hushlog-render", version = "0.1.0-alpha.1" }
-hushlog = { path = "crates/hushlog", version = "0.1.0-alpha.1" }
+hushlog-core = { path = "crates/hushlog-core", version = "0.1.0-alpha.2" }
+hushlog-rules = { path = "crates/hushlog-rules", version = "0.1.0-alpha.2" }
+hushlog-render = { path = "crates/hushlog-render", version = "0.1.0-alpha.2" }
+hushlog = { path = "crates/hushlog", version = "0.1.0-alpha.2" }
 
 anyhow = "1"
 thiserror = "2"

@@ -7,15 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-alpha.2] - 2026-11-24
+
 ### Added
 
 - Distribution channels beyond GitHub Releases: a Homebrew formula pushed to
   `adenijiridwan43/homebrew-tap`, a dependency-ordered crates.io publish, and a
-  `ghcr.io` container image. See [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md).
+  `ghcr.io` container image.
 - A `Dockerfile` building the static musl binary `FROM scratch`, with a
   `.dockerignore` so build artifacts and captured logs never enter a layer.
-- [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md): channel list, one-time secret
-  setup, release checklist, Windows notes, troubleshooting.
 - [`docs/CAPTURING-LOGS.md`](docs/CAPTURING-LOGS.md): how to capture a real noisy
   process as a fixture.
 - [`docs/AGENT-INTERFACE.md`](docs/AGENT-INTERFACE.md): the query grammar, the
@@ -42,6 +42,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The README has been rewritten for people who are evaluating and using
+  hushlog: a real before/after, copyable examples, the full flag list, and
+  plain explanations of the guarantees and the benchmark.
+- `docs/CAPTURING-LOGS.md` and `docs/AGENT-INTERFACE.md` have been rewritten
+  in the same voice as the README, with practical examples and the install
+  commands brought up to date.
 - **The pipeline is about a third faster end to end.** The benchmark measured a
   proxy pipeline that the binary never ran, so the cost of the real one was
   invisible. Measuring the real shape -- ingest, classify, mask into an owned
@@ -79,6 +85,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- docs.rs could not build documentation for the `hushlog` package because it
+  is binary-only: `rustdoc --lib` failed with "no library targets found". The
+  package now has a small library target carrying its crate documentation, and
+  no pipeline code had to move. The redundant `homepage` manifest field (the
+  same URL as `repository`) was removed from all four crates.
 - **Lines were lost when a log's format was detected part-way through.** The
   pipeline rebuilds its rule set when format detection locks onto a pack, and
   it used to rebuild the *collapser* as well. That threw away the run's
@@ -207,5 +218,6 @@ crates.io, and a container image.
 - Crates are prefixed `hushlog-` because `hush-core` and `hush-cli` are already
   published on crates.io by an unrelated project.
 
-[Unreleased]: https://github.com/adenijiridwan43/Hushlog/compare/v0.1.0-alpha.1...HEAD
+[Unreleased]: https://github.com/adenijiridwan43/Hushlog/compare/v0.1.0-alpha.2...HEAD
+[0.1.0-alpha.2]: https://github.com/adenijiridwan43/Hushlog/releases/tag/v0.1.0-alpha.2
 [0.1.0-alpha.1]: https://github.com/adenijiridwan43/Hushlog/releases/tag/v0.1.0-alpha.1

@@ -3,8 +3,7 @@
 # The binary is built against musl in the builder stage, so it is fully static
 # and can run on a `FROM scratch` runtime with no libc, no shell and no package
 # manager. That keeps the image under ~10 MB and means the only thing in it is
-# the tool. CI builds and pushes this to ghcr.io on every release; see
-# docs/DISTRIBUTION.md.
+# the tool. CI builds and pushes this to ghcr.io on every release.
 #
 # Build locally:
 #   docker build -t hushlog .

@@ -1,34 +1,28 @@
-# Capturing real logs — the fixture workflow
+# Capturing a real log
 
-`AGENTS.md` section 5.3: **fixtures are real logs, not invented strings.** The
-whole value of hushlog rests on whether it handles what tools actually print.
-Until a real log has been through the rules.
+Every useful bug hushlog has found came from a log a real tool printed. A
+synthetic log only proves that the code agrees with itself; a real capture
+tells you whether the rules are right. That is why the logs in
+`tests/fixtures/` are the specification, and why they are captured verbatim.
 
-This document is the procedure for turning a real, noisy process into a fixture
-and hardening the rules against it.
-
----
-
-## 1. The chicken-and-egg question, answered
-
-
-**Build first. It is one command and takes a couple of minutes.** hushlog is a
-single binary; there is no installer to run and no service to start. The order is:
-
-```
-1. Build the binary         cargo build --release        (~1–2 min)
-2. Capture the noisy log    <your project> 2>&1 | tee raw.log
-3. Point hushlog at it      hushlog --tee raw.log < raw.log
-4. Look at what it did      the summary line + --explain
-5. Turn the log into a fixture, fix any rule that misfired
-```
-
-You do **not** need a release, a package manager, or the network. Step 1 produces
-`target/release/hushlog` and you run that path directly.
+This is the workflow for turning a noisy process into a fixture.
 
 ---
 
-## 2. Build the binary
+## The short version
+
+1. Build the binary with `cargo build --release`.
+2. Capture the noisy process with `--tee`, so you keep every byte.
+3. Read the summary, then use `--explain` on anything that looks wrong.
+4. Trim the capture by removing whole lines, and put it in `tests/fixtures/`.
+5. Add a test that checks the counts and proves every error line survived.
+
+No release, installer or network access is needed. The binary at
+`target/release/hushlog` is all you need.
+
+---
+
+## Build first
 
 ```sh
 git clone https://github.com/adenijiridwan43/Hushlog
@@ -36,12 +30,8 @@ cd Hushlog
 cargo build --release
 ```
 
-The binary is at:
-
-- Linux/macOS: `./target/release/hushlog`
-- Windows: `.\target\release\hushlog.exe`
-
-Copy it somewhere on `PATH` if you like, or just call it by full path:
+The binary is `./target/release/hushlog` (or `.\target\release\hushlog.exe` on
+Windows). Put it on `PATH` if you like, or call it by full path:
 
 ```sh
 # Linux/macOS
@@ -51,7 +41,7 @@ alias hushlog="$PWD/target/release/hushlog"
 $env:Path += ";$PWD\target\release"
 ```
 
-Sanity check:
+A quick sanity check:
 
 ```sh
 printf 'error: boom\nwarning: meh\n' | hushlog
@@ -60,104 +50,83 @@ hushlog --version
 
 ---
 
-## 3. Capturing the noisy process
+## Capture the noise
 
-Your case is a dev server (npm) throwing a high-rate storm of Postgres and
-network errors — roughly every 0.3 ms. That is the ideal fixture: high volume,
-heavy repetition, and real error lines that **must all survive**.
+A dev server under load is an ideal capture: high volume, heavy repetition and
+real errors that must all survive. There are three ways to catch the stream.
 
-### 3.1 It is a stream, not a file — use a pipe
-
-A dev server logs to stdout/stderr continuously. You do not need to find a log
-file; you capture the stream. Three ways, in order of preference:
-
-**A. Pipe the dev server straight into hushlog (live, no file).**
-
-```sh
-# Linux/macOS — merge stderr into stdout, filter live
-npm run dev 2>&1 | hushlog
-
-# Windows PowerShell
-npm run dev 2>&1 | .\target\release\hushlog.exe
-```
-
-**B. Keep the full raw log while filtering (the lossless path).**
+**A. Filter it live and keep the raw bytes.**
 
 ```sh
 npm run dev 2>&1 | hushlog --tee raw-dev.log
 ```
 
-`--tee` writes every input byte to `raw-dev.log` **upstream of the filter**, so
-even a log with invalid UTF-8, ANSI colour, or a truncated line is preserved
-byte-for-byte. This is the copy the fixture comes from.
+`--tee` writes every input byte to `raw-dev.log` before filtering, so ANSI
+colour, invalid UTF-8 and a line truncated by a killed job are preserved.
 
-**C. Wrap the command (hushlog spawns it).**
+**B. Let hushlog run the command.**
 
 ```sh
 hushlog --tee raw-dev.log -- npm run dev
 ```
 
-Wrap mode reads the child's stdout and stderr as two tagged streams and
-propagates the exit code. Use this when you want hushlog to own the process.
+Wrap mode reads stdout and stderr as two tagged streams and propagates the
+child's exit code. Use it when you want hushlog to own the process.
 
-> **Watch out for the storm rate.** At one error per 0.3 ms that is ~3000
-> lines/second. Let it run for 10–20 seconds, not minutes — 20 s is ~60,000
-> lines, which is already a strong fixture and keeps the file reviewable.
-
-### 3.2 If the process is already running elsewhere
-
-If the dev server runs in another terminal, a container, or a remote box:
+**C. Follow a log that already exists.**
 
 ```sh
-# Docker
 docker logs -f <container> 2>&1 | hushlog --tee raw-dev.log
-
-# Kubernetes
 kubectl logs -f <pod> 2>&1 | hushlog --tee raw-dev.log
-
-# A file that is still being written
 tail -f app.log | hushlog --tee raw-dev.log
 ```
 
-### 3.3 Redact before it leaves your machine
+On Windows, do not pipe a live dev server through `cmd` — `cmd` strips ANSI
+before hushlog sees it. Redirect to a file first, then filter the file.
 
-A captured Postgres/network log can contain host names, IPs, connection strings,
-and credentials. Two protections:
-
-- `--anonymize` replaces IPs, UUIDs, MACs, emails, URLs and card numbers in the
-  **rendered** output with consistent fake values. The `--tee` file is always
-  raw, so keep it local.
-- Manually scan `raw-dev.log` before committing any of it as a fixture. If it
-  contains a password or a customer name, do not commit it — trim the capture
-  down to the parts that exercise the rules.
+A storm running at a few thousand lines a second only needs 10–20 seconds of
+capture. That is already tens of thousands of lines, and it stays reviewable.
 
 ---
 
-## 4. Reading what hushlog did
+## Keep it safe
 
-The summary line is the ground truth. It reports exact counts and the tee path:
+A real capture can contain host names, IPs, connection strings and credentials.
+
+- `--anonymize` replaces IPs, UUIDs, MAC addresses, emails, URLs and card
+  numbers in the **displayed output**. The tee file is never anonymised, so
+  keep it local.
+- Read the raw file before committing any of it. If it contains a password or
+  a customer name, trim those lines out. When in doubt, do not commit it.
+
+---
+
+## Check what hushlog did
+
+The summary line is the ground truth:
 
 ```
 hushlog: 61,204 lines -> 38 shown | 4,102 errors | 12 warning groups (57,000 lines folded) | full log: raw-dev.log
 ```
 
-- **errors** must equal the number of error lines in the raw capture. If it does
-  not, classify is wrong.
-- **lines shown** plus **lines folded** plus block overhead must equal the input
-  total. Nothing may be unaccounted for (`AGENTS.md` section 1).
-- The tee file must be byte-identical to the input:
-  ```sh
-  cmp raw-dev.log raw-dev.log   # trivially true; compare against a second capture
-  ```
+- The **error** count must equal the number of error lines in the raw capture.
+  If it does not, a rule is wrong.
+- Shown lines plus folded lines must account for the input. Nothing may be
+  unaccounted for.
+- The tee file must contain the input byte for byte. Prove it with:
 
-To see why any line was folded or kept:
+```sh
+hushlog --tee copy.log < raw-dev.log > /dev/null
+cmp raw-dev.log copy.log
+```
+
+To see why a line was kept or folded:
 
 ```sh
 hushlog --explain --format plain < raw-dev.log 2> explain.txt
-head explain.txt
 ```
 
-To pull just the errors as records (useful and agent-readable):
+To pull just the errors into a machine-readable file:
 
 ```sh
 hushlog --query 'level == error' --format json < raw-dev.log > errors.json
@@ -165,61 +134,45 @@ hushlog --query 'level == error' --format json < raw-dev.log > errors.json
 
 ---
 
-## 5. Turning the capture into a fixture
+## Turn the capture into a fixture
 
-Fixtures live in `tests/fixtures/` and are captured **verbatim** (`.gitattributes`
-marks them `-text` so line endings are not normalised).
+Fixtures live in `tests/fixtures/` and are stored verbatim; `.gitattributes`
+marks them `-text` so line endings are not normalised.
 
-1. Copy the capture in under the real name — **no `synthetic-` prefix**:
-
-   ```
-   tests/fixtures/postgres-error-storm.log
-   tests/fixtures/npm-devserver-network.log
-   ```
-
-2. If it is large, trim it — but by **removing whole lines from the middle**,
-   never by editing a line. The fixture must stay something the tool really
-   emitted. Aim for a few hundred lines that carry the repetition and a handful
-   of distinct errors.
-
-3. Add a case to the hushlog integration tests that runs the fixture through the
-   real binary and asserts:
-   - the summary counts are what you measured by hand, and
-   - every error line in the fixture appears in the output
-     (the `error_never_lost` invariant, extended to a real log).
-
-4. Run the fixture through the rules and fix any rule that misfires — a real
-   log with a Postgres error the `cargo`/`npm` packs miss becomes a new rule.
+1. Copy the capture in under its real name, without a `synthetic-` prefix:
+   `tests/fixtures/postgres-error-storm.log`, for example.
+2. If it is large, trim it by **removing whole lines from the middle**. Never
+   reword a line: a reworded line tests the rewording, not the tool. A few
+   hundred lines with repetition and a handful of distinct errors is plenty.
+3. Add an integration test that runs the fixture through the real binary and
+   asserts the measured counts and that every error line appears in the output.
+4. Fix any rule that misfired. A real Postgres error the packs miss is a new
+   rule, not a reason to edit the fixture.
 
 ---
 
-## 6. Why the storm is the perfect test
+## Why a storm is worth keeping
 
-A high-rate repetition storm exercises the exact thing this product exists to do:
-
-- **Collapse**: thousands of near-identical errors should fold into counted
-  groups — but never to zero. Repeated **errors** are not collapsed by default
-  (`AGENTS.md` section 1.1), so the storm proves the collapser respects the
-  policy under load.
-- **Bounded memory**: at 3000 lines/second the LRU must hold steady. Watch the
-  process's memory while it runs; it must not climb (`AGENTS.md` section 7).
-- **Fingerprinting**: `Retry 3/10 for pod abc-123` and `Retry 4/10 for pod
-  xyz-789` must share a fingerprint after masking. Real Postgres errors carry
-  connection ids and ports — exactly the volatile tokens the normalizer masks.
-- **The invariant**: every error line must survive. This is the one test that
-  protects the product's reputation, and your storm is the strongest input we
-  have for it.
+- **Folding:** thousands of near-identical lines should become counted groups,
+  but repeated errors must still be emitted. That is the product's most
+  important promise.
+- **Fingerprints:** `Retry 3/10 for pod abc-123` and `Retry 4/10 for pod
+  xyz-789` must share a fingerprint after masking. Real errors carry exactly
+  those volatile IDs and ports.
+- **Bounded memory:** watch the process while it runs. Memory must stay flat as
+  the input grows.
+- **The invariant:** every error line survives. This is the test that protects
+  the product's reputation, and a real storm is its strongest input.
 
 ---
 
-## 7. Checklist
+## Checklist
 
 - [ ] `cargo build --release` succeeds
-- [ ] Capture a 10–20 s window: `npm run dev 2>&1 | hushlog --tee raw-dev.log`
-- [ ] Scan `raw-dev.log` for secrets; redact or trim if needed
-- [ ] Note the summary counts by hand
-- [ ] `hushlog --query 'level == error' --format json < raw-dev.log > errors.json`
-- [ ] Compare the error count in `errors.json` with the raw capture
-- [ ] Trim to a committed fixture under `tests/fixtures/`
-- [ ] Add the integration test and fix any rule that misfired
-- [ ] Commit the fixture with the raw counts written into the test
+- [ ] Capture 10–20 seconds with `npm run dev 2>&1 | hushlog --tee raw-dev.log`
+- [ ] Read the raw capture for secrets; trim or redact if needed
+- [ ] Write down the summary counts by hand
+- [ ] Verify the tee file is byte-identical
+- [ ] Extract the errors with `--query` and compare the count
+- [ ] Trim to a fixture under `tests/fixtures/`
+- [ ] Add the integration test, and fix any rule that misfired
