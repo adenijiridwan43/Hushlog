@@ -63,11 +63,15 @@ jobs:
           set -eu
           # A version already on crates.io is skipped, not an error, so a
           # re-run of a partially-published release finishes the job.
+          # crates.io rejects requests without a User-Agent with 403; without
+          # one this check reports every published version as missing and
+          # cargo publish then fails with "already exists" (exit 101).
           publish_if_new() {
             crate="$1"
             version=$(cargo metadata --no-deps --format-version 1 \
               | jq -r --arg c "$crate" '.packages[] | select(.name==$c) | .version')
-            if curl -fsS "https://crates.io/api/v1/crates/${crate}/${version}" >/dev/null 2>&1; then
+            if curl -fsS -H 'User-Agent: hushlog-release-check/1.0' \
+              "https://crates.io/api/v1/crates/${crate}/${version}" >/dev/null 2>&1; then
               echo "${crate} ${version} is already published; skipping."
             else
               echo "publishing ${crate} ${version}"
