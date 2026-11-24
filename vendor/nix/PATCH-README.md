@@ -13,10 +13,24 @@ graph carried `pin-utils` — an unmaintained crate
 `portable-pty` that we take it from also breaks Windows PTY, so that upgrade
 path was rejected. This is the third option: patch the owning crate.
 
-## The one-line change
+## The changes
 
 In `Cargo.toml` in this directory, the `default` feature list is missing
-`"aio"` compared to the original `nix-0.25.1`. Everything else is untouched.
+`"aio"` compared to the original `nix-0.25.1`. That is the dependency fix.
+
+Two small lint-compatibility fixes were added later, when current rustc began
+rejecting code that older compilers accepted under `#![deny(unused)]`:
+
+- `src/sys/sendfile.rs` marks `SendfileHeaderTrailer`'s two owned vectors with
+  `#[allow(dead_code)]`. The `sf_hdtr` points into them, so they are not dead —
+  they keep the FFI buffers alive until `sendfile` returns. The compiler just
+  cannot see that through a raw pointer.
+- `src/sys/socket/sockopt.rs` gates the private `GetOsString`/`SetOsString`
+  adapters (and their imports) to Android, FreeBSD and Linux, the only
+  platforms whose socket-option definitions instantiate them. macOS builds no
+  longer see code that can never be constructed there.
+
+Neither fix changes public API or runtime behaviour.
 
 ## To redo this when nix updates
 
@@ -27,9 +41,12 @@ In `Cargo.toml` in this directory, the `default` feature list is missing
 3. In `vendor/nix/Cargo.toml`, delete the `"aio",` entry from the `default`
    feature list. Leave `aio = ["pin-utils"]` alone — the feature still
    exists, it is just no longer on by default.
-4. Update the path pin in the workspace `Cargo.toml`:
+4. Reapply the two lint-compatibility changes described above. If the newer
+   nix has already fixed them, leave its upstream code alone and note that in
+   this file.
+5. Update the path pin in the workspace `Cargo.toml`:
    `[patch.crates-io] nix = { path = "vendor/nix" }` (already there).
-5. `cargo generate-lockfile` — NOT `cargo update -p nix`; the lockfile still
+6. `cargo generate-lockfile` — NOT `cargo update -p nix`; the lockfile still
    records the optional dep until the graph is fully re-resolved.
 
 Verify: `cargo tree -i pin-utils` should say

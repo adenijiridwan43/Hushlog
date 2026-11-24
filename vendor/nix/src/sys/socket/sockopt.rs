@@ -11,8 +11,9 @@ use std::mem::{
     MaybeUninit
 };
 use std::os::unix::io::RawFd;
+#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
 use std::ffi::{OsStr, OsString};
-#[cfg(target_family = "unix")]
+#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
 use std::os::unix::ffi::OsStrExt;
 
 // Constants
@@ -926,12 +927,18 @@ impl<'a> Set<'a, usize> for SetUsize {
     }
 }
 
+// Only `BindToDevice` (Android/Linux) and `TcpCongestion` (FreeBSD/Linux)
+// use the `OsString` socket-option adapters. Keeping them defined on other
+// platforms makes modern rustc's dead-code lint an error under
+// `#![deny(unused)]`, so gate them to the platforms that call them.
+#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
 /// Getter for a `OsString` value.
 struct GetOsString<T: AsMut<[u8]>> {
     len: socklen_t,
     val: MaybeUninit<T>,
 }
 
+#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
 impl<T: AsMut<[u8]>> Get<OsString> for GetOsString<T> {
     fn uninit() -> Self {
         GetOsString {
@@ -955,11 +962,13 @@ impl<T: AsMut<[u8]>> Get<OsString> for GetOsString<T> {
     }
 }
 
+#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
 /// Setter for a `OsString` value.
 struct SetOsString<'a> {
     val: &'a OsStr,
 }
 
+#[cfg(any(target_os = "android", target_os = "freebsd", target_os = "linux"))]
 impl<'a> Set<'a, OsString> for SetOsString<'a> {
     fn new(val: &'a OsString) -> SetOsString {
         SetOsString { val: val.as_os_str() }

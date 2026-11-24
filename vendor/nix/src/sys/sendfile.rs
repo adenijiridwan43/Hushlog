@@ -70,6 +70,10 @@ cfg_if! {
                  target_os = "macos"))] {
         use std::io::IoSlice;
 
+        // The two owned vectors are never read directly. They keep the
+        // iovecs that `sf_hdtr` points at alive until `sendfile` returns.
+        // Modern rustc reports them as dead code; they are load-bearing.
+        #[allow(dead_code)]
         #[derive(Clone, Debug)]
         struct SendfileHeaderTrailer<'a>(
             libc::sf_hdtr,
