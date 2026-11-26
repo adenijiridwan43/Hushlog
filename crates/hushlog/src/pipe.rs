@@ -163,6 +163,10 @@ pub(crate) fn report_raw_summary(show: bool, lines: u64, bytes: u64, tee_path: O
         errors: 0,
         groups: 0,
         lines_folded: 0,
+        lines_suppressed: 0,
+        token_estimate: 0,
+        tokens_suppressed: 0,
+        max_tokens: None,
         tee_path,
     };
     eprintln!("hushlog: {summary} | {bytes} bytes passed through unfiltered");

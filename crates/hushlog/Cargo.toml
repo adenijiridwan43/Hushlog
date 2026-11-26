@@ -34,6 +34,8 @@ flate2.workspace = true
 bzip2.workspace = true
 
 [dev-dependencies]
+serde_json.workspace = true
+proptest = "1"
 xxhash-rust = { version = "0.8", features = ["xxh3"] }
 assert_cmd = "2"
 predicates = "3"

@@ -38,6 +38,23 @@ match = { kind = "literal", pattern = "error: aborting due to" }
 level = "error"
 highlight = true
 
+# cargo-deny prefixes its diagnostics with the CI step and a timestamp, so the
+# anchored `cargo.error` rule above cannot see them. This is the real shape in
+# tests/fixtures/github-actions-failure.log; the advisory code is not an rustc
+# lint code, hence the separate, unanchored rule. The colon is not part of the
+# pattern: this capture contains literal `^[` colour markers between the code
+# and the colon, which Ingest cannot strip as ANSI escapes.
+[[rule]]
+id = "cargo.advisory"
+match = { kind = "regex", pattern = "error\\[[A-Za-z][A-Za-z0-9_-]*\\]" }
+level = "error"
+highlight = true
+context_lines = 6
+
+[[rule.sample]]
+line = "cargo-deny (licences + bans)\tUNKNOWN STEP\t2026-11-16T12:43:47.1458412Z ^[[0m^[[1m^[[38;5;9merror[unmaintained]^[[0m^[[1m: `pin-utils` is unmaintained^[[0m"
+level = "error"
+
 # --- Warnings ---------------------------------------------------------------
 
 [[rule]]

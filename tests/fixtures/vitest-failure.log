@@ -1,0 +1,49 @@
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/usr/AppData/Local/Temp/hushlog-vitest-capture[39m
+
+ [31m❯[39m sample.test.js [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 18[2mms[22m[39m
+   [32m✓[39m a real vitest run[2m > [22mpasses[32m 2[2mms[22m[39m
+[31m   [31m×[31m a real vitest run[2m > [22mfails[39m[32m 14[2mms[22m[39m
+[31m     → expected 2 to be 3 // Object.is equality[39m
+[31m   [31m×[31m a real vitest run[2m > [22mthrows[39m[32m 1[2mms[22m[39m
+[31m     → boom from a real vitest run[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m sample.test.js[2m > [22ma real vitest run[2m > [22mfails
+[31m[1mAssertionError[22m: expected 2 to be 3 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 3[39m
+[31m+ 2[39m
+
+[36m [2m❯[22m sample.test.js:[2m9:19[22m[39m
+    [90m  7| [39m
+    [90m  8| [39m  [34mit[39m([32m"fails"[39m[33m,[39m () [33m=>[39m {
+    [90m  9| [39m    [34mexpect[39m([34m1[39m [33m+[39m [34m1[39m)[33m.[39m[34mtoBe[39m([34m3[39m)[33m;[39m
+    [90m   | [39m                  [31m^[39m
+    [90m 10| [39m  })[33m;[39m
+    [90m 11| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m sample.test.js[2m > [22ma real vitest run[2m > [22mthrows
+[31m[1mError[22m: boom from a real vitest run[39m
+[36m [2m❯[22m sample.test.js:[2m13:11[22m[39m
+    [90m 11| [39m
+    [90m 12| [39m  [34mit[39m([32m"throws"[39m[33m,[39m () [33m=>[39m {
+    [90m 13| [39m    [35mthrow[39m [35mnew[39m [33mError[39m([32m"boom from a real vitest run"[39m)[33m;[39m
+    [90m   | [39m          [31m^[39m
+    [90m 14| [39m  })[33m;[39m
+    [90m 15| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 21:33:22
+[2m   Duration [22m 1.14s[2m (transform 63ms, setup 0ms, collect 51ms, tests 18ms, environment 1ms, prepare 282ms)[22m
+

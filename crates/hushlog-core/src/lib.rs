@@ -265,6 +265,17 @@ pub struct Summary {
     pub groups: u64,
     /// Total lines absorbed into those groups.
     pub lines_folded: u64,
+    /// Lines hidden by an opt-in `--max-tokens` budget. Zero without a budget.
+    ///
+    /// A budgeted run still obeys `lines_in == lines_out + lines_folded +
+    /// lines_suppressed`, so a hidden line is always accounted for.
+    pub lines_suppressed: u64,
+    /// Estimated tokens for all rendered line text, before suppression.
+    pub token_estimate: u64,
+    /// Estimated tokens belonging to the lines suppressed by the budget.
+    pub tokens_suppressed: u64,
+    /// The cap that was in force. `None` means no budget was requested.
+    pub max_tokens: Option<u64>,
     /// Where the verbatim log was written, if `--tee` was used.
     pub tee_path: Option<String>,
 }
@@ -280,6 +291,21 @@ impl std::fmt::Display for Summary {
             thousands(self.groups),
             thousands(self.lines_folded),
         )?;
+        if self.lines_suppressed > 0 {
+            write!(
+                f,
+                " | {} lines suppressed",
+                thousands(self.lines_suppressed)
+            )?;
+        }
+        if let Some(max) = self.max_tokens {
+            write!(
+                f,
+                " | budget {}/{} tokens estimated",
+                thousands(self.token_estimate),
+                thousands(max),
+            )?;
+        }
         if let Some(p) = &self.tee_path {
             write!(f, " | full log: {p}")?;
         }

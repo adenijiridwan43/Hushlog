@@ -109,6 +109,10 @@ pub fn sample_summary() -> Summary {
         errors: 5,
         groups: 2,
         lines_folded: 3,
+        lines_suppressed: 0,
+        token_estimate: 0,
+        tokens_suppressed: 0,
+        max_tokens: None,
         tee_path: Some("hushlog-full.log".to_string()),
     }
 }

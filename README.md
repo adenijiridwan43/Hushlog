@@ -107,11 +107,15 @@ By default, errors are **never** folded. If you really want them collapsed, you 
 
 ## What it understands
 
-Twelve rule packs ship inside the binary, so they cannot go missing between release and run:
+Sixteen rule packs ship inside the binary, so they cannot go missing between release and run:
 
 | Pack | Covers |
 |---|---|
-| cargo | Rust compiler warnings and errors |
+| cargo | Rust compiler warnings and errors, including cargo-deny advisories |
+| pytest | Failed tests, traceback details and suite summaries |
+| jest-vitest | Jest and Vitest failures and summaries |
+| go | `go test` failures, panics and build errors |
+| github-actions | `##[error]`, `##[warning]` and other workflow commands |
 | npm | Install output and deprecation notices |
 | docker | BuildKit lines and multi-stage build output |
 | kubectl | Kubernetes events and object output |
@@ -148,9 +152,25 @@ The `--tee` file is written before redaction and is never anonymised. If you nee
 | `--rules <FILE>` | built-ins | Add a TOML rule pack. Repeatable. |
 | `--collapse-errors` | **off** | Opt in to folding errors. |
 | `--max-tracked <N>` | `10000` | LRU capacity; the bound on memory use. |
+| `--max-tokens <N>` | off | Aim for at most N output tokens. Never hides errors; conflicts with `--raw`. |
 | `--no-summary` | off | Suppress the end-of-run summary. |
 | `--pty` | off | Run the child on a pseudo-terminal. |
 | `--anonymize` | off | Redact sensitive values in the rendered output; the tee file stays untouched. |
+
+### Limiting output for an agent
+
+`--max-tokens <N>` aims for a shorter result when a log would overwhelm an LLM
+context or a chat transcript. It is opt-in, and it never hides an error. Tokens
+are estimated at four bytes each, and as the estimate closes on the cap the
+gate suppresses the least useful levels first: debug/trace, then info and
+progress, then warnings. Errors still pass, even if that puts the run over the
+cap.
+
+Nothing is lost: the end-of-run summary reports the exact number of suppressed
+lines, a `budget_summary` record (JSON) or line (all other formats) reports the
+cap, estimate and suppressed token count, and `--tee` holds every input byte.
+Add `--tee` whenever you use a budget and you want the suppressed lines back.
+The machine-readable shape is documented in [docs/JSON-CONTRACT.md](docs/JSON-CONTRACT.md).
 
 ---
 

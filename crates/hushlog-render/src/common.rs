@@ -5,7 +5,7 @@ use std::borrow::Cow;
 use std::fmt;
 use std::io::{self, Write};
 
-use hushlog_core::{Classified, Level};
+use hushlog_core::{Classified, Level, Summary};
 
 /// The writer a renderer owns.
 ///
@@ -109,6 +109,20 @@ pub(crate) fn write_fold(sink: &mut Sink, count: u64, sample: &Classified) -> io
         sink.line(&sample.line.raw)?;
     }
     sink.line(&fold_note(count))
+}
+
+/// The exact, human-readable accounting for a budgeted run.
+///
+/// `None` when no budget was requested. The summary line already says how many
+/// lines were suppressed; this adds the cap and the estimate that produced the
+/// decision, so a reader can judge how tight the budget was.
+pub(crate) fn budget_note(summary: &Summary) -> Option<String> {
+    summary.max_tokens.map(|max| {
+        format!(
+            "hushlog: budget {}/{} tokens estimated | {} lines suppressed | {} tokens suppressed",
+            summary.token_estimate, max, summary.lines_suppressed, summary.tokens_suppressed
+        )
+    })
 }
 
 /// Escape the payload of a CI log command.

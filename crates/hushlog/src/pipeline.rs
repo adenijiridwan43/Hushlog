@@ -25,9 +25,11 @@ use hushlog_core::{
     Anonymizer, BlockDetector, Classifier, CollapsePolicy, Collapser, Event, FoldingCollapser,
     FormatDetector, Ingest, Level, Normalizer, Renderer, Stream, Summary,
 };
+use hushlog_render::RuleNames;
 use hushlog_rules::RuleClassifier;
 
 use crate::args::{self, Config};
+use crate::budget::Budget;
 use crate::explain::Explainer;
 use crate::query::Query;
 use crate::sink::SharedOut;
@@ -57,6 +59,8 @@ pub(crate) struct Pipeline {
     classifier: RuleClassifier,
     ingests: [Ingest; 2],
     collapser: FoldingCollapser,
+    /// The opt-in token gate, between collapse and render.
+    budget: Budget,
     renderer: Box<dyn Renderer>,
     out: SharedOut,
     explain: Option<Explainer>,
@@ -93,6 +97,9 @@ pub(crate) struct Pipeline {
     /// True once detection has completed (either a pack matched or the window
     /// expired). After this, classification runs normally.
     detection_complete: bool,
+    /// Stable rule names by `RuleId`, shared with the JSON renderer. Replaced
+    /// when format detection reorders the rules.
+    rule_names: RuleNames,
 }
 
 impl Pipeline {
@@ -121,7 +128,9 @@ impl Pipeline {
         let detector = block_detector_or_warn(&classifier);
         let collapser = FoldingCollapser::with_policy_and_detector(policy, detector);
 
-        let renderer = hushlog_render::renderer(config.format, out.clone());
+        let rule_names = RuleNames::from_names(classifier.rules().iter().map(|r| r.id.clone()));
+        let renderer =
+            hushlog_render::renderer_with_names(config.format, out.clone(), rule_names.clone());
 
         // Format detection: collect each pack's `detect` patterns. When no pack
         // declares any, detection is skipped and the run uses all packs as
@@ -150,10 +159,11 @@ impl Pipeline {
             // The banner states the policy the whole run is governed by, so a
             // `--explain` transcript can be read without the command line.
             explain.note(&format!(
-                "policy: {} rules, collapse_errors={}, max_tracked={}, format={}, summary={}",
+                "policy: {} rules, collapse_errors={}, max_tracked={}, max_tokens={:?}, format={}, summary={}",
                 classifier.rules().len(),
                 policy.collapse_errors,
                 policy.max_tracked,
+                config.max_tokens,
                 config.format,
                 config.summary,
             ))?;
@@ -174,6 +184,7 @@ impl Pipeline {
             classifier,
             ingests: [Ingest::new(Stream::Stdout), Ingest::new(Stream::Stderr)],
             collapser,
+            budget: Budget::new(config.max_tokens),
             renderer,
             out,
             explain,
@@ -191,6 +202,7 @@ impl Pipeline {
             packs,
             format_detector,
             detection_complete,
+            rule_names,
             query,
         })
     }
@@ -342,6 +354,19 @@ impl Pipeline {
                 summary.tee_path.clone_from(&self.tee_path);
             }
 
+            if !self.budget.admit(&event) {
+                if let (Some(explain), Event::Emit(c)) = (self.explain.as_mut(), &event) {
+                    explain.note(&format!(
+                        "budget: line {} {:?} suppressed; the byte-exact copy is in --tee",
+                        c.line.no, c.level
+                    ))?;
+                }
+                continue;
+            }
+            if let Event::Summary(summary) = &mut event {
+                self.budget.apply_to_summary(summary);
+            }
+
             // `--explain` and the summary are the two things that keep
             // `--no-summary` honest: a reader who turned the summary off must
             // still be able to see what was folded.
@@ -398,6 +423,11 @@ impl Pipeline {
         self.classifier = RuleClassifier::new(&ordered)
             .map_err(|e| anyhow::Error::msg(e.to_string()))
             .context(format!("rebuilding rule set for detected format {name}"))?;
+        // `RuleId` is an index into this new order. Without this replace, the
+        // JSON renderer would print the name of a different rule for every line
+        // classified after detection.
+        self.rule_names
+            .replace(self.classifier.rules().iter().map(|r| r.id.clone()));
 
         if let Some(explain) = self.explain.as_mut() {
             explain.note(&format!("format detected: {name}"))?;

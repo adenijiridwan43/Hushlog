@@ -50,6 +50,8 @@ pub(crate) struct Config {
     /// Extra rule packs, in command-line order, appended after the built-ins.
     pub(crate) rules: Vec<PathBuf>,
     pub(crate) policy: CollapsePolicy,
+    /// Optional target for output tokens. No line is hidden by default.
+    pub(crate) max_tokens: Option<u64>,
     /// Emit the end-of-run summary.
     pub(crate) summary: bool,
     /// Anonymize sensitive data in the rendered output.
@@ -120,6 +122,11 @@ pub(crate) struct Cli {
     /// Upper bound on distinct fingerprints held in memory (LRU capacity)
     #[arg(long, value_name = "N", default_value_t = CollapsePolicy::default().max_tracked)]
     pub(crate) max_tracked: usize,
+
+    /// Aim for at most N output tokens; never hides errors and is recoverable
+    /// through `--tee` and `budget_summary`
+    #[arg(long, value_name = "N", conflicts_with = "raw")]
+    pub(crate) max_tokens: Option<u64>,
 
     /// Only emit lines whose classified fields match this predicate, as CSV or
     /// JSON records. Implies `--format json` (or `--format csv`); conflicts
@@ -228,6 +235,7 @@ impl Cli {
                 collapse_errors: self.collapsing.collapse_errors,
                 max_tracked: self.max_tracked,
             },
+            max_tokens: self.max_tokens,
             summary: !self.lossless.no_summary,
             anonymize: self.lossless.anonymize,
             query: self.query,
@@ -372,6 +380,29 @@ mod tests {
             .config()
             .unwrap();
         assert_eq!(cli.policy.max_tracked, 17);
+    }
+
+    #[test]
+    fn no_budget_is_set_by_default() {
+        let config = Cli::try_parse_from(["hushlog"]).unwrap().config().unwrap();
+        assert_eq!(config.max_tokens, None);
+    }
+
+    #[test]
+    fn max_tokens_takes_a_number() {
+        let config = Cli::try_parse_from(["hushlog", "--max-tokens", "4000"])
+            .unwrap()
+            .config()
+            .unwrap();
+        assert_eq!(config.max_tokens, Some(4000));
+    }
+
+    #[test]
+    fn max_tokens_cannot_be_combined_with_raw() {
+        let err = Cli::try_parse_from(["hushlog", "--raw", "--max-tokens", "10"])
+            .expect_err("raw and a budget contradict each other")
+            .to_string();
+        assert!(err.contains("raw"), "{err}");
     }
 
     #[test]

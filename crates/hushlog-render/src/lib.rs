@@ -37,7 +37,7 @@ mod tty;
 pub use csv::CsvRenderer;
 pub use github::GithubRenderer;
 pub use gitlab::GitlabRenderer;
-pub use json::JsonRenderer;
+pub use json::{JsonRenderer, RuleNames};
 pub use plain::PlainRenderer;
 pub use tty::{Color, TtyRenderer};
 
@@ -133,12 +133,25 @@ pub struct ParseFormatError {
 /// The TTY renderer resolves colour automatically here; use
 /// [`TtyRenderer::with_color`] when the sink is not stdout.
 pub fn renderer(format: Format, out: impl Write + 'static) -> Box<dyn Renderer> {
+    renderer_with_names(format, out, RuleNames::default())
+}
+
+/// Build a renderer with a snapshot of stable rule names.
+///
+/// Only the JSON renderer uses `names`; the other formats take it as an
+/// argument so callers can use one factory for every destination. The pipeline
+/// replaces the snapshot if format detection reorders the rules.
+pub fn renderer_with_names(
+    format: Format,
+    out: impl Write + 'static,
+    names: RuleNames,
+) -> Box<dyn Renderer> {
     match format {
         Format::Tty => Box::new(TtyRenderer::with_color(out, Color::Auto)),
         Format::Plain => Box::new(PlainRenderer::new(out)),
         Format::Github => Box::new(GithubRenderer::new(out)),
         Format::Gitlab => Box::new(GitlabRenderer::new(out)),
-        Format::Json => Box::new(JsonRenderer::new(out)),
+        Format::Json => Box::new(JsonRenderer::with_names(out, names)),
         Format::Csv => Box::new(CsvRenderer::new(out)),
     }
 }

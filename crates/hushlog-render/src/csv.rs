@@ -108,25 +108,49 @@ impl Renderer for CsvRenderer {
                 raw: "",
                 plain: "",
             }),
-            Event::Summary(summary) => self.emit_row(&CsvRow {
-                typ: "summary",
-                no: "",
-                stream: "",
-                level: "",
-                rule_id: "",
-                count: "",
-                detail: &format!(
-                    "lines_in={} lines_out={} errors={} groups={} lines_folded={} tee_path={:?}",
-                    summary.lines_in,
-                    summary.lines_out,
-                    summary.errors,
-                    summary.groups,
-                    summary.lines_folded,
-                    summary.tee_path
-                ),
-                raw: "",
-                plain: "",
-            }),
+            Event::Summary(summary) => {
+                self.emit_row(&CsvRow {
+                    typ: "summary",
+                    no: "",
+                    stream: "",
+                    level: "",
+                    rule_id: "",
+                    count: "",
+                    detail: &format!(
+                        "lines_in={} lines_out={} errors={} groups={} lines_folded={} lines_suppressed={} tee_path={:?}",
+                        summary.lines_in,
+                        summary.lines_out,
+                        summary.errors,
+                        summary.groups,
+                        summary.lines_folded,
+                        summary.lines_suppressed,
+                        summary.tee_path
+                    ),
+                    raw: "",
+                    plain: "",
+                })?;
+                if let Some(max) = summary.max_tokens {
+                    self.emit_row(&CsvRow {
+                        typ: "budget_summary",
+                        no: "",
+                        stream: "",
+                        level: "",
+                        rule_id: "",
+                        count: "",
+                        detail: &format!(
+                            "max_tokens={} token_estimate={} tokens_suppressed={} lines_suppressed={} tee_path={:?}",
+                            max,
+                            summary.token_estimate,
+                            summary.tokens_suppressed,
+                            summary.lines_suppressed,
+                            summary.tee_path
+                        ),
+                        raw: "",
+                        plain: "",
+                    })?;
+                }
+                Ok(())
+            }
         }
     }
 }

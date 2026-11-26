@@ -68,8 +68,15 @@ pub mod builtin {
     /// match the same line (first match wins). Packs that declare `detect`
     /// patterns are tried first during format detection regardless of this
     /// order.
-    pub const PACKS: [(&str, &str); 12] = [
+    pub const PACKS: [(&str, &str); 16] = [
         ("cargo", include_str!("../rules/cargo.toml")),
+        ("pytest", include_str!("../rules/pytest.toml")),
+        ("go", include_str!("../rules/go.toml")),
+        ("jest-vitest", include_str!("../rules/jest-vitest.toml")),
+        (
+            "github-actions",
+            include_str!("../rules/github-actions.toml"),
+        ),
         ("npm", include_str!("../rules/npm.toml")),
         ("docker", include_str!("../rules/docker.toml")),
         ("kubectl", include_str!("../rules/kubectl.toml")),

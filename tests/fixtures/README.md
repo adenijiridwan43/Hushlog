@@ -10,6 +10,10 @@
 | `npm-install.log` | `npm install` with thirteen deprecation warnings | **yes** |
 | `pip-install.log` | `pip install` with build and resolver chatter | **yes** |
 | `github-actions-failure.log` | real failing GitHub Actions run (cargo-deny advisory + audit-check) | **yes** |
+| `pytest-failure.log` | real `pytest` run with two failures and one pass | **yes** |
+| `jest-failure.log` | real `jest` run with two failures and one pass | **yes** |
+| `vitest-failure.log` | real `vitest` run with two failures and one pass | **yes** |
+| `go-test-failure.log` | real `go test` run with two failures, a panic and one pass | **yes** |
 | `out-of-order.log` | lines arriving out of order | **yes** |
 | `truncated-json.log` | a log cut off mid-record | **yes** |
 | `synthetic-cargo-warnings.log` | placeholder | no |
@@ -40,6 +44,15 @@ matched the prefix of it.
 those two packs. They show that a rustc warning is a warning and an npm
 deprecation notice is a warning — not errors, not noise.
 
+`pytest-failure.log`, `jest-failure.log`, `vitest-failure.log` and
+`go-test-failure.log` are real captures from the four test runners. Each says
+"failed" differently (`FAILED test::name`, `Tests: N failed`,
+`Test Files N failed`, `--- FAIL: TestName`), and each puts the reason on a
+different line. The packs match those shapes rather than one runner's wording,
+so a real failure keeps its reason in the filtered output. The Go capture also
+has a panic with a stack trace: the panic line is an error, the frames are trace
+detail.
+
 ## The synthetic ones are placeholders
 
 `synthetic-cargo-warnings.log`, `synthetic-retry-storm.log` and
@@ -65,13 +78,15 @@ Real output from at least these, captured verbatim:
 - [x] **a failing GitHub Actions run** — captured (`github-actions-failure.log`,
       run `43869138734`, 1,160 lines). Finding: the run fails with real
       `error[unmaintained]` and `##[error]Resource not accessible by
-      integration` lines, but hushlog classifies them as non-errors because
-      the packs do not yet match those shapes. They all survive in the
-      filtered output, so the never-lost invariant holds; the finding is a
-      candidate rule gap (cargo-deny `error[...]`, GitHub `##[error]`),
-      for a future task.
+      integration` lines, which hushlog originally classified as ordinary
+      output. They survived filtering, so the never-lost invariant held, but
+      classification was wrong. The `cargo.advisory` and `github_actions.error`
+      rules now close those gaps; the fixture still asserts both lines survive
+      *and* classify as errors.
 - [x] a GitHub Actions run with a *real* stack trace — the same fixture
       carries the real cargo-audit/rustsec advisory output and install logs
+- [x] a failing `go test ./...` run — captured with Go 1.27.4 on Windows
+      (`go-test-failure.log`)
 - [ ] `docker build`, multi-stage, with repeated buildkit lines — needs Docker,
       not installed on this machine
 - [ ] `kubectl logs` with repeated container warnings — needs a cluster,
@@ -82,7 +97,7 @@ Real output from at least these, captured verbatim:
       not emit `DEPRECATION` lines; `pip-install.log` is the resolver chatter
       capture of this, noted in the tool's own behaviour
 
-The failing-run fixture is the most important of the six. Everything else
+The failing-run fixture is the most important of them. Everything else
 exercises noise; that one exercises the promise in `AGENTS.md` section 1.
 
 ## Naming

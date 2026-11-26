@@ -1,0 +1,48 @@
+# GitHub Actions rule pack
+#
+# Workflow commands are printed verbatim by the runner and by third-party
+# actions: `##[error]`, `##[warning]`, `##[notice]`. The samples come from a real
+# failing run in tests/fixtures/github-actions-failure.log. A `##[error]` line
+# is a step failure even when an action sends it through an API client, so it
+# is always an error and is never folded (AGENTS.md section 1.1).
+
+name = "github-actions"
+description = "GitHub Actions workflow commands and action diagnostics."
+
+detect = { patterns = [
+    "##\\[(?:error|warning|notice)\\]",
+] }
+
+[[rule]]
+id = "github_actions.error"
+match = { kind = "regex", pattern = "##\\[error\\]" }
+level = "error"
+highlight = true
+context_lines = 2
+
+[[rule.sample]]
+line = "cargo-audit (vulnerabilities)\tUNKNOWN STEP\t2026-11-16T12:45:31.2290884Z ##[error]Resource not accessible by integration - https://docs.github.com/rest/issues/issues#create-an-issue"
+level = "error"
+
+[[rule]]
+id = "github_actions.warning"
+match = { kind = "regex", pattern = "##\\[warning\\]" }
+level = "warning"
+
+[[rule.sample]]
+line = "cargo-audit (vulnerabilities)\tUNKNOWN STEP\t2026-11-16T12:45:30.6615459Z ##[warning]3 warnings found!"
+level = "warning"
+
+[[rule]]
+id = "github_actions.notice"
+match = { kind = "regex", pattern = "##\\[notice\\]" }
+level = "info"
+
+[[rule]]
+id = "github_actions.deprecation"
+match = { kind = "regex", pattern = "\\[@octokit/request\\].*is deprecated" }
+level = "warning"
+
+[[rule.sample]]
+line = "cargo-audit (vulnerabilities)\tUNKNOWN STEP\t2026-11-16T12:45:31.2279568Z [@octokit/request] \"POST https://api.github.com/repos/adenijiridwan43/Hushlog/issues\" is deprecated. It is scheduled to be removed on Fri, 10 Mar 2028 00:00:00 GMT. See https://docs.github.com/en/rest/about-the-rest-api/api-versions"
+level = "warning"

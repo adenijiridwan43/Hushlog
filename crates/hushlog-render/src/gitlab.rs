@@ -5,7 +5,7 @@ use std::io::{self, Write};
 
 use hushlog_core::{Event, Renderer};
 
-use crate::common::{Sink, escape_command_data, fold_note, fold_summary, is_error};
+use crate::common::{Sink, budget_note, escape_command_data, fold_note, fold_summary, is_error};
 
 /// Emits GitLab collapsible section markers around folded groups and blocks.
 #[derive(Debug)]
@@ -68,7 +68,11 @@ impl Renderer for GitlabRenderer {
             Event::BlockEnd(_) => self.sink.line("section_end"),
             Event::Summary(summary) => {
                 self.sink.line("")?;
-                self.sink.line(&summary.to_string())
+                self.sink.line(&summary.to_string())?;
+                if let Some(note) = budget_note(summary) {
+                    self.sink.line(&note)?;
+                }
+                Ok(())
             }
         }
     }

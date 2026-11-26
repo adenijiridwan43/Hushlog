@@ -1,0 +1,96 @@
+# Jest / Vitest rule pack
+#
+# Shapes come from real runs captured in tests/fixtures/jest-failure.log
+# (jest 29) and tests/fixtures/vitest-failure.log (vitest 3.2.7). Samples are
+# verbatim lines from those captures, after ANSI stripping. The two runners
+# share most of their failure vocabulary; the few differences are separate
+# rules so `--explain` can say which one fired.
+
+name = "jest-vitest"
+description = "Jest and Vitest failures, test results and run headers."
+
+detect = { patterns = [
+    "^\\s*FAIL\\s+\\S",
+    "^\\s*RUN\\s+v?\\d",
+    "^\\s*Test Files\\s+\\d+",
+    "^Tests:\\s+\\d+",
+] }
+
+[[rule]]
+id = "jest_vitest.suite_failed"
+match = { kind = "regex", pattern = "^\\s*FAIL\\s+\\S" }
+level = "error"
+highlight = true
+context_lines = 6
+
+[[rule.sample]]
+line = 'FAIL ./sample.test.js'
+level = "error"
+
+[[rule.sample]]
+line = ' FAIL  sample.test.js > a real vitest run > fails'
+level = "error"
+
+[[rule]]
+id = "jest_vitest.test_failed"
+match = { kind = "regex", pattern = "^\\s*[×✕●]\\s" }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = '  × fails (5 ms)'
+level = "error"
+
+[[rule.sample]]
+line = '   × a real vitest run > fails 14ms'
+level = "error"
+
+[[rule]]
+id = "jest_vitest.exception"
+match = { kind = "regex", pattern = "^(?:AssertionError|Error|TypeError|ReferenceError|SyntaxError):" }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = 'AssertionError: expected 2 to be 3 // Object.is equality'
+level = "error"
+
+[[rule.sample]]
+line = 'Error: boom from a real vitest run'
+level = "error"
+
+[[rule]]
+id = "jest_vitest.summary_failed"
+match = { kind = "regex", pattern = "^\\s*(?:Test Files\\s+\\d+ failed|Test Suites:\\s+\\d+ failed|Tests\\s*:?\\s+\\d+ failed)" }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = ' Test Files  1 failed (1)'
+level = "error"
+
+[[rule.sample]]
+line = '      Tests  2 failed | 1 passed (3)'
+level = "error"
+
+[[rule.sample]]
+line = 'Test Suites: 1 failed, 1 total'
+level = "error"
+
+[[rule.sample]]
+line = 'Tests:       2 failed, 1 passed, 3 total'
+level = "error"
+
+[[rule]]
+id = "jest_vitest.run_header"
+match = { kind = "regex", pattern = "^\\s*RUN\\s+v?\\d+\\.\\d+" }
+level = "info"
+
+[[rule.sample]]
+line = ' RUN  v3.2.7 C:/Users/usr/AppData/Local/Temp/hushlog-vitest-capture'
+level = "info"
+
+[[rule]]
+id = "jest_vitest.passed_summary"
+match = { kind = "regex", pattern = "^\\s*Tests\\s*:?\\s+\\d+ passed" }
+level = "info"

@@ -54,6 +54,25 @@ fn classify(c: &mut RuleClassifier, text: &str) -> hushlog_core::Classified {
     c.classify(line)
 }
 
+/// The text `Ingest` hands to the classifier: no ANSI, no literal `^[` markers.
+fn plain_text(line: &str) -> String {
+    let normalized = line.replace("^[[", "\u{1b}[");
+    let mut out = String::with_capacity(normalized.len());
+    let mut rest = normalized.as_str();
+    while let Some(at) = rest.find('\u{1b}') {
+        out.push_str(&rest[..at]);
+        rest = &rest[at + 1..];
+        if let Some(after_bracket) = rest.strip_prefix('[') {
+            rest = after_bracket;
+            if let Some(end) = rest.find(|c: char| c.is_ascii_alphabetic()) {
+                rest = &rest[end + 1..];
+            }
+        }
+    }
+    out.push_str(rest);
+    out
+}
+
 #[test]
 fn every_builtin_pack_loads_and_compiles() {
     let c = load_all();
@@ -182,6 +201,110 @@ fn kubectl_events_are_classified() {
         "Error from server (NotFound): pods \"nope\" not found",
     );
     assert_eq!(got.level, Level::Error);
+}
+
+#[test]
+fn the_test_runner_packs_are_present() {
+    let names: Vec<String> = pack_paths()
+        .iter()
+        .map(|p| p.file_stem().unwrap().to_string_lossy().into_owned())
+        .collect();
+
+    for expected in ["pytest", "jest-vitest", "go", "github-actions"] {
+        assert!(
+            names.contains(&expected.to_string()),
+            "missing pack: {expected} (have {names:?})"
+        );
+    }
+}
+
+#[test]
+fn test_runner_packs_classify_against_the_real_fixtures() {
+    let mut c = load_all();
+    let fixtures = crate_root()
+        .join("..")
+        .join("..")
+        .join("tests")
+        .join("fixtures");
+
+    // (fixture, verbatim line, level, rule id). The lines are taken from real
+    // captures; a pack that loads but does not fire on them is not working.
+    let checks: &[(&str, &str, Level, &str)] = &[
+        (
+            "pytest-failure.log",
+            "FAILED test_sample.py::test_failure - assert (1 + 1) == 3",
+            Level::Error,
+            "pytest.failed",
+        ),
+        (
+            "pytest-failure.log",
+            "E       RuntimeError: boom from a real pytest run",
+            Level::Error,
+            "pytest.error_detail",
+        ),
+        (
+            "jest-failure.log",
+            "FAIL ./sample.test.js",
+            Level::Error,
+            "jest_vitest.suite_failed",
+        ),
+        (
+            "vitest-failure.log",
+            "AssertionError: expected 2 to be 3 // Object.is equality",
+            Level::Error,
+            "jest_vitest.exception",
+        ),
+        (
+            "go-test-failure.log",
+            "--- FAIL: TestFail (0.00s)",
+            Level::Error,
+            "go.test_failed",
+        ),
+        (
+            "go-test-failure.log",
+            "    sample_test.go:12: expected 2 to be 3",
+            Level::Error,
+            "go.test_detail",
+        ),
+        (
+            "go-test-failure.log",
+            "panic: boom from a real go test run [recovered, repanicked]",
+            Level::Error,
+            "go.panic",
+        ),
+        (
+            "go-test-failure.log",
+            "FAIL\texample.com/hushlogcapture\t1.018s",
+            Level::Error,
+            "go.package_failed",
+        ),
+        (
+            "github-actions-failure.log",
+            "##[error]Resource not accessible by integration - https://docs.github.com/rest/issues/issues#create-an-issue",
+            Level::Error,
+            "github_actions.error",
+        ),
+    ];
+
+    for (file, line, level, rule) in checks {
+        let body = std::fs::read_to_string(fixtures.join(file))
+            .unwrap_or_else(|e| panic!("read {file}: {e}"));
+        // Both ANSI escapes and the literal `^[` markers in the GH Actions
+        // capture have to go: `Ingest` strips the first, and neither form is
+        // part of the text a rule sees.
+        let plain = body.lines().map(plain_text).collect::<Vec<_>>();
+        assert!(
+            plain.iter().any(|l| l.contains(*line)),
+            "fixture {file} no longer contains {line:?}"
+        );
+        let got = classify(&mut c, line);
+        assert_eq!(got.level, *level, "level for {line:?}");
+        let name = got
+            .rule_id
+            .and_then(|id| c.rules().get(usize::from(id.0)))
+            .map_or("<none>", |r| r.id.as_str());
+        assert_eq!(name, *rule, "rule for {line:?}");
+    }
 }
 
 #[test]

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `--max-tokens <N>`, an opt-in output budget for agents. It never hides an
+  error, counts every hidden line exactly in the summary and `budget_summary`,
+  and keeps the byte-exact input available through `--tee`.
+- A versioned JSON contract (`schema_version: "1"`) with stable rule names, a
+  sequence number on every record and deprecated aliases for the v0 keys.
+  Documented in [`docs/JSON-CONTRACT.md`](docs/JSON-CONTRACT.md).
+- Built-in rule packs for pytest, Jest/Vitest, `go test` and GitHub Actions,
+  each proved against a real captured log under `tests/fixtures/`.
+
+### Changed
+
+- JSON `summary` records now include `lines_suppressed`; budgeted runs end with
+  an exact `budget_summary` record. Other formats add a matching human-readable
+  line.
+- Real GitHub Actions errors are now classified as errors: cargo-deny's
+  `error[unmaintained]` and the runner's `##[error]` annotation. They had always
+  survived filtering; now the classification matches the text.
+
 ## [0.1.0-alpha.3] - 2026-11-24
 
 ### Fixed

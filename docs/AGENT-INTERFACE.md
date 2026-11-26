@@ -4,12 +4,13 @@ hushlog is useful at a terminal, and it is also useful as the first stage of a
 script or an AI assistant's log input. Both use the same pipeline. Neither
 throws anything away.
 
-There are two ways to use it, and they solve different problems:
+There are three ways to use it, and they solve different problems:
 
 | | What it does | When to reach for it |
 |---|---|---|
 | `hushlog` on its own | Folds repeated lines into counted notices | The log is noisy, but all of it still matters |
 | `hushlog --query '...' --format json` | Emits only the lines matching a predicate | You know what you are looking for |
+| `hushlog --max-tokens <N>` | Aims for a shorter result without hiding errors | The log must fit an agent's context window |
 
 If a line is not shown, it is still in the `--tee` file, and every fold is
 counted in the summary. A smaller input for a program never means a lost log.
@@ -108,6 +109,28 @@ hushlog --query 'level == error' --format csv --tee build.log -- cargo build
 The tee file is written upstream of the pipeline, byte for byte, including
 bytes that are not valid UTF-8. That is the difference between filtering a log
 and losing one: the program sees less, and you still have all of it.
+
+## With a token budget
+
+```sh
+# A shorter transcript for an agent, with the complete log kept on disk
+hushlog --max-tokens 4000 --tee build.log -- cargo build
+
+# The same budget as structured records
+hushlog --max-tokens 4000 --format json -- cargo build
+```
+
+A budget is a display decision, not a filter. Tokens are estimated at four
+bytes each. As the estimate closes on the cap, hushlog suppresses trace lines,
+then info and progress, then warnings. Errors are never suppressed; a run may
+exceed the cap because an error still has to be shown.
+
+Every hidden line is counted. The summary satisfies
+`lines_in == lines_out + lines_folded + lines_suppressed`, and JSON ends with a
+`budget_summary` carrying the cap, estimate, suppressed tokens and suppressed
+lines. `--tee` remains byte-exact, so a suppressed line is recoverable. Use
+`--tee` whenever an agent needs to be able to follow up on something it did not
+see.
 
 ## What hushlog deliberately does not do
 

@@ -1,0 +1,92 @@
+# pytest rule pack
+#
+# Shapes come from a real `pytest` run captured in
+# tests/fixtures/pytest-failure.log (pytest 9.2.0, Python 3.14). Every sample
+# below is a verbatim line from that capture, after ANSI stripping.
+#
+# Errors are never collapsed: AGENTS.md section 1.1. Traceback detail lines
+# carry the failure's reason, so they are errors too and always shown.
+
+name = "pytest"
+description = "pytest test results, failure summaries and warnings."
+
+detect = { patterns = [
+    "=+ test session starts =+",
+    "^FAILED \\S+::",
+    "^=+ (?:\\d+ failed|\\d+ passed)",
+] }
+
+[[rule]]
+id = "pytest.failed"
+match = { kind = "regex", pattern = "^FAILED \\S+::" }
+level = "error"
+highlight = true
+context_lines = 6
+
+[[rule.sample]]
+line = 'FAILED test_sample.py::test_failure - assert (1 + 1) == 3'
+level = "error"
+
+[[rule.sample]]
+line = 'FAILED test_sample.py::test_error - RuntimeError: boom from a real pytest run'
+level = "error"
+
+[[rule]]
+id = "pytest.error_detail"
+match = { kind = "regex", pattern = "^E\\s+" }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = 'E       assert (1 + 1) == 3'
+level = "error"
+
+[[rule.sample]]
+line = 'E       RuntimeError: boom from a real pytest run'
+level = "error"
+
+[[rule]]
+id = "pytest.exception_location"
+match = { kind = "regex", pattern = "\\.py:\\d+: (?:AssertionError|[A-Za-z]+Error)$" }
+level = "error"
+
+[[rule.sample]]
+line = 'test_sample.py:7: AssertionError'
+level = "error"
+
+[[rule.sample]]
+line = 'test_sample.py:10: RuntimeError'
+level = "error"
+
+[[rule]]
+id = "pytest.summary_failed"
+match = { kind = "regex", pattern = "^=+ \\d+ failed" }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = '========================= 2 failed, 1 passed in 0.16s ========================='
+level = "error"
+
+[[rule]]
+id = "pytest.warning"
+match = { kind = "regex", pattern = "(?i)(?:warnings summary|[A-Za-z]+Warning\\b)" }
+level = "warning"
+
+[[rule]]
+id = "pytest.progress"
+match = { kind = "regex", pattern = "\\[\\d+%\\]$" }
+level = "progress"
+
+[[rule.sample]]
+line = 'test_sample.py .FF                                                       [100%]'
+level = "progress"
+
+[[rule]]
+id = "pytest.session"
+match = { kind = "regex", pattern = "^=+ test session starts =+$" }
+level = "info"
+
+[[rule.sample]]
+line = '============================= test session starts ============================='
+level = "info"

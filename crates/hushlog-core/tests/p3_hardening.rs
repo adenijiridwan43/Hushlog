@@ -194,6 +194,10 @@ proptest! {
             lines_folded,
             errors: 0,
             groups: 0,
+            lines_suppressed: 0,
+            token_estimate: 0,
+            tokens_suppressed: 0,
+            max_tokens: None,
             tee_path: None,
         };
         prop_assert_eq!(

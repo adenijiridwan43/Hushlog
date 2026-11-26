@@ -30,6 +30,14 @@ const NPM_INSTALL: &str = "npm-install.log";
 const PIP_INSTALL: &str = "pip-install.log";
 /// A real failing GitHub Actions run (cargo-deny advisory + audit-check).
 const GITHUB_ACTIONS_FAILURE: &str = "github-actions-failure.log";
+/// A real `pytest` run with two failures and one pass.
+const PYTEST_FAILURE: &str = "pytest-failure.log";
+/// A real `jest` run with two failures and one pass.
+const JEST_FAILURE: &str = "jest-failure.log";
+/// A real `vitest` run with two failures and one pass.
+const VITEST_FAILURE: &str = "vitest-failure.log";
+/// A real `go test` run with two failures, a panic and one pass.
+const GO_TEST_FAILURE: &str = "go-test-failure.log";
 
 /// The level hushlog gives the first line matching `needle`.
 ///
@@ -142,9 +150,8 @@ fn a_panic_survives_filtering() {
 
 #[test]
 fn a_failing_github_actions_run_survives_filtering() {
-    // A real failing CI run. The error-shaped lines must survive filtering
-    // even while the packs do not yet classify them as errors: the invariant
-    // is that nothing is dropped, not that classification is complete.
+    // Both shapes were real errors in a real CI run. They survive filtering
+    // *and* classify as errors now, so --explain and JSON agree with the text.
     assert!(
         output_contains(GITHUB_ACTIONS_FAILURE, "error[unmaintained]"),
         "the cargo-deny error line from a real CI run must not be dropped"
@@ -155,6 +162,123 @@ fn a_failing_github_actions_run_survives_filtering() {
             "Resource not accessible by integration"
         ),
         "the audit-check error line from a real CI run must not be dropped"
+    );
+}
+
+#[test]
+fn github_actions_errors_are_classified_as_errors() {
+    assert_eq!(
+        level_of(GITHUB_ACTIONS_FAILURE, "error[unmaintained]"),
+        Level::Error,
+        "a cargo-deny advisory is a failure even with a CI prefix"
+    );
+    assert_eq!(
+        level_of(
+            GITHUB_ACTIONS_FAILURE,
+            "##[error]Resource not accessible by integration"
+        ),
+        Level::Error,
+        "a GitHub Actions error annotation is a step failure"
+    );
+    assert_eq!(
+        level_of(GITHUB_ACTIONS_FAILURE, "##[warning]3 warnings found!"),
+        Level::Warning,
+        "a warning annotation is not an error"
+    );
+}
+
+#[test]
+fn pytest_failures_are_classified_and_survive_filtering() {
+    assert_eq!(
+        level_of(PYTEST_FAILURE, "FAILED test_sample.py::test_failure"),
+        Level::Error,
+        "the short summary names each failed test"
+    );
+    assert_eq!(
+        level_of(PYTEST_FAILURE, "E       assert (1 + 1) == 3"),
+        Level::Error,
+        "the traceback detail carries the reason for the failure"
+    );
+    assert_eq!(
+        level_of(PYTEST_FAILURE, "2 failed, 1 passed"),
+        Level::Error,
+        "the suite summary is a failure"
+    );
+    assert!(
+        output_contains(PYTEST_FAILURE, "assert (1 + 1) == 3"),
+        "pytest's reason must be in the output"
+    );
+}
+
+#[test]
+fn vitest_failures_are_classified_and_survive_filtering() {
+    assert_eq!(
+        level_of(VITEST_FAILURE, "FAIL  sample.test.js > a real vitest run"),
+        Level::Error
+    );
+    assert_eq!(
+        level_of(VITEST_FAILURE, "AssertionError: expected 2 to be 3"),
+        Level::Error
+    );
+    assert_eq!(
+        level_of(VITEST_FAILURE, "Test Files  1 failed"),
+        Level::Error
+    );
+    assert!(
+        output_contains(VITEST_FAILURE, "expected 2 to be 3"),
+        "vitest's reason must be in the output"
+    );
+}
+
+#[test]
+fn jest_failures_are_classified_and_survive_filtering() {
+    assert_eq!(
+        level_of(JEST_FAILURE, "FAIL ./sample.test.js"),
+        Level::Error
+    );
+    assert_eq!(
+        level_of(JEST_FAILURE, "Test Suites: 1 failed"),
+        Level::Error
+    );
+    assert_eq!(
+        level_of(JEST_FAILURE, "Tests:       2 failed"),
+        Level::Error
+    );
+    assert!(
+        output_contains(JEST_FAILURE, "boom from a real jest run"),
+        "jest's reason must be in the output"
+    );
+}
+
+#[test]
+fn go_test_failures_are_classified_and_survive_filtering() {
+    assert_eq!(
+        level_of(GO_TEST_FAILURE, "--- FAIL: TestFail"),
+        Level::Error,
+        "go names each failed test before the reason"
+    );
+    assert_eq!(
+        level_of(GO_TEST_FAILURE, "sample_test.go:12: expected 2 to be 3"),
+        Level::Error,
+        "the failure reason must keep its level"
+    );
+    assert_eq!(
+        level_of(GO_TEST_FAILURE, "panic: boom from a real go test run"),
+        Level::Error,
+        "a panic is a failure even with the recovered/repanicked suffix"
+    );
+    assert_eq!(
+        level_of(GO_TEST_FAILURE, "FAIL\texample.com/hushlogcapture"),
+        Level::Error,
+        "the package result is a failure"
+    );
+    assert!(
+        output_contains(GO_TEST_FAILURE, "expected 2 to be 3"),
+        "go's reason must be in the output"
+    );
+    assert!(
+        output_contains(GO_TEST_FAILURE, "boom from a real go test run"),
+        "go's panic must be in the output"
     );
 }
 
@@ -186,6 +310,10 @@ fn the_real_fixtures_all_load() {
         NPM_INSTALL,
         PIP_INSTALL,
         GITHUB_ACTIONS_FAILURE,
+        PYTEST_FAILURE,
+        JEST_FAILURE,
+        VITEST_FAILURE,
+        GO_TEST_FAILURE,
     ] {
         let bytes = common::fixture_bytes(name);
         assert!(

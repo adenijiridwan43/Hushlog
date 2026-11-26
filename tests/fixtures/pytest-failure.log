@@ -1,0 +1,27 @@
+============================= test session starts =============================
+platform win32 -- Python 3.14.10, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\Users\usr\AppData\Local\Temp\hushlog-pytest-capture
+configfile: pytest.ini
+collected 3 items
+
+test_sample.py .FF                                                       [100%]
+
+================================== FAILURES ===================================
+________________________________ test_failure _________________________________
+
+    def test_failure():
+>       assert 1 + 1 == 3
+E       assert (1 + 1) == 3
+
+test_sample.py:7: AssertionError
+_________________________________ test_error __________________________________
+
+    def test_error():
+>       raise RuntimeError("boom from a real pytest run")
+E       RuntimeError: boom from a real pytest run
+
+test_sample.py:10: RuntimeError
+=========================== short test summary info ===========================
+FAILED test_sample.py::test_failure - assert (1 + 1) == 3
+FAILED test_sample.py::test_error - RuntimeError: boom from a real pytest run
+========================= 2 failed, 1 passed in 0.16s =========================

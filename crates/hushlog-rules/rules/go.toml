@@ -1,0 +1,84 @@
+# `go test` rule pack
+#
+# Shapes come from a real `go test ./...` run captured in
+# tests/fixtures/go-test-failure.log (Go 1.27.4, Windows). Every sample below is
+# a verbatim line from that capture. The failure reason and the panic line are
+# errors and are never folded (AGENTS.md section 1.1); stack frames are trace
+# detail, still shown by default but eligible for a budget to suppress.
+
+name = "go"
+description = "`go test` failures, panics and package results."
+
+detect = { patterns = [
+    "^--- FAIL: ",
+    "^panic: ",
+    "^FAIL\\t",
+] }
+
+[[rule]]
+id = "go.test_failed"
+match = { kind = "regex", pattern = "^--- FAIL: " }
+level = "error"
+highlight = true
+context_lines = 6
+
+[[rule.sample]]
+line = "--- FAIL: TestFail (0.00s)"
+level = "error"
+
+[[rule.sample]]
+line = "--- FAIL: TestPanic (0.00s)"
+level = "error"
+
+[[rule]]
+id = "go.test_detail"
+match = { kind = "regex", pattern = "^ {4}\\S+\\.go:\\d+: " }
+level = "error"
+
+[[rule.sample]]
+line = "    sample_test.go:12: expected 2 to be 3"
+level = "error"
+
+[[rule]]
+id = "go.panic"
+match = { kind = "regex", pattern = "^panic: " }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = "panic: boom from a real go test run [recovered, repanicked]"
+level = "error"
+
+[[rule]]
+id = "go.stack_frame"
+match = { kind = "regex", pattern = "^\\t\\S+\\.go:\\d+ \\+0x" }
+level = "trace"
+
+[[rule.sample]]
+line = "\tC:/Users/usr/AppData/Local/Temp/hushlog-go/go/src/testing/testing.go:2125 +0x239"
+level = "trace"
+
+[[rule]]
+id = "go.package_failed"
+match = { kind = "regex", pattern = "^FAIL\\t\\S+\\t\\d+(?:\\.\\d+)?s$" }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = "FAIL\texample.com/hushlogcapture\t1.018s"
+level = "error"
+
+[[rule]]
+id = "go.overall_failed"
+match = { kind = "regex", pattern = "^FAIL$" }
+level = "error"
+highlight = true
+
+[[rule.sample]]
+line = "FAIL"
+level = "error"
+
+[[rule]]
+id = "go.ok"
+match = { kind = "regex", pattern = "^ok\\s+\\S+" }
+level = "info"

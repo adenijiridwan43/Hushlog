@@ -11,6 +11,7 @@
 //! |---|---|
 //! | [`args`] | the flag surface, and the validation that rejects combinations which do not mean anything |
 //! | [`pipeline`] | the five stages in order, and the one rule that `--tee` is fed upstream of stage 1 |
+//! | [`budget`] | the opt-in `--max-tokens` gate, after folding and before rendering |
 //! | [`tee`] | byte-exact capture of the input stream |
 //! | [`pipe`] | stdin to filtered stdout |
 //! | [`wrap`] | spawn, read both streams, propagate the exit code |
@@ -31,6 +32,7 @@
 //! (`AGENTS.md` section 1).
 
 mod args;
+mod budget;
 mod decompress;
 mod explain;
 mod pipe;

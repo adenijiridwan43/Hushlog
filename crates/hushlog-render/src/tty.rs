@@ -5,7 +5,7 @@ use std::io::{self, Write};
 use hushlog_core::{Classified, Event, Level, Renderer};
 use owo_colors::{OwoColorize, Style};
 
-use crate::common::{Sink, fold_note, is_error};
+use crate::common::{Sink, budget_note, fold_note, is_error};
 
 /// The log with ANSI colour, when the destination can show it.
 #[derive(Debug)]
@@ -204,7 +204,12 @@ impl Renderer for TtyRenderer {
                     Style::new().dimmed()
                 };
                 let painted = self.wrap(&summary.to_string(), style);
-                self.sink.line(&painted)
+                self.sink.line(&painted)?;
+                if let Some(note) = budget_note(summary) {
+                    let painted = self.wrap(&note, Style::new().dimmed());
+                    self.sink.line(&painted)?;
+                }
+                Ok(())
             }
         }
     }

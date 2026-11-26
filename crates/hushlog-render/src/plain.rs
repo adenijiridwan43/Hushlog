@@ -4,7 +4,7 @@ use std::io::{self, Write};
 
 use hushlog_core::{Event, Renderer};
 
-use crate::common::{Sink, write_fold};
+use crate::common::{Sink, budget_note, write_fold};
 
 /// One input line in, one line out, byte for byte.
 ///
@@ -66,7 +66,11 @@ impl Renderer for PlainRenderer {
             Event::BlockStart(_) | Event::BlockEnd(_) => Ok(()),
             Event::Summary(summary) => {
                 self.sink.line("")?;
-                self.sink.line(&summary.to_string())
+                self.sink.line(&summary.to_string())?;
+                if let Some(note) = budget_note(summary) {
+                    self.sink.line(&note)?;
+                }
+                Ok(())
             }
         }
     }
